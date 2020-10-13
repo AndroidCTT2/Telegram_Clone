@@ -7,6 +7,7 @@
   - Nguyễn Thị Ngọc Trâm - 18120246  
   - Phạm Tống Bình Minh - 18120210  
 - Thông tin liên hệ: minhthevo123@gmailcom
+
 # Mô tả đề tài
 - Actor chính: Người dùng
 - Dữ liệu cần quản lí: Thông tin người dùng, danh bạ, lịch sử nhắn tin(gọi, video call)
