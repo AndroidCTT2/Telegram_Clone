@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/signIn">
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.mobile.messageclone.RegisterFragment"
+        android:label="fragment_register"
+        tools:layout="@layout/fragment_register" />
+    <fragment
+        android:id="@+id/signIn"
+        android:name="com.mobile.messageclone.SignInFragment"
+        android:label="fragment_sign_in"
+        tools:layout="@layout/fragment_sign_in" >
+        <action
+            android:id="@+id/action_signIn_to_countryCodeDialogFragment"
+            app:destination="@id/countryCodeDialogFragment" />
+        <action
+            android:id="@+id/action_signIn_to_validationPhone"
+            app:destination="@id/validationPhone" />
+    </fragment>
+    <fragment
+        android:id="@+id/validationPhone"
+        android:name="com.mobile.messageclone.ValidationPhone"
+        android:label="ValidationPhone" >
+        <action
+            android:id="@+id/action_validationPhone_to_mainScreen"
+            app:destination="@id/mainScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/mainScreen"
+        android:name="com.mobile.messageclone.MainScreen"
+        android:label="fragment_main_screen"
+        tools:layout="@layout/fragment_main_screen" />
+    <fragment
+        android:id="@+id/countryCodeDialogFragment"
+        android:name="com.mobile.messageclone.CountryCodeDialogFragment"
+        android:label="CountryCodeDialogFragment" />
+</navigation>
