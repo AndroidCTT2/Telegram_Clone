@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:text="Welcome back to our chat app"
+        android:textSize="23sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:id="@+id/topView"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:gravity="center"
+        android:background="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/view5"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/wave"
+         />
+
+    <TextView
+        android:paddingHorizontal="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nhập SĐT để đăng nhập"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="#000000"
+        ></TextView>
+
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="false"
+        android:textSize="18sp"
+        android:id="@+id/editChoseCountryCode"
+        android:text="Vietnam"
+        android:textColor="#000000"
+        android:layout_marginHorizontal="20dp"
+        ></com.google.android.material.textfield.TextInputEditText>
+
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="20dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="+"
+            android:textSize="25sp"
+            android:textColor="#000000"
+            android:gravity="center_vertical"
+            ></TextView>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:ems="3"
+            android:text="84"
+            android:id="@+id/textInputCountryCode"
+            android:maxLines="1"
+
+            >
+
+        </com.google.android.material.textfield.TextInputEditText>
+
+
+
+
+
+
+
+        <com.google.android.material.textfield.TextInputEditText
+
+            android:hint="Nhập số điện thoại"
+            android:maxEms="10"
+            android:id="@+id/textInputPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:inputType="phone"
+            android:textSize="18sp"></com.google.android.material.textfield.TextInputEditText>
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_weight="3">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.947"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:fabSize="normal"
+            android:id="@+id/btnSignIn"
+            android:src="@drawable/ic_baseline_arrow_forward_24"
+            app:layout_constraintVertical_bias="0.858"></com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
