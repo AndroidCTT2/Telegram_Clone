@@ -1,7 +1,7 @@
 # Telegram_Clone
 
 - Thông tin thành viên nhóm:  
-  - Nguyễn Phú Trung Anh - 181202076  
+  - Nguyễn Phú Trung Anh - 18120276  
   - Võ Thế Minh - 18120211  
   - Lê Đức Thành - 18120238  
   - Nguyễn Thị Ngọc Trâm - 18120246  
