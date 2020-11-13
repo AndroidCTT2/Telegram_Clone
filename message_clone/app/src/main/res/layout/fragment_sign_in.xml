@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity"
+    android:background="?attr/colorOnBackground"
     >
 
 
@@ -17,12 +18,16 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
+            style="@style/Widget.MaterialComponents.Toolbar"
             android:layout_width="match_parent"
+            android:elevation="4dp"
             android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorSurface"
+
             app:title="Your phone"
-            app:titleTextColor="?attr/colorOnSurface"
-            style="@style/Widget.MaterialComponents.Toolbar.Surface"
-            />
+            android:outlineProvider="bounds"
+
+            app:titleTextColor="?attr/colorOnSurface" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -54,7 +59,7 @@
             android:layout_height="match_parent"
             android:text="+"
             android:textSize="25sp"
-            android:textColor="#000000"
+            android:textColor="?attr/colorOnSurface"
             android:gravity="center_vertical"
             ></TextView>
 
@@ -94,7 +99,21 @@
             android:textColor="?attr/colorOnSurface"
             android:textSize="20sp"></com.google.android.material.textfield.TextInputEditText>
 
+
+
     </LinearLayout>
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_marginHorizontal="20dp"
+        android:textColor="?attr/colorOnSurface"
+        android:elevation="2dp"
+        android:text="Please confirm your country code and enter your phone number"
+        ></TextView>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

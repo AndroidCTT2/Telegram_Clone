@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorOnBackground"
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -15,10 +16,11 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
-            style="@style/Widget.MaterialComponents.Toolbar.Surface"
-
+            style="@style/Widget.MaterialComponents.Toolbar"
+            android:background="?attr/colorSurface"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:elevation="4dp"
             app:title="Phone verification"
             app:titleTextColor="?attr/colorOnSurface" />
 
@@ -30,6 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -60,6 +63,7 @@
         android:layout_height="wrap_content"
         android:text="We've sent the code an SMS service with an activation code to your phone"
         android:textAlignment="center"
+        android:layout_marginHorizontal="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -79,7 +83,7 @@
         android:inputType="number"
         android:textColor="?attr/colorOnSurface"
         app:OtpItemCount="6"
-        app:OtpLineColor="#000000"
+        app:OtpLineColor="?attr/colorOnSurface"
 
         app:OtpViewType="line"
         app:layout_constraintEnd_toEndOf="parent"

@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.telephony.PhoneNumberUtils;
 import android.text.Editable;
@@ -28,6 +29,8 @@ import android.widget.Toast;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -70,7 +73,7 @@ public class SignInFragment extends Fragment {
     public SignInFragment() {
         // Required empty public constructor
     }
-
+    private FirebaseAuth auth;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -92,12 +95,15 @@ public class SignInFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        auth=FirebaseAuth.getInstance();
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+        InitList();
     }
 
 
@@ -105,7 +111,17 @@ public class SignInFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        InitList();
+
+
+      FirebaseUser currentUser=auth.getCurrentUser();
+       if (currentUser!=null)
+       {
+            NavController navController=NavHostFragment.findNavController(this);
+            navController.navigate(R.id.action_signIn_to_mainScreen);
+
+        }
+
+
     }
 
     @Override
@@ -126,7 +142,6 @@ public class SignInFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
 
 
         signInViewModel=new ViewModelProvider(getActivity()).get(SignInViewModel.class);
@@ -168,10 +183,11 @@ public class SignInFragment extends Fragment {
 
 
         btnSignIn=viewRoot.findViewById(R.id.btnSignIn);
-        final PhoneNumberUtil phoneNumberUtil=PhoneNumberUtil.createInstance(getContext());
+
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final PhoneNumberUtil phoneNumberUtil=PhoneNumberUtil.createInstance(getContext());
                 String usephone="+"+inputCountryCode.getText().toString() + inputPhone.getText().toString();
                  Phonenumber.PhoneNumber phonenumber = new Phonenumber.PhoneNumber();
                 String RegionCode=phoneNumberUtil.getRegionCodeForCountryCode(Integer.valueOf(inputCountryCode.getText().toString()));
