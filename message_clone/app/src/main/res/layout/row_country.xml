@@ -9,20 +9,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Việt Nam"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:id="@+id/textCountry"
         android:layout_weight="2"
-        android:textColor="#000000">
+        android:ems="8"
+        android:textColor="?attr/colorOnSurface">
     </TextView>
 
     <TextView
         android:paddingLeft="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:text="+84"
         android:id="@+id/textCode"
-        android:textColor="#000000"></TextView>
+
+        android:textColor="?attr/colorOnSurface"></TextView>
 
 
 

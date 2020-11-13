@@ -1,5 +1,7 @@
 package com.mobile.messageclone;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +14,7 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -23,9 +26,12 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.mukesh.OnOtpCompletionListener;
+import com.mukesh.OtpView;
 
 import java.util.concurrent.TimeUnit;
 
@@ -41,11 +47,14 @@ public class ValidationPhone extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private TextInputEditText editOTP;
+
+
+    private OtpView editOTP;
+
     private MaterialButton btnValidatePhone;
     private ProgressBar progressBar;
 
-    private String verifycodeBySystem;
+    private String verifycodeBySystem=null;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -82,6 +91,7 @@ public class ValidationPhone extends Fragment {
             SentSms(Phone);
 
         }
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
 
 
@@ -99,18 +109,16 @@ public class ValidationPhone extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        btnValidatePhone=view.findViewById(R.id.btnValidatePhone);
+
         editOTP=view.findViewById(R.id.editOTP);
-        progressBar=view.findViewById(R.id.progress_bar);
 
-        btnValidatePhone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                verifyCode(editOTP.getEditableText().toString());
-            }
-        });
 
-        progressBar.setVisibility(View.INVISIBLE);
+      editOTP.setOtpCompletionListener(new OnOtpCompletionListener() {
+          @Override
+          public void onOtpCompleted(String otp) {
+              verifyCode(editOTP.getEditableText().toString());
+          }
+      });
 
 
 
@@ -154,13 +162,20 @@ public class ValidationPhone extends Fragment {
         @Override
         public void onVerificationFailed(@NonNull FirebaseException e) {
 
+
         }
     };
 
     private void verifyCode(String UserInputCode)
     {
-        PhoneAuthCredential credential=PhoneAuthProvider.getCredential(verifycodeBySystem,UserInputCode);
-        CompleteRegisterAndSignIn(credential);
+        if (verifycodeBySystem==null)
+        {
+
+        }
+        else {
+            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verifycodeBySystem, UserInputCode);
+            CompleteRegisterAndSignIn(credential);
+        }
     }
 
     private void CompleteRegisterAndSignIn(PhoneAuthCredential credential)
@@ -173,6 +188,24 @@ public class ValidationPhone extends Fragment {
                 {
                     NavController navController= Navigation.findNavController(getView());
                     navController.navigate(R.id.action_validationPhone_to_mainScreen);
+
+                }
+                else
+                {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("Warning")
+                            .setMessage("Invalid code")
+
+                            // Specifying a listener allows you to take an action before dismissing the dialog.
+                            // The dialog is automatically dismissed when a dialog button is clicked.
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // Continue with delete operation
+                                }
+                            })
+
+                            // A null listener allows the button to dismiss the dialog and take no further action.
+                            .show();
                 }
             }
         });
