@@ -1,12 +1,15 @@
-package com.mobile.messageclone;
+package com.mobile.messageclone.SignIn;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.arch.core.executor.TaskExecutor;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -16,20 +19,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskExecutors;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.mobile.messageclone.R;
 import com.mukesh.OnOtpCompletionListener;
 import com.mukesh.OtpView;
 
@@ -103,12 +103,58 @@ public class ValidationPhone extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_validation_phone, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Toolbar toolbar = view.findViewById(R.id.topAppBar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+
+        final NavController navController=Navigation.findNavController(view);
+
+
+        ActionBar ab = ((AppCompatActivity)getActivity()).getSupportActionBar();
+
+        // Enable the Up button
+        ab.setDisplayHomeAsUpEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    getActivity().onBackPressed();
+                            }
+                        });
+
+
+
+        OnBackPressedCallback onBackPressedCallback=new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Warning")
+                        .setMessage("Do you want to stop the verification process?")
+
+                        // Specifying a listener allows you to take an action before dismissing the dialog.
+                        // The dialog is automatically dismissed when a dialog button is clicked.
+                        .setPositiveButton("CONTINUE", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).setNegativeButton("STOP", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                            navController.navigate(R.id.action_validationPhone_to_signIn);
+                    }
+                }).show();
+            }
+        };
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),onBackPressedCallback);
+
 
         editOTP=view.findViewById(R.id.editOTP);
 
@@ -187,8 +233,15 @@ public class ValidationPhone extends Fragment {
                 if (task.isSuccessful()==true)
                 {
                     NavController navController= Navigation.findNavController(getView());
-                    navController.navigate(R.id.action_validationPhone_to_mainScreen);
+                    if (task.getResult().getAdditionalUserInfo().isNewUser()==true)
+                    {
+                        navController.navigate(R.id.action_validationPhone_to_registerFragment);
+                    }
+                    else {
 
+                        navController.navigate(R.id.action_validationPhone_to_chatActivity);
+                        getActivity().finish();
+                    }
                 }
                 else
                 {

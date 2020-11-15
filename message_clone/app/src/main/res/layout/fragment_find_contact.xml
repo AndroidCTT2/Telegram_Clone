@@ -11,26 +11,43 @@
 
 
 
-
-    <com.google.android.material.appbar.AppBarLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="20dp"
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/topAppBar"
-            style="@style/Widget.MaterialComponents.Toolbar"
+        >
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+
+            android:id="@+id/ProfilePicture"
+            android:layout_gravity="center_vertical"
+            ></ImageView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical">
+        <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:elevation="4dp"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorSurface"
+            android:layout_height="wrap_content"
+            android:hint="First name (required)"
+            android:id="@+id/inputNickFirstName"
+            ></com.google.android.material.textfield.TextInputEditText>
 
-            app:title="Your phone"
-            android:outlineProvider="bounds"
-
-            app:titleTextColor="?attr/colorOnSurface" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
+           <com.google.android.material.textfield.TextInputEditText
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:hint="Last name (optional)"
+               android:id="@+id/inputNickLastName"
+               ></com.google.android.material.textfield.TextInputEditText>
+        </LinearLayout>
+    </LinearLayout>
 
 
     <com.google.android.material.textfield.TextInputEditText
@@ -87,7 +104,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
 
-            android:hint="Nhập số điện thoại"
+            android:hint="Phone number"
             android:maxEms="10"
             android:id="@+id/textInputPhone"
             android:layout_width="match_parent"
@@ -111,7 +128,7 @@
         android:layout_marginHorizontal="20dp"
         android:textColor="?attr/colorOnSurface"
         android:elevation="2dp"
-        android:text="Please confirm your country code and enter your phone number"
+        android:text="Please add your contact phone and country code above"
         ></TextView>
 
 
@@ -121,18 +138,7 @@
 
         android:layout_weight="3">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnSignIn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_arrow_forward_24"
-            app:fabSize="normal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.954"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.966"></com.google.android.material.floatingactionbutton.FloatingActionButton>
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".Chat.ChatActivity"></activity>
+        <activity android:name=".SignIn.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,7 +29,7 @@
 
             <!-- Automatically run MyInitializer at app startup -->
             <meta-data
-                android:name="com.mobile.messageclone.SignInFragment"
+                android:name="com.mobile.messageclone.SignIn.SignInFragment"
                 android:value="androidx.startup" />
         </provider>
     </application>

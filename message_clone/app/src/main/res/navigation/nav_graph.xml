@@ -7,48 +7,52 @@
 
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.mobile.messageclone.RegisterFragment"
+        android:name="com.mobile.messageclone.SignIn.AddNameFragment"
         android:label="fragment_register"
-        tools:layout="@layout/fragment_register" />
+        tools:layout="@layout/fragment_add_name" >
+        <action
+            android:id="@+id/action_registerFragment_to_chatActivity2"
+            app:destination="@id/chatActivity2"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/signIn"
-        android:name="com.mobile.messageclone.SignInFragment"
+        android:name="com.mobile.messageclone.SignIn.SignInFragment"
         android:label="fragment_sign_in"
         tools:layout="@layout/fragment_sign_in" >
         <action
             android:id="@+id/action_signIn_to_validationPhone"
-            app:destination="@id/validationPhone" />
+            app:destination="@id/validationPhone"
+            app:launchSingleTop="true" />
         <action
-            android:id="@+id/action_signIn_to_mainScreen"
-            app:destination="@id/mainScreen"
-            app:launchSingleTop="false"
+            android:id="@+id/action_signIn_to_chatActivity"
+            app:destination="@id/chatActivity2"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/validationPhone"
-        android:name="com.mobile.messageclone.ValidationPhone"
+        android:name="com.mobile.messageclone.SignIn.ValidationPhone"
         android:label="ValidationPhone" >
         <action
-            android:id="@+id/action_validationPhone_to_mainScreen"
-            app:destination="@id/mainScreen"
+            android:id="@+id/action_validationPhone_to_chatActivity"
+            app:destination="@id/chatActivity2"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_validationPhone_to_signIn"
+            app:destination="@id/signIn"
+            app:launchSingleTop="true" />
+        <action
+            android:id="@+id/action_validationPhone_to_registerFragment"
+            app:destination="@id/registerFragment"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/mainScreen"
-        android:name="com.mobile.messageclone.MainScreen"
-        android:label="fragment_main_screen"
-        tools:layout="@layout/fragment_main_screen" >
-        <action
-            android:id="@+id/action_mainScreen_to_homeFragment"
-            app:destination="@id/homeFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/countryCodeDialogFragment"
-        android:name="com.mobile.messageclone.CountryCodeDialogFragment"
+        android:name="com.mobile.messageclone.SignIn.CountryCodeDialogFragment"
         android:label="CountryCodeDialogFragment" />
-    <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.mobile.messageclone.ui.home.HomeFragment"
-        android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+    <activity
+        android:id="@+id/chatActivity2"
+        android:name="com.mobile.messageclone.Chat.ChatActivity"
+        android:label="ChatActivity" />
+
 </navigation>

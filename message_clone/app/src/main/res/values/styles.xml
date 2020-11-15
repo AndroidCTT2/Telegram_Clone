@@ -8,6 +8,7 @@
         <item name="colorSurface">#FFFFFF</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="otpViewStyle">@style/OtpWidget.OtpView</item>
+        <item name="colorOnPrimarySurface">#845EED</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

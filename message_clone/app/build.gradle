@@ -83,5 +83,11 @@ dependencies {
     implementation "androidx.startup:startup-runtime:1.0.0"
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 
+    implementation 'com.google.firebase:firebase-storage'
+
+    implementation 'com.google.firebase:firebase-database'
+
+
+
 
 }

@@ -9,5 +9,6 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="otpViewStyle">@style/OtpWidget.OtpView</item>
         <item name="colorOnSecondary">#000000</item>
+        <item name="colorOnPrimarySurface">#003737</item>
     </style>
 </resources>

@@ -24,7 +24,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorSurface"
 
-            app:title="Your phone"
+            app:title="Your name"
             android:outlineProvider="bounds"
 
             app:titleTextColor="?attr/colorOnSurface" />
@@ -32,87 +32,55 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-
-    <com.google.android.material.textfield.TextInputEditText
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:focusableInTouchMode="false"
         android:layout_marginTop="20dp"
-        android:textSize="20sp"
-        android:id="@+id/editChoseCountryCode"
-        android:text="Vietnam"
+        android:alpha="0.6"
+        android:text="Set up your first and last name"
+        android:textAlignment="center"
         android:textColor="?attr/colorOnSurface"
-        android:layout_marginHorizontal="20dp"
-        ></com.google.android.material.textfield.TextInputEditText>
+        android:textSize="18sp"></TextView>
 
 
-    <LinearLayout
-        android:layout_marginTop="20dp"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
         android:layout_marginHorizontal="20dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:hint="First Name (required)"
         >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="+"
-            android:textSize="25sp"
-            android:textColor="?attr/colorOnSurface"
-            android:gravity="center_vertical"
-            ></TextView>
-
         <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:maxLength="4"
-            android:minEms="2"
-            android:text="84"
-            android:inputType="phone"
-            android:imeOptions="actionNext"
-            android:id="@+id/textInputCountryCode"
-            android:maxLines="1"
-
-            >
-
-        </com.google.android.material.textfield.TextInputEditText>
-
-
-
-
-
-
-
-        <com.google.android.material.textfield.TextInputEditText
-
-            android:hint="Nhập số điện thoại"
-            android:maxEms="10"
-            android:id="@+id/textInputPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
-            android:inputType="phone"
-            android:imeOptions="actionNext"
+            android:maxLines="1"
+            android:id="@+id/inputFirstName"
             android:textColor="?attr/colorOnSurface"
-            android:textSize="20sp"></com.google.android.material.textfield.TextInputEditText>
+            ></com.google.android.material.textfield.TextInputEditText>
+
+    </com.google.android.material.textfield.TextInputLayout>
 
 
-
-    </LinearLayout>
-
-    <TextView
-        android:layout_marginTop="20dp"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:layout_marginTop="20dp"
         android:layout_marginHorizontal="20dp"
-        android:textColor="?attr/colorOnSurface"
-        android:elevation="2dp"
-        android:text="Please confirm your country code and enter your phone number"
-        ></TextView>
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:hint="Last Name (optional)"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:id="@+id/inputLastName"
+            android:textColor="?attr/colorOnSurface"
+            ></com.google.android.material.textfield.TextInputEditText>
+
+    </com.google.android.material.textfield.TextInputLayout>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -121,11 +89,12 @@
 
         android:layout_weight="3">
 
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnSignIn"
+            android:id="@+id/btnComplete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_arrow_forward_24"
+            android:src="@drawable/ic_baseline_check_24"
             app:fabSize="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

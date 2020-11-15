@@ -1,4 +1,4 @@
-package com.mobile.messageclone;
+package com.mobile.messageclone.SignIn;
 
 public interface RecyclerViewClickInterface {
     void onItemClick(int position);

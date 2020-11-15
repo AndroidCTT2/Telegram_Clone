@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dmeo"
+    app:startDestination="@id/fragment_home">
+
+    <fragment
+        android:id="@+id/fragment_home"
+        android:name="com.mobile.messageclone.Chat.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment2_to_mainScreen2"
+            app:destination="@id/fragment_contact" />
+        <action
+            android:id="@+id/action_homeFragment2_to_galleryFragment2"
+            app:destination="@id/fragment_new_group" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_new_group"
+        android:name="com.mobile.messageclone.Chat.NewGroupFragment"
+        android:label="fragment_new_group"
+        tools:layout="@layout/fragment_new_group" />
+    <fragment
+        android:id="@+id/fragment_contact"
+        android:name="com.mobile.messageclone.Chat.ContactFragment"
+        android:label="MainScreen" >
+        <action
+            android:id="@+id/action_fragment_contact_to_fragment_find_contact"
+            app:destination="@id/fragment_find_contact" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_find_contact"
+        android:name="com.mobile.messageclone.Chat.fragment_find_contact"
+        android:label="fragment_find_contact" />
+</navigation>

@@ -1,4 +1,4 @@
-package com.mobile.messageclone;
+package com.mobile.messageclone.SignIn;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -11,12 +11,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
-import android.telephony.PhoneNumberUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,13 +21,10 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.mobile.messageclone.R;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -73,7 +67,7 @@ public class SignInFragment extends Fragment {
     public SignInFragment() {
         // Required empty public constructor
     }
-    private FirebaseAuth auth;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -95,7 +89,7 @@ public class SignInFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        auth=FirebaseAuth.getInstance();
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -113,13 +107,7 @@ public class SignInFragment extends Fragment {
         super.onStart();
 
 
-      FirebaseUser currentUser=auth.getCurrentUser();
-       if (currentUser!=null)
-       {
-            NavController navController=NavHostFragment.findNavController(this);
-            navController.navigate(R.id.action_signIn_to_mainScreen);
 
-        }
 
 
     }
@@ -256,6 +244,9 @@ public class SignInFragment extends Fragment {
                 else
                 {
 
+                    signInViewModel.countryCodeMutableLiveData.setValue(inputCountryCode.getText().toString());
+                    signInViewModel.phoneStringMutableLiveData.setValue(inputPhone.getText().toString());
+                    signInViewModel.countryNameMutableLiveData.setValue(editChooseCountryCode.getText().toString());
                     Bundle bundle = new Bundle();
                     bundle.putString("Phone", "+" + (inputCountryCode.getText().toString() + inputPhone.getText().toString()));
                     navController.navigate(R.id.action_signIn_to_validationPhone, bundle);
@@ -302,9 +293,23 @@ public class SignInFragment extends Fragment {
             public void onChanged(CountryToPhonePrefix countryToPhonePrefix) {
                 inputCountryCode.setText(countryToPhonePrefix.Code.substring(1));
                 editChooseCountryCode.setText(countryToPhonePrefix.Countryname);
+
             }
         });
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (signInViewModel.phoneStringMutableLiveData.getValue().isEmpty()==false)
+        {
+            inputPhone.setText(signInViewModel.phoneStringMutableLiveData.getValue());
+            inputCountryCode.setText(signInViewModel.countryCodeMutableLiveData.getValue());
+            signInViewModel.countryToPhonePrefixMutableLiveData.setValue(new CountryToPhonePrefix(signInViewModel.countryNameMutableLiveData.getValue(),inputCountryCode.getText().toString()));
+
+        }
     }
 
     private void InitList()
