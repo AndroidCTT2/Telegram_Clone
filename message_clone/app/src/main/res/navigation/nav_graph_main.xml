@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_homeFragment2_to_galleryFragment2"
             app:destination="@id/fragment_new_group" />
+        <action
+            android:id="@+id/action_fragment_home_to_bio"
+            app:destination="@id/bio" />
     </fragment>
     <fragment
         android:id="@+id/fragment_new_group"
@@ -34,4 +37,9 @@
         android:id="@+id/fragment_find_contact"
         android:name="com.mobile.messageclone.Chat.fragment_find_contact"
         android:label="fragment_find_contact" />
+    <fragment
+        android:id="@+id/bio"
+        android:name="com.mobile.messageclone.Chat.ProfileFragment"
+        android:label="fragment_bio"
+        tools:layout="@layout/fragment_bio" />
 </navigation>

@@ -1,5 +1,7 @@
 package com.mobile.messageclone.Chat;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -11,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,16 +21,21 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.CycleInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.mobile.messageclone.DrawProfilePicture;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.SignIn.CountryCodeDialogFragment;
 import com.mobile.messageclone.SignIn.CountryToPhonePrefix;
@@ -39,7 +47,9 @@ import java.util.Comparator;
 import java.util.Locale;
 import java.util.Set;
 
+import io.michaelrocks.libphonenumber.android.NumberParseException;
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil;
+import io.michaelrocks.libphonenumber.android.Phonenumber;
 
 
 public class fragment_find_contact extends Fragment {
@@ -56,9 +66,17 @@ public class fragment_find_contact extends Fragment {
     private TextInputEditText inputFirstName;
     private TextInputEditText inputLastName;
 
+    private TextView demo;
+
+    private String UserFirstName;
+    private String UserLastName;
+    private  ChatViewModel chatViewModel;
+
+
+
     ArrayList<CountryToPhonePrefix> list=new ArrayList<>();
 
-
+    private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
 
     public fragment_find_contact() {
@@ -75,12 +93,35 @@ public class fragment_find_contact extends Fragment {
         setHasOptionsMenu(true);
         InitList();
         firebaseDatabase=FirebaseDatabase.getInstance();
+        firebaseAuth=FirebaseAuth.getInstance();
+
+        firebaseDatabase.getReference().child("USER").orderByKey().equalTo(firebaseAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user=new User();
+                for (DataSnapshot childData:snapshot.getChildren())
+                {
+                        user=childData.getValue(User.class);
+                }
+                UserFirstName=user.getFirstName();
+                UserLastName=user.getLastName();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        chatViewModel =new ViewModelProvider(getActivity()).get(ChatViewModel.class);
+        chatViewModel.titleBar.setValue("New contact");
         return inflater.inflate(R.layout.fragment_find_contact, container, false);
     }
 
@@ -114,12 +155,14 @@ public class fragment_find_contact extends Fragment {
             }
         });
 
-        TextDrawable Pic;
-        Pic =TextDrawable.builder().beginConfig().fontSize(65).bold().toUpperCase().endConfig().buildRound("",getResources().getColor(R.color.colorPrimary,null));
-        ProfileImage.setImageDrawable(Pic);
+
+        ProfileImage.setImageDrawable(DrawProfilePicture.drawProfilePicture("",getActivity()));
 
         inputCountryCode=view.findViewById(R.id.textInputCountryCode);
         inputPhone=view.findViewById(R.id.textInputPhone);
+
+        demo=view.findViewById(R.id.demo);
+
 
         inputCountryCode.addTextChangedListener(new TextWatcher() {
             @Override
@@ -139,6 +182,7 @@ public class fragment_find_contact extends Fragment {
                     for (int i = 0; i < list.size(); i++) {
                         if (s.toString().trim().equals(list.get(i).Code.substring(1))) {
                             editChooseCountryCode.setText(list.get(i).Countryname);
+                            signInViewModel.ISOCNameMutableLiveData.setValue(list.get(i).ISOCountry);
                             break;
                         }
 
@@ -184,8 +228,8 @@ public class fragment_find_contact extends Fragment {
                         SecondLetter=String.valueOf(inputLastName.getText().toString().charAt(0));
                     }
 
-                    Pic =TextDrawable.builder().beginConfig().fontSize(55).bold().toUpperCase().endConfig().buildRound(FirstLetter+SecondLetter,getResources().getColor(R.color.colorPrimary,null));
-                    ProfileImage.setImageDrawable(Pic);
+
+                    ProfileImage.setImageDrawable(DrawProfilePicture.drawProfilePicture(FirstLetter+SecondLetter,getActivity()));
             }
 
             @Override
@@ -222,8 +266,7 @@ public class fragment_find_contact extends Fragment {
                     SecondLetter=String.valueOf(inputLastName.getText().toString().charAt(0));
                 }
 
-                Pic =TextDrawable.builder().beginConfig().fontSize(55).bold().toUpperCase().endConfig().buildRound(FirstLetter+SecondLetter,getResources().getColor(R.color.colorPrimary,null));
-                ProfileImage.setImageDrawable(Pic);
+                ProfileImage.setImageDrawable(DrawProfilePicture.drawProfilePicture(FirstLetter+SecondLetter,getActivity()));
             }
 
             @Override
@@ -243,6 +286,7 @@ public class fragment_find_contact extends Fragment {
         });
 
 
+
     }
 
     @Override
@@ -256,25 +300,79 @@ public class fragment_find_contact extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId()==R.id.btnDone)
         {
-            if (inputPhone.getText().toString().isEmpty()==false)
-            {
-                firebaseDatabase.getReference().child("USER").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        User user;
-                        for (DataSnapshot childSnapshot: snapshot.getChildren())
-                        {
-                            User date=childSnapshot.getValue(User.class);
-                           // date.ConvertToLocalDate();
-                            //listDay.add(date);
+            if (inputFirstName.getText().toString().isEmpty()==true) {
+                inputFirstName.startAnimation(shakeError());
+            }
+
+
+
+            if (inputPhone.getText().toString().isEmpty()==false && inputFirstName.getText().toString().isEmpty()==false) {
+
+
+                PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.createInstance(getContext());
+                String UserInputPhone = "+" + inputCountryCode.getText().toString() + inputPhone.getText().toString();
+                Phonenumber.PhoneNumber phoneNumber = new Phonenumber.PhoneNumber();
+                try {
+                    phoneNumberUtil.parse(UserInputPhone, signInViewModel.ISOCNameMutableLiveData.getValue(), phoneNumber);
+                } catch (NumberParseException e) {
+                    e.printStackTrace();
+                }
+                String phoneParse = phoneNumberUtil.format(phoneNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
+                Log.d("Phone",phoneParse);
+
+                if (phoneParse.equals(firebaseAuth.getCurrentUser().getPhoneNumber())) {
+
+                } else {
+                    firebaseDatabase.getReference().child("USER").orderByChild("phoneNum").equalTo(phoneParse).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists() == true) {
+
+                                User user = new User();
+                                String userId = "";
+                                for (DataSnapshot childData : snapshot.getChildren()) {
+                                    userId = childData.getKey();
+                                    user = childData.getValue(User.class);
+                                }
+                                //demo.setText(text);
+                                Contact contact = new Contact();
+                                contact.setUserIdContact(userId);
+                                contact.setFirstNickName(inputFirstName.getText().toString().trim());
+                                if (inputLastName.getText().toString().isEmpty() == false) {
+                                    contact.setLastNickName(inputLastName.getText().toString().trim());
+                                } else {
+                                    contact.setLastNickName("");
+                                }
+                                contact.setContactStatus(Contact.IN_CONTACT);
+                                firebaseDatabase.getReference().child("CONTACT").child(firebaseAuth.getCurrentUser().getUid()).setValue(contact);
+
+                                contact = new Contact();
+                                contact.setUserIdContact(firebaseAuth.getCurrentUser().getUid());
+                                contact.setLastNickName(UserLastName);
+                                contact.setFirstNickName(UserFirstName);
+                                contact.setContactStatus(Contact.NOT_IN_CONTACT);
+                                firebaseDatabase.getReference().child("CONTACT").child(userId).setValue(contact);
+
+
+                            } else {
+                                new AlertDialog.Builder(getContext()).setTitle("Contact not found").setMessage(inputFirstName.getText().toString() + " is not on our app yet. We hope you can invite him/her to using our app")
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        }).show();
+                            }
+
+
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+                        }
+                    });
+                }
             }
         }
         return super.onOptionsItemSelected(item);
@@ -293,7 +391,8 @@ public class fragment_find_contact extends Fragment {
         for (int i = 0; i < arr.length; i++) {
             Locale locale = new Locale("en", arr[i]);
             String countryCode=String.valueOf(PhoneNumberUtil.createInstance(getContext()).getCountryCodeForRegion(arr[i]));
-            list.add(new CountryToPhonePrefix(locale.getDisplayCountry(),countryCode));
+            CountryToPhonePrefix countryToPhonePrefix=new CountryToPhonePrefix(locale.getDisplayCountry(),countryCode,arr[i]);
+            list.add(countryToPhonePrefix);
 
         }
 
@@ -304,5 +403,12 @@ public class fragment_find_contact extends Fragment {
             }
         };
         list.sort(countryToPhonePrefixComparator);
+    }
+
+    public TranslateAnimation shakeError() {
+        TranslateAnimation shake = new TranslateAnimation(0, 10, 0, 0);
+        shake.setDuration(250);
+        shake.setInterpolator(new CycleInterpolator(4));
+        return shake;
     }
 }

@@ -5,8 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="?attr/colorBackgroundFloating"
     >
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="20dp"
+        android:background="?attr/colorOnBackground">
     <com.google.android.material.button.MaterialButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,13 +23,14 @@
         app:iconTint="?attr/colorOnSurface"
         app:iconPadding="30dp"
         android:textAllCaps="false"
-        android:layout_marginHorizontal="20dp"
-        ></com.google.android.material.button.MaterialButton>
 
+        ></com.google.android.material.button.MaterialButton>
+    </LinearLayout>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="10dp"
         android:text="sorted by last seen time"
         android:textColor="?attr/colorOnSurface"
         ></TextView>
@@ -34,7 +41,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ListContact"
-        android:layout_marginHorizontal="20dp"
+        android:background="?attr/colorOnBackground"
+        android:paddingHorizontal="20dp"
         ></androidx.recyclerview.widget.RecyclerView>
 
     <androidx.constraintlayout.widget.ConstraintLayout

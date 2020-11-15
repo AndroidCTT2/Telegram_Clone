@@ -9,6 +9,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="otpViewStyle">@style/OtpWidget.OtpView</item>
         <item name="colorOnPrimarySurface">#845EED</item>
+        <item name="colorBackgroundFloating">#33959595</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

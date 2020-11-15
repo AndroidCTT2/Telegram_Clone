@@ -108,7 +108,7 @@ public class CountryCodeDialogFragment extends DialogFragment implements Recycle
     @Override
     public void onItemClick(int position) {
         signInViewModel.countryToPhonePrefixMutableLiveData.setValue(countryListAdapter.list.get(position));
-        Toast.makeText(getContext(),countryListAdapter.list.get(position).Countryname,Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(),countryListAdapter.list.get(position).ISOCountry,Toast.LENGTH_SHORT).show();
         dismiss();
     }
 

@@ -12,6 +12,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,9 +20,15 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
+import com.mobile.messageclone.DrawProfilePicture;
 import com.mobile.messageclone.R;
 
-public class ChatActivity extends AppCompatActivity {
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+
+public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
 
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -32,6 +39,21 @@ public class ChatActivity extends AppCompatActivity {
 
 
     private FirebaseAuth firebaseAuth;
+    private FirebaseDatabase firebaseDatabase;
+
+    private static final String STATUS_OFFLINE="OFFLINE";
+    private static final String STATUS_ONLINE="ONLINE";
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (firebaseAuth.getCurrentUser()!=null)
+        {
+            UpdateStatus(STATUS_ONLINE);
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +73,13 @@ public class ChatActivity extends AppCompatActivity {
         // menu should be considered as top level destinations.
 
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        final NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
         mAppBarConfiguration=new AppBarConfiguration.Builder(navController.getGraph()).setOpenableLayout(drawer).build();
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+        firebaseDatabase=FirebaseDatabase.getInstance();
 
 
 
@@ -96,8 +119,8 @@ public class ChatActivity extends AppCompatActivity {
 
 
 
-        TextDrawable profileDrawable= TextDrawable.builder().beginConfig().fontSize(50).toUpperCase().bold().endConfig().buildRound(firstname+lastname, Color.CYAN);
-        ProfilePicture.setImageDrawable(profileDrawable);
+
+        ProfilePicture.setImageDrawable(DrawProfilePicture.drawProfilePicture(firstname+lastname,this));
 
         chatViewModel.titleBar.observe(this, new Observer<String>() {
             @Override
@@ -106,6 +129,12 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        ProfilePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.action_fragment_home_to_bio);
+            }
+        });
 
 
 
@@ -118,5 +147,41 @@ public class ChatActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void CloseDrawer(boolean IsClose) {
+        if (IsClose==true)
+        {
+            mAppBarConfiguration.getOpenableLayout().close();
+        }
+    }
+
+    private void UpdateStatus(String state)
+    {
+        String CurrentDate;
+        String CurrentTime;
+        Calendar calendar=Calendar.getInstance();
+        SimpleDateFormat dateFormat=new SimpleDateFormat("dd-MM-yyyy,X");
+        SimpleDateFormat timeFormat=new SimpleDateFormat("HH-mm-ss");
+
+        CurrentDate=dateFormat.format(calendar.getTime());
+        CurrentTime=timeFormat.format(calendar.getTime());
+
+        HashMap<String,Object>onlineState=new HashMap<>();
+        onlineState.put("Date",CurrentDate);
+        onlineState.put("Time",CurrentTime);
+        onlineState.put("State",state);
+
+        firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("STATUS").updateChildren(onlineState);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (firebaseAuth.getCurrentUser()!=null)
+        {
+            UpdateStatus(STATUS_OFFLINE);
+        }
     }
 }

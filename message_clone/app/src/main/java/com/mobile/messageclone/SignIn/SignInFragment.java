@@ -178,7 +178,8 @@ public class SignInFragment extends Fragment {
                 final PhoneNumberUtil phoneNumberUtil=PhoneNumberUtil.createInstance(getContext());
                 String usephone="+"+inputCountryCode.getText().toString() + inputPhone.getText().toString();
                  Phonenumber.PhoneNumber phonenumber = new Phonenumber.PhoneNumber();
-                String RegionCode=phoneNumberUtil.getRegionCodeForCountryCode(Integer.valueOf(inputCountryCode.getText().toString()));
+               // String RegionCode=phoneNumberUtil.getRegionCodeForCountryCode(Integer.valueOf(inputCountryCode.getText().toString()));
+                String RegionCode=signInViewModel.ISOCNameMutableLiveData.getValue();
                 try {
                    phoneNumberUtil.parse(usephone,RegionCode,phonenumber);
                     } catch (NumberParseException e) {
@@ -273,6 +274,7 @@ public class SignInFragment extends Fragment {
                     for (int i = 0; i < list.size(); i++) {
                         if (s.toString().trim().equals(list.get(i).Code.substring(1))) {
                             editChooseCountryCode.setText(list.get(i).Countryname);
+                            signInViewModel.ISOCNameMutableLiveData.setValue(list.get(i).ISOCountry);
                             break;
                         }
 
@@ -307,7 +309,7 @@ public class SignInFragment extends Fragment {
         {
             inputPhone.setText(signInViewModel.phoneStringMutableLiveData.getValue());
             inputCountryCode.setText(signInViewModel.countryCodeMutableLiveData.getValue());
-            signInViewModel.countryToPhonePrefixMutableLiveData.setValue(new CountryToPhonePrefix(signInViewModel.countryNameMutableLiveData.getValue(),inputCountryCode.getText().toString()));
+            signInViewModel.countryToPhonePrefixMutableLiveData.setValue(new CountryToPhonePrefix(signInViewModel.countryNameMutableLiveData.getValue(),inputCountryCode.getText().toString(),signInViewModel.ISOCNameMutableLiveData.getValue()));
 
         }
     }
@@ -321,7 +323,8 @@ public class SignInFragment extends Fragment {
         for (int i = 0; i < arr.length; i++) {
             Locale locale = new Locale("en", arr[i]);
             String countryCode=String.valueOf(PhoneNumberUtil.createInstance(getContext()).getCountryCodeForRegion(arr[i]));
-            list.add(new CountryToPhonePrefix(locale.getDisplayCountry(),countryCode));
+            CountryToPhonePrefix countryToPhonePrefix=new CountryToPhonePrefix(locale.getDisplayCountry(),countryCode,arr[i]);
+            list.add(countryToPhonePrefix);
 
         }
 

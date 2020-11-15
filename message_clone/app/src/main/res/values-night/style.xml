@@ -10,5 +10,6 @@
         <item name="otpViewStyle">@style/OtpWidget.OtpView</item>
         <item name="colorOnSecondary">#000000</item>
         <item name="colorOnPrimarySurface">#003737</item>
+        <item name="colorBackgroundFloating">@color/colorPrimaryDark</item>
     </style>
 </resources>

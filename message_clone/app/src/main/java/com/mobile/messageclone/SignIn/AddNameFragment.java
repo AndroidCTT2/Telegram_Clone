@@ -122,9 +122,10 @@ public class AddNameFragment extends Fragment {
                         LastName=inputLastName.getText().toString().trim();
                     }
                     final User user=new User();
-                    user.FirstName=FirstName;
-                    user.LastName=LastName;
-                    user.PhoneNum=firebaseAuth.getCurrentUser().getPhoneNumber();
+                    user.setFirstName(FirstName);
+                    user.setLastName(LastName);
+                    user.setPhoneNum(firebaseAuth.getCurrentUser().getPhoneNumber());
+                    user.setBio("");
 
 
                     UserProfileChangeRequest userProfileChangeRequest=new UserProfileChangeRequest.Builder().setDisplayName(FirstName+" "+LastName).build();

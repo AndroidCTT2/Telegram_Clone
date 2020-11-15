@@ -8,6 +8,7 @@ import androidx.navigation.Navigation;
 import android.os.Bundle;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.mobile.messageclone.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         navController=Navigation.findNavController(this,R.id.nav_host_fragment);
         auth=FirebaseAuth.getInstance();
         if (auth.getCurrentUser()!=null)

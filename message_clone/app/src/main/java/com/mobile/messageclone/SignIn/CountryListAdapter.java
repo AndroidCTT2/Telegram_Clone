@@ -30,25 +30,29 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
         context=inputcontext;
         this.recyclerViewClickInterface=recyclerViewClickInterface;
 
-        Set<String> set = PhoneNumberUtil.createInstance(inputcontext).getSupportedRegions();
 
 
-        String[] arr = set.toArray(new String[set.size()]);
-        for (int i = 0; i < arr.length; i++) {
-            Locale locale = new Locale("en", arr[i]);
-            String countryCode=String.valueOf(PhoneNumberUtil.createInstance(inputcontext).getCountryCodeForRegion(arr[i]));
-            list.add(new CountryToPhonePrefix(locale.getDisplayCountry(),countryCode));
+            Set<String> set = PhoneNumberUtil.createInstance(context).getSupportedRegions();
 
+            String[] arr = set.toArray(new String[set.size()]);
 
-        }
+            for (int i = 0; i < arr.length; i++) {
+                Locale locale = new Locale("en", arr[i]);
+                String countryCode=String.valueOf(PhoneNumberUtil.createInstance(context).getCountryCodeForRegion(arr[i]));
+                CountryToPhonePrefix countryToPhonePrefix=new CountryToPhonePrefix(locale.getDisplayCountry(),countryCode,arr[i]);
+                countryToPhonePrefix.ISOCountry=arr[i];
+                list.add(countryToPhonePrefix);
 
-        Comparator<CountryToPhonePrefix>countryToPhonePrefixComparator=new Comparator<CountryToPhonePrefix>() {
-            @Override
-            public int compare(CountryToPhonePrefix o1, CountryToPhonePrefix o2) {
-                return o1.Countryname.compareToIgnoreCase(o2.Countryname);
             }
-        };
-        list.sort(countryToPhonePrefixComparator);
+
+            Comparator<CountryToPhonePrefix> countryToPhonePrefixComparator=new Comparator<CountryToPhonePrefix>() {
+                @Override
+                public int compare(CountryToPhonePrefix o1, CountryToPhonePrefix o2) {
+                    return o1.Countryname.compareToIgnoreCase(o2.Countryname);
+                }
+            };
+            list.sort(countryToPhonePrefixComparator);
+
 
         originalList=list;
     }
