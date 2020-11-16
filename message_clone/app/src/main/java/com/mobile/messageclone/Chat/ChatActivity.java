@@ -12,6 +12,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,12 +22,18 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
+import com.instacart.library.truetime.TrueTime;
+import com.instacart.library.truetime.TrueTimeRx;
 import com.mobile.messageclone.DrawProfilePicture;
 import com.mobile.messageclone.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+
+import io.reactivex.schedulers.Schedulers;
 
 public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
 
@@ -58,6 +65,12 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
+
+
+
         setContentView(R.layout.activity_main_menu);
 
         final ChatViewModel chatViewModel =new ViewModelProvider(this).get(ChatViewModel.class);
@@ -159,11 +172,19 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
 
     private void UpdateStatus(String state)
     {
+
+
+
+
+
         String CurrentDate;
         String CurrentTime;
         Calendar calendar=Calendar.getInstance();
         SimpleDateFormat dateFormat=new SimpleDateFormat("dd-MM-yyyy,X");
         SimpleDateFormat timeFormat=new SimpleDateFormat("HH-mm-ss");
+
+
+
 
         CurrentDate=dateFormat.format(calendar.getTime());
         CurrentTime=timeFormat.format(calendar.getTime());

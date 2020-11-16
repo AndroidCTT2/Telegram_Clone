@@ -6,10 +6,14 @@ import androidx.navigation.NavGraph;
 import androidx.navigation.Navigation;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.instacart.library.truetime.TrueTimeRx;
 import com.mobile.messageclone.R;
+
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,7 +25,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-
+        TrueTimeRx.build()
+                .initializeRx("time.google.com")
+                .subscribeOn(Schedulers.io())
+                .subscribe(date -> {
+                    Log.v("TAG", "TrueTime was initialized and we have a time: " + date);
+                }, throwable -> {
+                    throwable.printStackTrace();
+                });
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         navController=Navigation.findNavController(this,R.id.nav_host_fragment);
         auth=FirebaseAuth.getInstance();

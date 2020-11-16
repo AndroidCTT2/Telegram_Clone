@@ -31,6 +31,7 @@ public class ContactFragment extends Fragment {
 
 
     private ArrayList<Contact>contactArrayList;
+    private ArrayList<String>LastSeenArrayList;
 
     private FloatingActionButton btnAddContact;
 
@@ -76,6 +77,26 @@ public class ContactFragment extends Fragment {
 
                         contactArrayList.add(contact);
                     }
+                    firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("STATUS").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()==true)
+                            {
+                                String a="";
+                                for (DataSnapshot childData:snapshot.getChildren())
+                                {
+                                    a= childData.child("Date").getValue(String.class);
+                                }
+                                Log.d("Phone",a);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
                     ContactListAdapter contactListAdapter=new ContactListAdapter(getContext(),contactArrayList,getActivity());
                     RecyclerViewContact.setAdapter(contactListAdapter);
                     RecyclerViewContact.setLayoutManager(new LinearLayoutManager(getContext()));
