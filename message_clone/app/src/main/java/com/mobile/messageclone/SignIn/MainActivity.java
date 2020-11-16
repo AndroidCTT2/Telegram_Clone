@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
                 }, throwable -> {
                     throwable.printStackTrace();
                 });
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
         navController=Navigation.findNavController(this,R.id.nav_host_fragment);
         auth=FirebaseAuth.getInstance();
         if (auth.getCurrentUser()!=null)

@@ -63,19 +63,22 @@ public class ContactFragment extends Fragment {
         ChatViewModel chatViewModel =new ViewModelProvider(getActivity()).get(ChatViewModel.class);
         chatViewModel.titleBar.setValue("Contact");
         RecyclerViewContact=root.findViewById(R.id.ListContact);
-        firebaseDatabase.getReference().child("CONTACT").orderByKey().equalTo(firebaseAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        firebaseDatabase.getReference().child("CONTACT").orderByKey().equalTo(firebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()==true)
                 {
 
-
+                    contactArrayList=new ArrayList<>();
+                    Contact contact=new Contact();
                     for (DataSnapshot childSnapShot:snapshot.getChildren())
                     {
+                        for (DataSnapshot child2:childSnapShot.getChildren()) {
+                             contact = child2.getValue(Contact.class);
+                            contactArrayList.add(contact);
+                        }
 
-                        Contact contact=childSnapShot.getValue(Contact.class);
 
-                        contactArrayList.add(contact);
                     }
                     firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("STATUS").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -87,7 +90,7 @@ public class ContactFragment extends Fragment {
                                 {
                                     a= childData.child("Date").getValue(String.class);
                                 }
-                                Log.d("Phone",a);
+                             //   Log.d("Phone",a);
                             }
                         }
 

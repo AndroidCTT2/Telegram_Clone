@@ -285,6 +285,17 @@ public class fragment_find_contact extends Fragment {
             }
         });
 
+        inputPhone.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    Complete();
+                    return true;
+                }
+                return false;
+            }
+        });
+
 
 
     }
@@ -300,80 +311,7 @@ public class fragment_find_contact extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId()==R.id.btnDone)
         {
-            if (inputFirstName.getText().toString().isEmpty()==true) {
-                inputFirstName.startAnimation(shakeError());
-            }
-
-
-
-            if (inputPhone.getText().toString().isEmpty()==false && inputFirstName.getText().toString().isEmpty()==false) {
-
-
-                PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.createInstance(getContext());
-                String UserInputPhone = "+" + inputCountryCode.getText().toString() + inputPhone.getText().toString();
-                Phonenumber.PhoneNumber phoneNumber = new Phonenumber.PhoneNumber();
-                try {
-                    phoneNumberUtil.parse(UserInputPhone, signInViewModel.ISOCNameMutableLiveData.getValue(), phoneNumber);
-                } catch (NumberParseException e) {
-                    e.printStackTrace();
-                }
-                String phoneParse = phoneNumberUtil.format(phoneNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
-                Log.d("Phone",phoneParse);
-
-                if (phoneParse.equals(firebaseAuth.getCurrentUser().getPhoneNumber())) {
-
-                } else {
-                    firebaseDatabase.getReference().child("USER").orderByChild("phoneNum").equalTo(phoneParse).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (snapshot.exists() == true) {
-
-                                User user = new User();
-                                String userId = "";
-                                for (DataSnapshot childData : snapshot.getChildren()) {
-                                    userId = childData.getKey();
-                                    user = childData.getValue(User.class);
-                                }
-                                //demo.setText(text);
-                                Contact contact = new Contact();
-                                contact.setUserIdContact(userId);
-                                contact.setFirstNickName(inputFirstName.getText().toString().trim());
-                                if (inputLastName.getText().toString().isEmpty() == false) {
-                                    contact.setLastNickName(inputLastName.getText().toString().trim());
-                                } else {
-                                    contact.setLastNickName("");
-                                }
-                                contact.setContactStatus(Contact.IN_CONTACT);
-                                firebaseDatabase.getReference().child("CONTACT").child(firebaseAuth.getCurrentUser().getUid()).setValue(contact);
-
-                                contact = new Contact();
-                                contact.setUserIdContact(firebaseAuth.getCurrentUser().getUid());
-                                contact.setLastNickName(UserLastName);
-                                contact.setFirstNickName(UserFirstName);
-                                contact.setContactStatus(Contact.NOT_IN_CONTACT);
-                                firebaseDatabase.getReference().child("CONTACT").child(userId).setValue(contact);
-
-
-                            } else {
-                                new AlertDialog.Builder(getContext()).setTitle("Contact not found").setMessage(inputFirstName.getText().toString() + " is not on our app yet. We hope you can invite him/her to using our app")
-                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                            }
-                                        }).show();
-                            }
-
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-                }
-            }
+           Complete();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -410,5 +348,85 @@ public class fragment_find_contact extends Fragment {
         shake.setDuration(250);
         shake.setInterpolator(new CycleInterpolator(4));
         return shake;
+    }
+
+
+    private void Complete()
+    {
+        if (inputFirstName.getText().toString().isEmpty()==true) {
+            inputFirstName.startAnimation(shakeError());
+        }
+
+
+
+        if (inputPhone.getText().toString().isEmpty()==false && inputFirstName.getText().toString().isEmpty()==false) {
+
+
+            PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.createInstance(getContext());
+            String UserInputPhone = "+" + inputCountryCode.getText().toString() + inputPhone.getText().toString();
+            Phonenumber.PhoneNumber phoneNumber = new Phonenumber.PhoneNumber();
+            try {
+                phoneNumberUtil.parse(UserInputPhone, signInViewModel.ISOCNameMutableLiveData.getValue(), phoneNumber);
+            } catch (NumberParseException e) {
+                e.printStackTrace();
+            }
+            String phoneParse = phoneNumberUtil.format(phoneNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
+            Log.d("Phone",phoneParse);
+
+            if (phoneParse.equals(firebaseAuth.getCurrentUser().getPhoneNumber())) {
+
+            } else {
+                firebaseDatabase.getReference().child("USER").orderByChild("phoneNum").equalTo(phoneParse).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists() == true) {
+
+                            User user = new User();
+                            String userId = "";
+                            for (DataSnapshot childData : snapshot.getChildren()) {
+                                userId = childData.getKey();
+                                user = childData.getValue(User.class);
+                            }
+                            //demo.setText(text);
+                            Contact contact = new Contact();
+                            contact.setUserIdContact(userId);
+                            contact.setFirstNickName(inputFirstName.getText().toString().trim());
+                            if (inputLastName.getText().toString().isEmpty() == false) {
+                                contact.setLastNickName(inputLastName.getText().toString().trim());
+                            } else {
+                                contact.setLastNickName("");
+                            }
+                            contact.setContactStatus(Contact.IN_CONTACT);
+                            firebaseDatabase.getReference().child("CONTACT").child(firebaseAuth.getCurrentUser().getUid()).child(contact.getUserIdContact()).setValue(contact);
+
+                            contact = new Contact();
+                            contact.setUserIdContact(firebaseAuth.getCurrentUser().getUid());
+                            contact.setLastNickName(UserLastName);
+                            contact.setFirstNickName(UserFirstName);
+                            contact.setContactStatus(Contact.NOT_IN_CONTACT);
+                            firebaseDatabase.getReference().child("CONTACT").child(userId).child(contact.getUserIdContact()).setValue(contact);
+                            getActivity().onBackPressed();
+
+                        } else {
+                            new AlertDialog.Builder(getContext()).setTitle("Contact not found").setMessage(inputFirstName.getText().toString() + " is not on our app yet. We hope you can invite him/her to using our app")
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    }).show();
+                        }
+
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+        }
     }
 }
