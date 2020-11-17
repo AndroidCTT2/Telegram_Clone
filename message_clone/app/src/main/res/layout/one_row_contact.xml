@@ -2,7 +2,8 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:layout_marginVertical="10dp">
 
     <ImageView
         android:layout_width="50dp"
@@ -22,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ngọc Trâm"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textColor="?attr/colorOnSurface"
 
             android:id="@+id/displayUserName"
@@ -36,7 +37,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Last seen "
-            android:textSize="15sp"
+            android:id="@+id/displayStatus"
+            android:textSize="18sp"
             ></TextView>
 
 
@@ -45,7 +47,7 @@
             android:layout_height="wrap_content"
             android:text="at 5:45"
             android:id="@+id/displayLastSeen"
-            android:textSize="15sp"
+            android:textSize="16sp"
             ></TextView>
 
         </LinearLayout>

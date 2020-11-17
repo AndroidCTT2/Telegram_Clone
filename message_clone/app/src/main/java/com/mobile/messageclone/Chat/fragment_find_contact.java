@@ -156,7 +156,7 @@ public class fragment_find_contact extends Fragment {
         });
 
 
-        ProfileImage.setImageDrawable(DrawProfilePicture.drawProfilePicture("",getActivity()));
+        ProfileImage.setImageDrawable(DrawProfilePicture.drawProfileDynamicPicture("",getActivity(),getContext()));
 
         inputCountryCode=view.findViewById(R.id.textInputCountryCode);
         inputPhone=view.findViewById(R.id.textInputPhone);
@@ -229,7 +229,7 @@ public class fragment_find_contact extends Fragment {
                     }
 
 
-                    ProfileImage.setImageDrawable(DrawProfilePicture.drawProfilePicture(FirstLetter+SecondLetter,getActivity()));
+                    ProfileImage.setImageDrawable(DrawProfilePicture.drawProfileDynamicPicture(FirstLetter+SecondLetter,getActivity(),getContext()));
             }
 
             @Override
@@ -266,7 +266,7 @@ public class fragment_find_contact extends Fragment {
                     SecondLetter=String.valueOf(inputLastName.getText().toString().charAt(0));
                 }
 
-                ProfileImage.setImageDrawable(DrawProfilePicture.drawProfilePicture(FirstLetter+SecondLetter,getActivity()));
+                ProfileImage.setImageDrawable(DrawProfilePicture.drawProfileDynamicPicture(FirstLetter+SecondLetter,getActivity(),getContext()));
             }
 
             @Override

@@ -7,10 +7,11 @@ public class Contact {
     public static final int IN_CONTACT=1;
     public static final int NOT_IN_CONTACT=0;
 
-    private String UserIdContact;
-    private String FirstNickName;
-    private String LastNickName;
+    private String UserIdContact="";
+    private String FirstNickName="";
+    private String LastNickName="";
     private int ContactStatus;
+
 
     public void setContactStatus(int contactStatus) {
         ContactStatus = contactStatus;

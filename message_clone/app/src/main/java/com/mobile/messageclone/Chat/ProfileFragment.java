@@ -103,6 +103,7 @@ public class ProfileFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId()==R.id.btnLogOut)
         {
+            ((CloseDrawer)getActivity()).UpdateStatus(ChatActivity.STATUS_OFFLINE);
             firebaseAuth.signOut();
             Intent intent=new Intent(getActivity(), MainActivity.class);
             startActivity(intent);

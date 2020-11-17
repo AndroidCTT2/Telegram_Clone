@@ -23,35 +23,17 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     Context context;
     Activity activity;
-    List<ContactAndSeenTime>contactAndSeenTimeList;
+    ArrayList<ContactAndSeenTime>contactAndSeenTimeList=new ArrayList();
 
-    List<Contact> contactList=new ArrayList<>();
-    List<String>LastSeenTime=new ArrayList<>();
 
-    public ContactListAdapter(Context context,ArrayList<Contact>contactList,Activity activity)
+
+    public ContactListAdapter(Context context,ArrayList<ContactAndSeenTime>contactList,Activity activity)
     {
         this.activity=activity;
-        this.contactList=contactList;
+        this.contactAndSeenTimeList=contactList;
         this.context=context;
 
     }
-
-    public ContactListAdapter(Context context,ArrayList<Contact>contactList,Activity activity,ArrayList<String>LastSeenTime)
-    {
-        this.activity=activity;
-        this.contactList=contactList;
-        this.context=context;
-        this.LastSeenTime=LastSeenTime;
-
-        //for (int i=0;i<contactList.size();i++) {
-        //    ContactAndSeenTime contactAndSeenTime=new ContactAndSeenTime();
-        //    contactAndSeenTime.contact = this.contactList.get(i);
-        //    contactAndSeenTime.SeenTime=this.LastSeenTime.get(i);
-       // }
-
-    }
-
-
 
     @NonNull
     @Override
@@ -59,21 +41,29 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
         LayoutInflater layoutInflater=LayoutInflater.from(context);
         View view=layoutInflater.inflate(R.layout.one_row_contact,parent,false);
+
         return new viewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
-//            String ContactName=contactAndSeenTimeList.get(position).contact.getFirstNickName()+" "+contactAndSeenTimeList.get(position).contact.getLastNickName();
-            String ContactName=contactList.get(position).getFirstNickName();
+            String ContactName=contactAndSeenTimeList.get(position).contact.getFirstNickName()+" "+contactAndSeenTimeList.get(position).contact.getLastNickName();
+
+
             holder.NameContact.setText(ContactName);
-            //holder.LastSeenTime.setText(contactAndSeenTimeList.get(position).SeenTime);
-            holder.profilePicture.setImageDrawable(DrawProfilePicture.drawProfilePicture(String.valueOf(ContactName.charAt(0)),activity));
+            if (contactAndSeenTimeList.get(position).Status.equals("ONLINE")) {
+                holder.Status.setText(contactAndSeenTimeList.get(position).Status+" ");
+                holder.LastSeenTime.setText("");
+            }
+            else {
+                holder.LastSeenTime.setText(contactAndSeenTimeList.get(position).SeenTime);
+            }
+            holder.profilePicture.setImageDrawable(DrawProfilePicture.drawProfileDynamicPicture(String.valueOf(ContactName.charAt(0)+String.valueOf(contactAndSeenTimeList.get(position).contact.getLastNickName().charAt(0))),activity,context));
     }
 
     @Override
     public int getItemCount() {
-        return contactList.size();
+        return contactAndSeenTimeList.size();
     }
 
     public class viewHolder extends RecyclerView.ViewHolder {
@@ -81,11 +71,13 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         private ImageView profilePicture;
         private TextView NameContact;
         private TextView LastSeenTime;
+        private TextView Status;
         public viewHolder(@NonNull View itemView) {
             super(itemView);
             NameContact=itemView.findViewById(R.id.displayUserName);
             profilePicture=itemView.findViewById(R.id.ProfilePicture);
             LastSeenTime=itemView.findViewById(R.id.displayLastSeen);
+            Status=itemView.findViewById(R.id.displayStatus);
         }
     }
 }

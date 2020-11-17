@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="10dp"
+    android:background="@drawable/message_holder_received">
+
+    <TextView
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="10dp"
+        android:id="@+id/sender_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
+        android:layout_marginBottom="8dp"
+        android:text="Hello tin nhan dau tien"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="20sp"
+        ></TextView>
+
+    <TextView
+        android:layout_gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sender_time"
+        android:text="8:26 PM"
+        android:textSize="16sp"
+        android:gravity="center_vertical"
+        android:paddingTop="10dp"
+        android:textColor="?attr/colorOnSurface"
+        android:alpha="0.6"
+        ></TextView>
+
+    <ImageView
+        android:layout_gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_baseline_check_24"
+        android:paddingTop="10dp"
+        android:paddingLeft="5dp"
+        ></ImageView>
+
+</LinearLayout>
+

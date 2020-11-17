@@ -11,29 +11,24 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Layout;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
-import com.instacart.library.truetime.TrueTime;
-import com.instacart.library.truetime.TrueTimeRx;
-import com.mobile.messageclone.DrawProfilePicture;
 import com.mobile.messageclone.R;
+import com.mobile.messageclone.TextDrawableForStaticImage;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
-import io.reactivex.schedulers.Schedulers;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
 
@@ -41,15 +36,15 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
 
     private TextView displayUserName;
     private TextView displayUserPhoneNumber;
-    private ImageView ProfilePicture;
+    private CircleImageView ProfilePicture;
 
 
 
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
 
-    private static final String STATUS_OFFLINE="OFFLINE";
-    private static final String STATUS_ONLINE="ONLINE";
+    public static final String STATUS_OFFLINE="OFFLINE";
+    public static final String STATUS_ONLINE="ONLINE";
 
 
     @Override
@@ -130,10 +125,18 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
         }
 
 
+        TextDrawableForStaticImage textDrawableForStaticImage =new TextDrawableForStaticImage(this);
+        textDrawableForStaticImage.setText(firstname+lastname);
+        textDrawableForStaticImage.setTextAlign(Layout.Alignment.ALIGN_CENTER);
+        textDrawableForStaticImage.setTypeface(Typeface.MONOSPACE,Typeface.BOLD);
+        textDrawableForStaticImage.setTextColor(Color.WHITE);
 
 
 
-        ProfilePicture.setImageDrawable(DrawProfilePicture.drawProfilePicture(firstname+lastname,this));
+        ProfilePicture.setImageDrawable(textDrawableForStaticImage);
+
+
+        //ProfilePicture.setImageDrawable(DrawProfilePicture.drawProfilePicture(firstname+lastname,this).mutate());
 
         chatViewModel.titleBar.observe(this, new Observer<String>() {
             @Override
@@ -170,13 +173,8 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
         }
     }
 
-    private void UpdateStatus(String state)
-    {
-
-
-
-
-
+    @Override
+    public void UpdateStatus(String status) {
         String CurrentDate;
         String CurrentTime;
         Calendar calendar=Calendar.getInstance();
@@ -192,10 +190,14 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
         HashMap<String,Object>onlineState=new HashMap<>();
         onlineState.put("Date",CurrentDate);
         onlineState.put("Time",CurrentTime);
-        onlineState.put("State",state);
+        onlineState.put("State",status);
 
         firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("STATUS").updateChildren(onlineState);
     }
+
+
+
+
 
     @Override
     protected void onStop() {

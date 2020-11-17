@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Chat.chat_fragment"
+    android:orientation="vertical">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/DisplayAllMessage"
+        android:layout_weight="1"
+        ></androidx.recyclerview.widget.RecyclerView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="10dp"
+        android:orientation="horizontal">
+    <com.google.android.material.textfield.TextInputEditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/message_send_box_background"
+        android:textColor="?attr/colorOnSurface"
+        android:hint="Message"
+        android:paddingVertical="5dp"
+        android:paddingLeft="15dp"
+        android:maxLines="4"
+        android:textSize="18sp"
+        android:layout_weight="1"
+        ></com.google.android.material.textfield.TextInputEditText>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_baseline_send_24"
+            app:iconTint="?attr/colorPrimary"
+            android:background="#0003DAC5"
+            android:minWidth="0dp"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            ></com.google.android.material.button.MaterialButton>
+    </LinearLayout>
+</LinearLayout>

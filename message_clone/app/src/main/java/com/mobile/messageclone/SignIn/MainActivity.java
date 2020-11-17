@@ -25,14 +25,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-        TrueTimeRx.build()
-                .initializeRx("time.google.com")
-                .subscribeOn(Schedulers.io())
-                .subscribe(date -> {
-                    Log.v("TAG", "TrueTime was initialized and we have a time: " + date);
-                }, throwable -> {
-                    throwable.printStackTrace();
-                });
+
 
         navController=Navigation.findNavController(this,R.id.nav_host_fragment);
         auth=FirebaseAuth.getInstance();

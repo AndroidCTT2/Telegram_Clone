@@ -18,6 +18,24 @@ public class Application extends android.app.Application {
 
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
+        Runnable runnablen=new Runnable() {
+            @Override
+            public void run() {
+                TrueTimeRx.build()
+                        .initializeRx("time.google.com")
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(date -> {
+                            Log.v("TAG", "TrueTime was initialized and we have a time: " + date);
+                            return;
+                        }, throwable -> {
+                            throwable.printStackTrace();
+                        });
+            }
+        };
+        Thread thread=new Thread(runnablen);
+        thread.start();
+
+
 
     }
 }

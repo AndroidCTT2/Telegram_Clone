@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -13,25 +14,37 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.instacart.library.truetime.TrueTimeRx;
 import com.mobile.messageclone.R;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class ContactFragment extends Fragment {
 
 
-    private ArrayList<Contact>contactArrayList;
-    private ArrayList<String>LastSeenArrayList;
+
+    ;
 
     private FloatingActionButton btnAddContact;
 
@@ -44,13 +57,19 @@ public class ContactFragment extends Fragment {
 
     private RecyclerView RecyclerViewContact;
 
+    private ArrayList<ContactAndSeenTime>contactAndSeenTimeArrayList;
+
+    private ContactListAdapter contactListAdapter;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseDatabase=FirebaseDatabase.getInstance();
-        contactArrayList=new ArrayList<>();
+       contactAndSeenTimeArrayList=new ArrayList<>();
+
+
 
     }
 
@@ -63,46 +82,121 @@ public class ContactFragment extends Fragment {
         ChatViewModel chatViewModel =new ViewModelProvider(getActivity()).get(ChatViewModel.class);
         chatViewModel.titleBar.setValue("Contact");
         RecyclerViewContact=root.findViewById(R.id.ListContact);
+        RecyclerViewContact.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        contactListAdapter=new ContactListAdapter(getContext(),contactAndSeenTimeArrayList,getActivity());
+
+        RecyclerViewContact.setAdapter(contactListAdapter);
+
+
+
         firebaseDatabase.getReference().child("CONTACT").orderByKey().equalTo(firebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 if (snapshot.exists()==true)
                 {
-
-                    contactArrayList=new ArrayList<>();
-                    Contact contact=new Contact();
+                    contactAndSeenTimeArrayList.clear();
                     for (DataSnapshot childSnapShot:snapshot.getChildren())
                     {
+
+                        Contact contact=new Contact();
+
                         for (DataSnapshot child2:childSnapShot.getChildren()) {
                              contact = child2.getValue(Contact.class);
-                            contactArrayList.add(contact);
+
+
+
+                            Contact finalContact1 = contact;
+                            firebaseDatabase.getReference().child("USER").child(contact.getUserIdContact()).child("STATUS").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists() == true) {
+                                        String DbDate;
+                                        String DbTime;
+                                        String status;
+                                        ContactAndSeenTime contactAndSeenTime = null;
+                                        DbDate = snapshot.child("Date").getValue(String.class);
+                                        DbTime = snapshot.child("Time").getValue(String.class);
+                                        status=snapshot.child("State").getValue(String.class);
+                                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy,X-HH-mm-ss");
+                                        DbDate = DbDate + "-" + DbTime;
+
+                                        Date date = new Date();
+                                        try {
+                                            date = dateFormat.parse(DbDate);
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        Date todayDate = TrueTimeRx.now();
+                                        LocalDateTime fromDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                                        LocalDateTime toDateTime = todayDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+                                        LocalDateTime tempDateTime = LocalDateTime.from(fromDateTime);
+
+                                        long years = tempDateTime.until(toDateTime, ChronoUnit.YEARS);
+                                        tempDateTime = tempDateTime.plusYears(years);
+
+                                        long months = tempDateTime.until(toDateTime, ChronoUnit.MONTHS);
+                                        tempDateTime = tempDateTime.plusMonths(months);
+
+                                        long days = tempDateTime.until(toDateTime, ChronoUnit.DAYS);
+                                        tempDateTime = tempDateTime.plusDays(days);
+
+
+                                        long hours = tempDateTime.until(toDateTime, ChronoUnit.HOURS);
+                                        tempDateTime = tempDateTime.plusHours(hours);
+
+                                        long minutes = tempDateTime.until(toDateTime, ChronoUnit.MINUTES);
+                                        tempDateTime = tempDateTime.plusMinutes(minutes);
+
+                                        long seconds = tempDateTime.until(toDateTime, ChronoUnit.SECONDS);
+                                        ContactAndSeenTime contactAndSeenTime1=new ContactAndSeenTime();
+                                        contactAndSeenTime1.Status=status;
+                                        Log.d("Phone", finalContact1.getFirstNickName());
+                                        contactAndSeenTime1.contact=finalContact1;
+                                        if (days == 1) {
+                                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+                                            Log.d("Phone","yesterday at " + simpleDateFormat.format(date));
+                                            contactAndSeenTime1.SeenTime="yesterday at " + simpleDateFormat.format(date);
+                                        } else if (days < 1) {
+
+                                            Log.d("Phone", "at " + hours + " hours ago");
+                                            contactAndSeenTime1.SeenTime="at " + hours + " hours ago";
+                                        } else {
+                                            contactAndSeenTime1.SeenTime="yesterday at " + fromDateTime.getDayOfMonth() + "-" + fromDateTime.getMonthValue() + "-" + fromDateTime.getYear();
+                                            Log.d("Phone",  "yesterday at " + fromDateTime.getDayOfMonth() + "-" + fromDateTime.getMonthValue() + "-" + fromDateTime.getYear());
+                                        }
+
+
+                                        contactAndSeenTimeArrayList.add(contactAndSeenTime1);
+
+                                        contactListAdapter.notifyDataSetChanged();
+
+
+
+                                    }
+
+                                }
+
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+
+                            });
+
+
                         }
 
 
                     }
-                    firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("STATUS").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (snapshot.exists()==true)
-                            {
-                                String a="";
-                                for (DataSnapshot childData:snapshot.getChildren())
-                                {
-                                    a= childData.child("Date").getValue(String.class);
-                                }
-                             //   Log.d("Phone",a);
-                            }
-                        }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
 
-                        }
-                    });
 
-                    ContactListAdapter contactListAdapter=new ContactListAdapter(getContext(),contactArrayList,getActivity());
-                    RecyclerViewContact.setAdapter(contactListAdapter);
-                    RecyclerViewContact.setLayoutManager(new LinearLayoutManager(getContext()));
+
 
                 }
             }
@@ -111,7 +205,16 @@ public class ContactFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
+
+
         });
+
+
+
+
+
+
+
 
         return root;
     }
