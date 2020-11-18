@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,10 +21,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.mobile.messageclone.R;
+import com.mobile.messageclone.SignIn.RecyclerViewClickInterface;
 
 import java.util.LinkedList;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements RecyclerViewClickInterface {
 
     private ChatViewModel chatViewModel;
 
@@ -54,6 +57,8 @@ public class HomeFragment extends Fragment {
         HomeContactList=root.findViewById(R.id.recyclerHomeContact);
 
         contactListHomeAdapter=new ContactListHomeAdapter(contactLinkedList,getActivity(),getContext());
+        contactListHomeAdapter.SetClickInterface(this);
+
 
         HomeContactList.setAdapter(contactListHomeAdapter);
         HomeContactList.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -93,6 +98,22 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        Bundle bundle=new Bundle();
+        bundle.putString("UserID",firebaseAuth.getCurrentUser().getUid());
+        bundle.putString("ContactID",contactLinkedList.get(position).getUserIdContact());
+        bundle.putString("ContactName",contactLinkedList.get(position).getFirstNickName()+" "+contactLinkedList.get(position).getLastNickName());
+
+        NavController navController= Navigation.findNavController(getView());
+        navController.navigate(R.id.action_fragment_home_to_chat_fragment,bundle);
+    }
+
+    @Override
+    public void onLongItemClick(int position) {
 
     }
 }

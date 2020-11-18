@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mobile.messageclone.DrawProfilePicture;
 import com.mobile.messageclone.R;
+import com.mobile.messageclone.SignIn.RecyclerViewClickInterface;
 
 import java.util.LinkedList;
 
@@ -23,12 +24,18 @@ public class ContactListHomeAdapter extends RecyclerView.Adapter<ContactListHome
     LinkedList<Contact> contacts=new LinkedList<>();
     Activity activity;
     Context context;
+    RecyclerViewClickInterface recyclerViewClickInterface;
 
 
     public ContactListHomeAdapter(LinkedList<Contact>contacts,Activity activity,Context context){
         this.activity=activity;
         this.contacts=contacts;
         this.context=context;
+    }
+
+    public void SetClickInterface(RecyclerViewClickInterface recyclerViewClickInterface)
+    {
+        this.recyclerViewClickInterface=recyclerViewClickInterface;
     }
 
 
@@ -62,6 +69,12 @@ public class ContactListHomeAdapter extends RecyclerView.Adapter<ContactListHome
             super(itemView);
             ProfileImageView=itemView.findViewById(R.id.ProfilePicture);
             ContactName=itemView.findViewById(R.id.displayContactName);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    recyclerViewClickInterface.onItemClick(getAdapterPosition());
+                }
+            });
 
         }
     }

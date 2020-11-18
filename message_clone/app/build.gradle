@@ -95,7 +95,7 @@ dependencies {
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
-
+    implementation 'com.github.stfalcon:chatkit:0.3.3'
 
 
 

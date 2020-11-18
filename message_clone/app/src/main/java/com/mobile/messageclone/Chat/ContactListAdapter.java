@@ -27,6 +27,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
 
 
+
+
     public ContactListAdapter(Context context,ArrayList<ContactAndSeenTime>contactList,Activity activity)
     {
         this.activity=activity;
@@ -56,6 +58,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                 holder.LastSeenTime.setText("");
             }
             else {
+                holder.Status.setText("Last seen ");
                 holder.LastSeenTime.setText(contactAndSeenTimeList.get(position).SeenTime);
             }
             holder.profilePicture.setImageDrawable(DrawProfilePicture.drawProfileDynamicPicture(String.valueOf(ContactName.charAt(0)+String.valueOf(contactAndSeenTimeList.get(position).contact.getLastNickName().charAt(0))),activity,context));

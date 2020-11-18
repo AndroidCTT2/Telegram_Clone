@@ -96,7 +96,7 @@ public class ContactFragment extends Fragment {
 
                 if (snapshot.exists()==true)
                 {
-                    contactAndSeenTimeArrayList.clear();
+
                     for (DataSnapshot childSnapShot:snapshot.getChildren())
                     {
 
@@ -154,22 +154,32 @@ public class ContactFragment extends Fragment {
                                         long seconds = tempDateTime.until(toDateTime, ChronoUnit.SECONDS);
                                         ContactAndSeenTime contactAndSeenTime1=new ContactAndSeenTime();
                                         contactAndSeenTime1.Status=status;
+                                        Log.d("Phone",contactAndSeenTime1.Status);
                                         Log.d("Phone", finalContact1.getFirstNickName());
                                         contactAndSeenTime1.contact=finalContact1;
-                                        if (days == 1) {
+
+
+
+                                        if (days>=1 && days<=2) {
                                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
                                             Log.d("Phone","yesterday at " + simpleDateFormat.format(date));
                                             contactAndSeenTime1.SeenTime="yesterday at " + simpleDateFormat.format(date);
-                                        } else if (days < 1) {
+                                        } else if (days < 1 && hours>=1) {
 
                                             Log.d("Phone", "at " + hours + " hours ago");
                                             contactAndSeenTime1.SeenTime="at " + hours + " hours ago";
-                                        } else {
-                                            contactAndSeenTime1.SeenTime="yesterday at " + fromDateTime.getDayOfMonth() + "-" + fromDateTime.getMonthValue() + "-" + fromDateTime.getYear();
+                                        }
+                                        else if (days<1 && hours<1) {
+                                            Log.d("Phone", +minutes + " minutes ago");
+                                            contactAndSeenTime1.SeenTime = "at " + minutes + " minutes ago";
+                                        }
+
+                                        else {
+                                            contactAndSeenTime1.SeenTime="at " + fromDateTime.getDayOfMonth() + "-" + fromDateTime.getMonthValue() + "-" + fromDateTime.getYear();
                                             Log.d("Phone",  "yesterday at " + fromDateTime.getDayOfMonth() + "-" + fromDateTime.getMonthValue() + "-" + fromDateTime.getYear());
                                         }
 
-
+                                        contactAndSeenTimeArrayList.clear();
                                         contactAndSeenTimeArrayList.add(contactAndSeenTime1);
 
                                         contactListAdapter.notifyDataSetChanged();

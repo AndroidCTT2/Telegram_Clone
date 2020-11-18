@@ -14,17 +14,15 @@
             android:id="@+id/action_homeFragment2_to_mainScreen2"
             app:destination="@id/fragment_contact" />
         <action
-            android:id="@+id/action_homeFragment2_to_galleryFragment2"
-            app:destination="@id/fragment_new_group" />
-        <action
             android:id="@+id/action_fragment_home_to_bio"
             app:destination="@id/bio" />
+        <action
+            android:id="@+id/action_fragment_home_to_chat_fragment"
+            app:destination="@id/chat_fragment" />
+        <action
+            android:id="@+id/action_fragment_home_to_newGroupFragment"
+            app:destination="@id/newGroupFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/fragment_new_group"
-        android:name="com.mobile.messageclone.Chat.NewGroupFragment"
-        android:label="fragment_new_group"
-        tools:layout="@layout/fragment_new_group" />
     <fragment
         android:id="@+id/fragment_contact"
         android:name="com.mobile.messageclone.Chat.ContactFragment"
@@ -42,4 +40,14 @@
         android:name="com.mobile.messageclone.Chat.ProfileFragment"
         android:label="fragment_bio"
         tools:layout="@layout/fragment_bio" />
+    <fragment
+        android:id="@+id/chat_fragment"
+        android:name="com.mobile.messageclone.Chat.chat_fragment"
+        android:label="fragment_chat_fragment"
+        tools:layout="@layout/fragment_chat_fragment" />
+    <fragment
+        android:id="@+id/newGroupFragment"
+        android:name="com.mobile.messageclone.Chat.NewGroupFragment"
+        android:label="fragment_new_group"
+        tools:layout="@layout/fragment_new_group" />
 </navigation>
