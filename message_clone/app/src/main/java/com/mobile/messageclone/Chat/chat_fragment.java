@@ -79,9 +79,6 @@ public class chat_fragment extends Fragment {
 
         }
 
-        GenerateChatID generateChatID= new GenerateChatID(UserID,ContactID);
-        Log.d("KEY",generateChatID.GenerateKey());
-        String d=generateChatID.GenerateKey();
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseDatabase=FirebaseDatabase.getInstance();
         messageLinkedList=new LinkedList<>();
@@ -89,9 +86,25 @@ public class chat_fragment extends Fragment {
         chatViewModel.titleBar.setValue(ContactName);
 
 
-        ChatID chatID=new ChatID();
-        chatID.setUserID1(UserID);
-        chatID.setUserID2(ContactID);
+
+
+        firebaseDatabase.getReference().child("CONVERSATION_ID").orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()==true) {
+                    if (CheckExistID(snapshot)==false)
+                    {
+                        firebaseDatabase.getReference().child("CONVERSATION_ID").push().setValue(GenerateChatID.GenerateKey(UserID,ContactID));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
 
     }
@@ -165,10 +178,7 @@ public class chat_fragment extends Fragment {
             }
         });
 
-        GenerateChatID generateChatID=new GenerateChatID(UserID,ContactID);
-        Log.d("KEY",generateChatID.GenerateKey());
-        String d=generateChatID.GenerateKey();
-        firebaseDatabase.getReference().child("CONVERSATION_ID").child(generateChatID.GenerateKey()).setValue(generateChatID.GenerateKey());
+
 
 
         return root;
@@ -198,5 +208,19 @@ public class chat_fragment extends Fragment {
         message.setMessage(messageInput.getInputEditText().getText().toString());
         firebaseDatabase.getReference().child("MESSAGE").child(this.UserID).child(this.ContactID).push().setValue(message);
 
+    }
+
+    private boolean CheckExistID(DataSnapshot dataSnapshot)
+    {
+        String ID=GenerateChatID.GenerateKey(this.UserID,this.ContactID);
+        for (DataSnapshot child:dataSnapshot.getChildren())
+        {
+            String IDInDB=child.getValue(String.class);
+            if (IDInDB.equals(ID)==true)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
