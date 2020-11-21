@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_fragment_home_to_newGroupFragment"
             app:destination="@id/newGroupFragment" />
+        <action
+            android:id="@+id/action_fragment_home_to_newChat"
+            app:destination="@id/newChat" />
     </fragment>
     <fragment
         android:id="@+id/fragment_contact"
@@ -50,4 +53,13 @@
         android:name="com.mobile.messageclone.Chat.NewGroupFragment"
         android:label="fragment_new_group"
         tools:layout="@layout/fragment_new_group" />
+    <fragment
+        android:id="@+id/newChat"
+        android:name="com.mobile.messageclone.Chat.NewChatFragment"
+        android:label="fragment_new_chat"
+        tools:layout="@layout/fragment_new_chat" >
+        <action
+            android:id="@+id/action_newChat_to_chat_fragment2"
+            app:destination="@id/chat_fragment" />
+    </fragment>
 </navigation>
