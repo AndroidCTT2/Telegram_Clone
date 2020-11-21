@@ -23,7 +23,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     Context context;
     Activity activity;
-    ArrayList<ContactAndSeenTime>contactAndSeenTimeList=new ArrayList();
+    ArrayList<ContactAndSeenTime> contactAndSeenTimeList=new ArrayList();
 
 
 

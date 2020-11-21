@@ -181,7 +181,6 @@ public class ContactFragment extends Fragment {
 
                                         contactAndSeenTimeArrayList.clear();
                                         contactAndSeenTimeArrayList.add(contactAndSeenTime1);
-
                                         contactListAdapter.notifyDataSetChanged();
 
 
@@ -203,11 +202,6 @@ public class ContactFragment extends Fragment {
 
 
                     }
-
-
-
-
-
                 }
             }
 

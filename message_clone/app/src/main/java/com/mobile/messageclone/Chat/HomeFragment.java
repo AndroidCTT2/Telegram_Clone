@@ -14,6 +14,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,7 +36,8 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
     private LinkedList<Contact> contactLinkedList;
     private RecyclerView HomeContactList;
     private ContactListHomeAdapter contactListHomeAdapter;
-
+    private FloatingActionButton btnNewMessage;
+    private NavController navController;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,7 +64,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
 
         HomeContactList.setAdapter(contactListHomeAdapter);
         HomeContactList.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        btnNewMessage = root.findViewById(R.id.btnNewMessage);
         firebaseDatabase.getReference().child("CONTACT").child(firebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -115,5 +117,20 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
     @Override
     public void onLongItemClick(int position) {
 
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        navController= Navigation.findNavController(view);
+
+        btnNewMessage=view.findViewById(R.id.btnNewMessage);
+
+        btnNewMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.action_fragment_home_to_newChat);
+            }
+        });
     }
 }
