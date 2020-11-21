@@ -1,10 +1,11 @@
 package com.mobile.messageclone.Chat;
 
+import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.IUser;
 
 import java.util.Date;
 
-public class IMessage implements com.stfalcon.chatkit.commons.models.IMessage {
+public class LibMessage implements IMessage {
 
     public String id;
     public IUser iuser;

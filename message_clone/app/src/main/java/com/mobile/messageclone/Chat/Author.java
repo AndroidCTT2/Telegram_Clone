@@ -1,6 +1,8 @@
 package com.mobile.messageclone.Chat;
 
-public class IUser implements com.stfalcon.chatkit.commons.models.IUser {
+import com.stfalcon.chatkit.commons.models.IUser;
+
+public class Author implements IUser {
 
     public String userId;
     public String userName;

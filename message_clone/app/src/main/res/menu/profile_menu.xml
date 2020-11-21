@@ -9,9 +9,10 @@
             android:iconTint="?attr/colorOnSurface"
             ></item>
         <item
+
             android:title="Log out"
             android:id="@+id/btnLogOut"
-            app:showAsAction="never"
+            app:showAsAction="collapseActionView"
             android:icon="@drawable/ic_baseline_power_settings_new_24"
             android:iconTint="?attr/colorOnSurface"
             ></item>
