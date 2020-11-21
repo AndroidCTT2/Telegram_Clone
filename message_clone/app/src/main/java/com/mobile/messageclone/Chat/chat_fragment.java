@@ -16,6 +16,12 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.instacart.library.truetime.TrueTime;
 import com.instacart.library.truetime.TrueTimeRx;
 import com.mobile.messageclone.R;
@@ -23,6 +29,7 @@ import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -44,6 +51,7 @@ public class chat_fragment extends Fragment {
     private LinkedList<Message>messageLinkedList;
 
     private FirebaseAuth firebaseAuth;
+    private FirebaseDatabase firebaseDatabase;
 
     private MessageInput messageInput;
     private MessageAdapter messageAdapter;
@@ -52,6 +60,10 @@ public class chat_fragment extends Fragment {
     private String UserID;
     private String ContactID;
     private String ContactName;
+
+
+
+    private SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd MMM yyyy HH:mm:ss X");
 
     private ChatViewModel chatViewModel;
 
@@ -66,10 +78,22 @@ public class chat_fragment extends Fragment {
             ContactName=getArguments().getString("ContactName");
 
         }
+
+        GenerateChatID generateChatID= new GenerateChatID(UserID,ContactID);
+        Log.d("KEY",generateChatID.GenerateKey());
+        String d=generateChatID.GenerateKey();
         firebaseAuth=FirebaseAuth.getInstance();
+        firebaseDatabase=FirebaseDatabase.getInstance();
         messageLinkedList=new LinkedList<>();
         chatViewModel =new ViewModelProvider(getActivity()).get(ChatViewModel.class);
         chatViewModel.titleBar.setValue(ContactName);
+
+
+        ChatID chatID=new ChatID();
+        chatID.setUserID1(UserID);
+        chatID.setUserID2(ContactID);
+
+
     }
 
     @Override
@@ -94,21 +118,19 @@ public class chat_fragment extends Fragment {
 
 
 
-        IUser iUser=new IUser();
+       /*IUser iUser=new IUser();
         iUser.userId="123";
         iUser.userName="Nguyễn";
 
 
-        IMessage iMessage=new IMessage();
-        iMessage.textMessage="Demo1";
-        iMessage.id=UserID;
-        iMessage.iuser=iUser;
-        iMessage.dateSend= Calendar.getInstance().getTime();
+       IMessage iMessage=new IMessage();
+      iMessage.textMessage="Demo1";
+       iMessage.id=UserID;iMessage.iuser=iUser;
+       iMessage.dateSend= Calendar.getInstance().getTime();
         iMessageList.add(iMessage);
 
         iMessage=new IMessage();
-        iMessage.id=UserID;
-        iMessage.textMessage="Demo2";
+       iMessage.id=UserID;iMessage.textMessage="Demo2";
         iMessage.iuser=iUser;
         iMessage.dateSend= Calendar.getInstance().getTime();
         iMessageList.add(iMessage);
@@ -120,8 +142,7 @@ public class chat_fragment extends Fragment {
         iMessage.textMessage="Demo2";
         iMessage.iuser=iUser1;
         iMessage.dateSend=Calendar.getInstance().getTime();
-        iMessageList.add(iMessage);
-
+        iMessageList.add(iMessage);*/
 
 
 
@@ -136,20 +157,19 @@ public class chat_fragment extends Fragment {
                 iUser.userName=firebaseAuth.getCurrentUser().getDisplayName();
                 IMessage message1=new IMessage();
                 message1.dateSend= TrueTime.now();
-                //message1.id=firebaseAuth.getCurrentUser().getUid();
                 message1.iuser=iUser;
                 message1.textMessage=input.toString();
-               // message.setMessage(messageInput.getInputEditText().getText().toString());
-          //      message.setSenderID(firebaseAuth.getCurrentUser().getUid());
-          //      message.setReceiverID("");
-              //  message.setSendTime(TrueTimeRx.now());
-              //  messageLinkedList.add(message);
-              //  messageAdapter.notifyDataSetChanged();
-
+                UpdateMessageToServer();
                 adapter.addToStart(message1,true);
                 return true;
             }
         });
+
+        GenerateChatID generateChatID=new GenerateChatID(UserID,ContactID);
+        Log.d("KEY",generateChatID.GenerateKey());
+        String d=generateChatID.GenerateKey();
+        firebaseDatabase.getReference().child("CONVERSATION_ID").child(generateChatID.GenerateKey()).setValue(generateChatID.GenerateKey());
+
 
         return root;
     }
@@ -162,6 +182,21 @@ public class chat_fragment extends Fragment {
 
     public void UpdateMessageToServer()
     {
+        Message message=new Message();
+        message.setSenderID(this.UserID);
+        message.setReceiverID(this.ContactID);
+
+        if (TrueTimeRx.isInitialized()==true)
+        {
+            message.setSendTime(simpleDateFormat.format(TrueTimeRx.now()));
+        }
+        else
+        {
+            message.setSendTime(simpleDateFormat.format(Calendar.getInstance().getTime()));
+        }
+
+        message.setMessage(messageInput.getInputEditText().getText().toString());
+        firebaseDatabase.getReference().child("MESSAGE").child(this.UserID).child(this.ContactID).push().setValue(message);
 
     }
 }

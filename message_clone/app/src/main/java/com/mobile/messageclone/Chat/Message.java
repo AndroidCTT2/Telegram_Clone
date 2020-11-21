@@ -10,9 +10,9 @@ public class Message  {
     private String senderID;
     private String receiverID;
     private String message;
-    private Date sendTime;
+    private String sendTime;
 
-    public Date getSendTime() {
+    public String getSendTime() {
         return sendTime;
     }
 
@@ -40,7 +40,7 @@ public class Message  {
         this.senderID = senderID;
     }
 
-    public void setSendTime(Date sendTime) {
+    public void setSendTime(String sendTime) {
         this.sendTime = sendTime;
     }
 }

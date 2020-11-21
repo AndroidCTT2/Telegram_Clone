@@ -11,6 +11,7 @@
         <item name="colorOnPrimarySurface">#845EED</item>
         <item name="colorBackgroundFloating">#33959595</item>
         <item name="colorSecondary">#2196F3</item>
+
     </style>
 
     <style name="AppTheme.NoActionBar">
