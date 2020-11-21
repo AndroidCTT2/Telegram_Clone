@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,13 +26,17 @@ import com.google.firebase.database.ValueEventListener;
 import com.instacart.library.truetime.TrueTime;
 import com.instacart.library.truetime.TrueTimeRx;
 import com.mobile.messageclone.R;
+import com.mobile.messageclone.SignIn.User;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -58,8 +63,11 @@ public class chat_fragment extends Fragment {
 
 
     private String UserID;
-    private String ContactID;
+    private  String ContactID;
     private String ContactName;
+    private  String ChatID="";
+
+
 
 
 
@@ -84,6 +92,10 @@ public class chat_fragment extends Fragment {
         messageLinkedList=new LinkedList<>();
         chatViewModel =new ViewModelProvider(getActivity()).get(ChatViewModel.class);
         chatViewModel.titleBar.setValue(ContactName);
+        chatViewModel.ChatID.setValue(ChatID);
+
+
+
 
 
 
@@ -95,7 +107,19 @@ public class chat_fragment extends Fragment {
                     if (CheckExistID(snapshot)==false)
                     {
                         firebaseDatabase.getReference().child("CONVERSATION_ID").push().setValue(GenerateChatID.GenerateKey(UserID,ContactID));
+
                     }
+                    else
+                    {
+                        ChatID=GenerateChatID.GenerateKey(UserID,ContactID);
+                    }
+                    chatViewModel.ChatID.setValue(ChatID);
+                }
+                else
+                {
+                    ChatID=GenerateChatID.GenerateKey(UserID,ContactID);
+                    firebaseDatabase.getReference().child("CONVERSATION_ID").push().setValue(GenerateChatID.GenerateKey(UserID,ContactID));
+                    chatViewModel.ChatID.setValue(ChatID);
                 }
             }
 
@@ -126,41 +150,15 @@ public class chat_fragment extends Fragment {
         MessagesListAdapter<IMessage> adapter = new MessagesListAdapter<>(UserID,null);
         messagesList.setAdapter(adapter);
 
+
+
+
        List<IMessage> iMessageList=new ArrayList<>();
+        adapter.addToEnd(iMessageList,true);
 
+       
 
-
-
-       /*IUser iUser=new IUser();
-        iUser.userId="123";
-        iUser.userName="Nguyễn";
-
-
-       IMessage iMessage=new IMessage();
-      iMessage.textMessage="Demo1";
-       iMessage.id=UserID;iMessage.iuser=iUser;
-       iMessage.dateSend= Calendar.getInstance().getTime();
-        iMessageList.add(iMessage);
-
-        iMessage=new IMessage();
-       iMessage.id=UserID;iMessage.textMessage="Demo2";
-        iMessage.iuser=iUser;
-        iMessage.dateSend= Calendar.getInstance().getTime();
-        iMessageList.add(iMessage);
-
-        IUser iUser1=new IUser();
-        iUser1.userId=UserID;
-        iUser1.userName="Nguyễn";
-        iMessage=new IMessage();
-        iMessage.textMessage="Demo2";
-        iMessage.iuser=iUser1;
-        iMessage.dateSend=Calendar.getInstance().getTime();
-        iMessageList.add(iMessage);*/
-
-
-
-      adapter.addToEnd(iMessageList,true);
-
+       firebaseDatabase.getReference().child("MESSAGE").child(ChatID);
 
         messageInput.setInputListener(new MessageInput.InputListener() {
             @Override
@@ -171,13 +169,76 @@ public class chat_fragment extends Fragment {
                 IMessage message1=new IMessage();
                 message1.dateSend= TrueTime.now();
                 message1.iuser=iUser;
-                message1.textMessage=input.toString();
-                UpdateMessageToServer();
+                message1.textMessage=input.toString().trim();
+                //UpdateMessageToServer();
                 adapter.addToStart(message1,true);
+
+
+                UpdateMessageToServer();
+
                 return true;
             }
         });
 
+
+        chatViewModel.ChatID.observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if (chatViewModel.ChatID.getValue().isEmpty()==false)
+                {
+                    firebaseDatabase.getReference().child("MESSAGE").child(ChatID).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()==true)
+                            {
+                                for (DataSnapshot childSnapshot:snapshot.getChildren())
+                                {
+                                    String messageKey=childSnapshot.getKey();
+
+                                    Message message=childSnapshot.getValue(Message.class);
+
+                                    if (message.getSenderID().equals(UserID))
+                                    {
+
+                                        IMessage iMessage=new IMessage();
+                                        User user=new User();
+                                        try {
+                                            Date date=simpleDateFormat.parse(message.getSendTime());
+                                            iMessage=ConvertMessageToIMessage(message,user,UserID,messageKey,date);
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        iMessageList.add(iMessage);
+                                    }
+                                    else if (message.getSenderID().equals(ContactID))
+                                    {
+
+                                        IMessage iMessage=new IMessage();
+                                        User user=new User();
+                                        try {
+                                            Date date=simpleDateFormat.parse(message.getSendTime());
+
+                                            iMessage=ConvertMessageToIMessage(message,user,ContactID,messageKey,date);
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+                                        iMessageList.add(iMessage);
+                                    }
+
+                                }
+                                adapter.addToEnd(iMessageList,true);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+            }
+        });
 
 
 
@@ -204,9 +265,8 @@ public class chat_fragment extends Fragment {
         {
             message.setSendTime(simpleDateFormat.format(Calendar.getInstance().getTime()));
         }
-
-        message.setMessage(messageInput.getInputEditText().getText().toString());
-        firebaseDatabase.getReference().child("MESSAGE").child(this.UserID).child(this.ContactID).push().setValue(message);
+        message.setMessage(messageInput.getInputEditText().getText().toString().trim());
+        firebaseDatabase.getReference().child("MESSAGE").child(ChatID).push().setValue(message);
 
     }
 
@@ -218,9 +278,28 @@ public class chat_fragment extends Fragment {
             String IDInDB=child.getValue(String.class);
             if (IDInDB.equals(ID)==true)
             {
+                ChatID=IDInDB;
                 return true;
             }
         }
         return false;
+    }
+
+    private IUser ConvertUserToIUser(User user,String userID)
+    {
+        IUser iUser=new IUser();
+        iUser.userId=userID;
+        return iUser;
+    }
+
+    private IMessage ConvertMessageToIMessage(Message message,User user,String UserId,String messageId,Date date)  {
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat();
+        IMessage iMessage=new IMessage();
+        iMessage.dateSend=date;
+        iMessage.iuser=ConvertUserToIUser(user,UserId);
+        iMessage.textMessage=message.getMessage();
+        iMessage.id=messageId;
+        return iMessage;
+
     }
 }
