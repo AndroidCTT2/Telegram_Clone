@@ -195,7 +195,7 @@ public class chat_fragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         List<LibMessage> iMessageList=new ArrayList<>();
-        firebaseDatabase.getReference().child("MESSAGE").child(GenerateChatID.GenerateKey(UserID,ContactID)).addListenerForSingleValueEvent(new ValueEventListener() {
+       /* firebaseDatabase.getReference().child("MESSAGE").child(GenerateChatID.GenerateKey(UserID,ContactID)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.getValue()!=null)
@@ -252,8 +252,8 @@ public class chat_fragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });
-      /*  firebaseDatabase.getReference().child("MESSAGE").child(GenerateChatID.GenerateKey(UserID,ContactID)).orderByKey().addChildEventListener(new ChildEventListener() {
+        });*/
+        firebaseDatabase.getReference().child("MESSAGE").child(GenerateChatID.GenerateKey(UserID,ContactID)).orderByKey().addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if (snapshot.exists()==true) {
@@ -326,7 +326,7 @@ public class chat_fragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });*/
+        });
 
 
     }
