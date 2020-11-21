@@ -61,8 +61,15 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                 holder.Status.setText("Last seen ");
                 holder.LastSeenTime.setText(contactAndSeenTimeList.get(position).SeenTime);
             }
-            holder.profilePicture.setImageDrawable(DrawProfilePicture.drawProfileDynamicPicture(String.valueOf(ContactName.charAt(0)+String.valueOf(contactAndSeenTimeList.get(position).contact.getLastNickName().charAt(0))),activity,context));
-    }
+            if (contactAndSeenTimeList.get(position).contact.getLastNickName().isEmpty()==true)
+            {
+                holder.profilePicture.setImageDrawable(DrawProfilePicture.drawProfileDynamicPicture(String.valueOf(ContactName.charAt(0)),activity,context));
+            }
+            else {
+
+                holder.profilePicture.setImageDrawable(DrawProfilePicture.drawProfileDynamicPicture(String.valueOf(ContactName.charAt(0) + String.valueOf(contactAndSeenTimeList.get(position).contact.getLastNickName().charAt(0))), activity, context));
+            }
+            }
 
     @Override
     public int getItemCount() {
