@@ -2,7 +2,6 @@ package com.mobile.messageclone.Chat;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.messageclone.DrawProfilePicture;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.SignIn.RecyclerViewClickInterface;
@@ -69,12 +67,11 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             }
             if (contactAndSeenTimeList.get(position).contact.getLastNickName().isEmpty()==true)
             {
-
-                holder.profilePicture.setImageBitmap(DrawProfilePicture.textAsBitmap(String.valueOf(ContactName.charAt(0)).toUpperCase(),70, Color.WHITE));
+                holder.profilePicture.setImageDrawable(DrawProfilePicture.drawProfileDynamicPicture(String.valueOf(ContactName.charAt(0)),activity,context));
             }
             else {
 
-                holder.profilePicture.setImageBitmap(DrawProfilePicture.textAsBitmap((String.valueOf(ContactName.charAt(0)).toUpperCase()+(String.valueOf(contactAndSeenTimeList.get(position).contact.getLastNickName().charAt(0)).toUpperCase())),70, Color.WHITE));
+                holder.profilePicture.setImageDrawable(DrawProfilePicture.drawProfileDynamicPicture(String.valueOf(ContactName.charAt(0) + String.valueOf(contactAndSeenTimeList.get(position).contact.getLastNickName().charAt(0))), activity, context));
             }
             }
 
@@ -85,7 +82,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     public class viewHolder extends RecyclerView.ViewHolder {
 
-        private CircularImageView profilePicture;
+        private ImageView profilePicture;
         private TextView NameContact;
         private TextView LastSeenTime;
         private TextView Status;
@@ -93,7 +90,6 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             super(itemView);
             NameContact=itemView.findViewById(R.id.displayUserName);
             profilePicture=itemView.findViewById(R.id.ProfilePicture);
-            profilePicture.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             LastSeenTime=itemView.findViewById(R.id.displayLastSeen);
             Status=itemView.findViewById(R.id.displayStatus);
             itemView.setOnClickListener(new View.OnClickListener() {

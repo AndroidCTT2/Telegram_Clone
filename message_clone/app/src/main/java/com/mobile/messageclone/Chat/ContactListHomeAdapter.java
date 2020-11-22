@@ -2,7 +2,6 @@ package com.mobile.messageclone.Chat;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.messageclone.DrawProfilePicture;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.SignIn.RecyclerViewClickInterface;
@@ -65,18 +63,10 @@ public class ContactListHomeAdapter extends RecyclerView.Adapter<ContactListHome
         String name=contactLastMessTimeLinkedList.get(position).contact.getFirstNickName()+" "+contactLastMessTimeLinkedList.get(position).contact.getLastNickName();
         holder.ContactName.setText(name);
         holder.LastMessage.setText(contactLastMessTimeLinkedList.get(position).LastMess);
+        holder.ProfileImageView.setImageDrawable(DrawProfilePicture.drawProfileDynamicPicture(String.valueOf(name.charAt(0)),activity,context));
 
-        if (contactLastMessTimeLinkedList.get(position).contact.getLastNickName().isEmpty()==false)
-        {
-            holder.ProfileImageView.setImageBitmap(DrawProfilePicture.textAsBitmap((String.valueOf(name.charAt(0)).toUpperCase()+(String.valueOf(contactLastMessTimeLinkedList.get(position).contact.getLastNickName().charAt(0)).toUpperCase())),70, Color.WHITE));
-        }
-        else
-        {
-            holder.ProfileImageView.setImageBitmap(DrawProfilePicture.textAsBitmap((String.valueOf(name.charAt(0)).toUpperCase()),70,Color.WHITE));
-        }
+        //holder.SendTime.setText("");
 
-
-        holder.SendTime.setText(contactLastMessTimeLinkedList.get(position).LastSendTime);
     }
 
     @Override
@@ -86,7 +76,7 @@ public class ContactListHomeAdapter extends RecyclerView.Adapter<ContactListHome
 
     public class viewHolder extends RecyclerView.ViewHolder {
 
-        private CircularImageView ProfileImageView;
+        private ImageView ProfileImageView;
         private TextView ContactName;
         private TextView LastMessage;
         private TextView SendTime;
@@ -97,7 +87,6 @@ public class ContactListHomeAdapter extends RecyclerView.Adapter<ContactListHome
             ContactName=itemView.findViewById(R.id.displayContactName);
             LastMessage=itemView.findViewById(R.id.displayLastMessage);
             SendTime=itemView.findViewById(R.id.sender_time);
-            ProfileImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
 
             itemView.setOnClickListener(new View.OnClickListener() {
