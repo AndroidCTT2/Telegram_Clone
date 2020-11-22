@@ -45,7 +45,7 @@ public class ContactFragment extends Fragment implements RecyclerViewClickInterf
 
 
 
-    ;
+
 
     private FloatingActionButton btnAddContact;
 
@@ -61,6 +61,8 @@ public class ContactFragment extends Fragment implements RecyclerViewClickInterf
     private ArrayList<ContactAndSeenTime>contactAndSeenTimeArrayList;
 
     private ContactListAdapter contactListAdapter;
+
+    private ValueEventListener valueEventListener;
 
 
     @Override
@@ -91,7 +93,7 @@ public class ContactFragment extends Fragment implements RecyclerViewClickInterf
 
 
 
-        firebaseDatabase.getReference().child("CONTACT").orderByKey().equalTo(firebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+        valueEventListener=firebaseDatabase.getReference().child("CONTACT").orderByKey().equalTo(firebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -241,44 +243,19 @@ public class ContactFragment extends Fragment implements RecyclerViewClickInterf
 
 
 
-        firebaseDatabase.getReference().child("CONTACT").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if (snapshot.exists()==true)
-                {
 
-                }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
 
 
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
+    public void onDestroy() {
+        super.onDestroy();
+        if (firebaseDatabase!=null && valueEventListener!=null)
+        {
+            firebaseDatabase.getReference().removeEventListener(valueEventListener);
+        }
     }
 
     @Override

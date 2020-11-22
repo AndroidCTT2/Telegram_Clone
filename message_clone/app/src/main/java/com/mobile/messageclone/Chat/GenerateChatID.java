@@ -2,9 +2,10 @@ package com.mobile.messageclone.Chat;
 
 public class GenerateChatID {
 
+    public static final String ID_CHAT_PERSONAL="PC-";
+    public static final String ID_CHAT_GROUP="GC-";
 
-
-    public static String GenerateKey(String id1,String id2)
+    public static String GenerateKey(String id1,String id2,String Type)
     {
         String FirstString;
         int FirstStringLength;
@@ -19,7 +20,8 @@ public class GenerateChatID {
             FirstStringLength=id2.length();
         }
 
-        return "PC-"+Integer.toBinaryString(FirstStringLength)+"-"+FirstString;
+        return Type+Integer.toBinaryString(FirstStringLength)+"-"+FirstString;
     }
+
 
 }
