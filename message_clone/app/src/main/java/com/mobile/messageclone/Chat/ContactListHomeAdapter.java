@@ -64,6 +64,9 @@ public class ContactListHomeAdapter extends RecyclerView.Adapter<ContactListHome
         holder.ContactName.setText(name);
         holder.LastMessage.setText(contactLastMessTimeLinkedList.get(position).LastMess);
         holder.ProfileImageView.setImageDrawable(DrawProfilePicture.drawProfileDynamicPicture(String.valueOf(name.charAt(0)),activity,context));
+
+        
+        holder.SendTime.setText();
     }
 
     @Override

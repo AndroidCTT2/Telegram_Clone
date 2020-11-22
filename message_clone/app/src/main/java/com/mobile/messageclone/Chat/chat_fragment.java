@@ -79,7 +79,7 @@ public class chat_fragment extends Fragment {
 
     private ChatViewModel chatViewModel;
 
-
+    private LinearLayoutManager linearLayoutManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -172,18 +172,12 @@ public class chat_fragment extends Fragment {
         messagesListAdapter = new MessagesListAdapter<>(UserID,null);
         messagesList.setAdapter(messagesListAdapter);
 
-     /*  messagesList.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-           @Override
-           public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-               if (messagesListAdapter.getMessagesCount()==0)
-               {
-
-               }
-               else {
-                   messagesList.smoothScrollToPosition(0);
-               }
-           }
-       });*/
+        btnJumpToEnd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                messagesList.smoothScrollToPosition(0);
+            }
+        });
 
 
      messagesList.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -191,7 +185,8 @@ public class chat_fragment extends Fragment {
          public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
              super.onScrollStateChanged(recyclerView, newState);
              if (!recyclerView.canScrollVertically(1) && newState==RecyclerView.SCROLL_STATE_IDLE) {
-                 btnJumpToEnd.setVisibility(View.GONE);
+               //  btnJumpToEnd.setVisibility(View.GONE);
+                 btnJumpToEnd.hide();
              }
          }
 
@@ -199,11 +194,12 @@ public class chat_fragment extends Fragment {
          public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
              super.onScrolled(recyclerView, dx, dy);
 
-                int NewPos=((LinearLayoutManager)messagesList.getLayoutManager()).findFirstVisibleItemPosition();
-                Log.d("dy",String.valueOf(dy));
+
+
                 if (dy<0)
                 {
-                    btnJumpToEnd.setVisibility(View.VISIBLE);
+                   // btnJumpToEnd.setVisibility(View.VISIBLE);
+                    btnJumpToEnd.show();
                 }
 
          }
