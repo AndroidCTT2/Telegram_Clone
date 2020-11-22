@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.SignIn.RecyclerViewClickInterface;
+import com.mobile.messageclone.Chat.DateToString;
 
 import java.util.LinkedList;
 
@@ -104,7 +105,10 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
                             contactLastMessTime.LastMess=message.getMessage();
                             contactLastMessTime.contact=new Contact();
                             contactLastMessTime.contact.setUserIdContact(message.getReceiverID());
-                            contactLastMessTime.LastSendTime=message.getSendTime();
+                            DateToString lastSendTime = new DateToString();
+
+
+                            contactLastMessTime.LastSendTime=lastSendTime.dateToString(message.getSendTime());
                             contactLastMessTimeLinkedList.add(contactLastMessTime);
                             contactListHomeAdapter.SetUpContactLastMessTimeList(contactLastMessTimeLinkedList);
                             contactListHomeAdapter.notifyDataSetChanged();
