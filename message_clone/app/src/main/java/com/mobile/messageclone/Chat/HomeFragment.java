@@ -51,7 +51,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        btnNewMessage = root.findViewById(R.id.btnNewMessage);
+
         super.onCreate(savedInstanceState);
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseDatabase=FirebaseDatabase.getInstance();
@@ -161,7 +161,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
         HomeContactList=root.findViewById(R.id.recyclerHomeContact);
 
 
-
+        btnNewMessage = root.findViewById(R.id.btnNewMessage);
 
         HomeContactList.setAdapter(contactListHomeAdapter);
         HomeContactList.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -172,11 +172,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
         return root;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
 
-    }
 
     @Override
     public void onResume() {

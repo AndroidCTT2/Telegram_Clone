@@ -184,12 +184,15 @@ public class chat_fragment extends Fragment {
                }
            }
        });*/
-        int FirstPostion=((LinearLayoutManager)messagesList.getLayoutManager()).findLastVisibleItemPosition();
+
 
      messagesList.addOnScrollListener(new RecyclerView.OnScrollListener() {
          @Override
          public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
              super.onScrollStateChanged(recyclerView, newState);
+             if (!recyclerView.canScrollVertically(1) && newState==RecyclerView.SCROLL_STATE_IDLE) {
+                 btnJumpToEnd.setVisibility(View.GONE);
+             }
          }
 
          @Override
@@ -197,9 +200,12 @@ public class chat_fragment extends Fragment {
              super.onScrolled(recyclerView, dx, dy);
 
                 int NewPos=((LinearLayoutManager)messagesList.getLayoutManager()).findFirstVisibleItemPosition();
-                 if (dy<FirstPostion) {
-                     btnJumpToEnd.setVisibility(View.VISIBLE);
-                 }
+                Log.d("dy",String.valueOf(dy));
+                if (dy<0)
+                {
+                    btnJumpToEnd.setVisibility(View.VISIBLE);
+                }
+
          }
      });
 
@@ -271,6 +277,7 @@ public class chat_fragment extends Fragment {
             public void onChanged(String s) {
                 if (chatViewModel.ChatID.getValue().isEmpty()==false) {
                     firebaseDatabase.getReference().child("MESSAGE").child(ChatID).orderByKey().addChildEventListener(UpdateMessage);
+
                 }
             }
         });
