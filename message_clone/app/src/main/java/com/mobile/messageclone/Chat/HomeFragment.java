@@ -51,7 +51,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        btnNewMessage = root.findViewById(R.id.btnNewMessage);
+
         super.onCreate(savedInstanceState);
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseDatabase=FirebaseDatabase.getInstance();
@@ -154,7 +154,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-
+        btnNewMessage = root.findViewById(R.id.btnNewMessage);
         chatViewModel =new ViewModelProvider(getActivity()).get(ChatViewModel.class);
         chatViewModel.titleBar.setValue("Message");
 
@@ -172,11 +172,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
         return root;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
 
-    }
 
     @Override
     public void onResume() {
