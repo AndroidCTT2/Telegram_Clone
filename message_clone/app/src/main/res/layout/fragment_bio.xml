@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:text="Account"
             android:textSize="16sp"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="?attr/colorOnSurface"
             ></TextView>
 
         <LinearLayout

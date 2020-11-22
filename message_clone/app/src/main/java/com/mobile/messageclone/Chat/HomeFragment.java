@@ -154,7 +154,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-
+        btnNewMessage = root.findViewById(R.id.btnNewMessage);
         chatViewModel =new ViewModelProvider(getActivity()).get(ChatViewModel.class);
         chatViewModel.titleBar.setValue("Message");
 
