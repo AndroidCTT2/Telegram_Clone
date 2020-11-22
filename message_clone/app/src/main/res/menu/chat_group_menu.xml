@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group
+
+        >
+        <item
+            android:title="Call"
+            android:id="@+id/btnCall"
+            app:showAsAction="never"
+            android:icon="@drawable/ic_baseline_call_24"
+            android:iconTint="?attr/colorOnSurface"
+            ></item>
+        <item
+            android:title="Video call"
+            android:id="@+id/btnVidCall"
+            app:showAsAction="never"
+            android:icon="@drawable/ic_baseline_video_call_24"
+            android:iconTint="?attr/colorOnSurface"
+            ></item>
+        <item
+            android:id="@+id/btnSearch"
+            android:icon="@drawable/ic_baseline_search_24"
+            android:iconTint="?attr/colorOnSurface"
+            android:title="Search"
+            app:showAsAction="never"></item>
+        <item
+            android:title="Clear history"
+            android:id="@+id/btnClear"
+            app:showAsAction="never"
+            android:icon="@drawable/ic_baseline_clear_24"
+            android:iconTint="?attr/colorOnSurface"
+            ></item>
+        <item
+            android:id="@+id/btnMuteNoti"
+
+            android:icon="@drawable/ic_baseline_notifications_off_24"
+            android:iconTint="?attr/colorOnSurface"
+            android:title="Mute Notifications"
+            app:showAsAction="never"></item>
+        <item
+            android:title="Delete chat"
+            android:id="@+id/btnDelete"
+            app:showAsAction="never"
+            android:icon="@drawable/ic_baseline_delete_24"
+            android:iconTint="?attr/colorOnSurface"
+            ></item>
+    </group>
+
+</menu>

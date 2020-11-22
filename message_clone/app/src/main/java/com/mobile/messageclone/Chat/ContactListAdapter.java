@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mobile.messageclone.DrawProfilePicture;
 import com.mobile.messageclone.R;
+import com.mobile.messageclone.SignIn.RecyclerViewClickInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,8 +24,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     Context context;
     Activity activity;
-    ArrayList<ContactAndSeenTime>contactAndSeenTimeList=new ArrayList();
-
+    ArrayList<ContactAndSeenTime> contactAndSeenTimeList=new ArrayList();
+    RecyclerViewClickInterface recyclerViewClickInterface;
 
 
 
@@ -36,7 +37,10 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         this.context=context;
 
     }
-
+    public void SetClickInterface(RecyclerViewClickInterface recyclerViewClickInterface)
+    {
+        this.recyclerViewClickInterface=recyclerViewClickInterface;
+    }
     @NonNull
     @Override
     public viewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -88,6 +92,12 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             profilePicture=itemView.findViewById(R.id.ProfilePicture);
             LastSeenTime=itemView.findViewById(R.id.displayLastSeen);
             Status=itemView.findViewById(R.id.displayStatus);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    recyclerViewClickInterface.onItemClick(getAdapterPosition());
+                }
+            });
         }
     }
 }

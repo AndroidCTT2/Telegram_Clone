@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+
+    android:background="?attr/colorOnBackground"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="20dp">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnNewGroupChat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:text="New Group Chat"
+            app:icon="@drawable/ic_baseline_people_24"
+            android:textColor="?attr/colorOnSurface"
+            app:iconTint="?attr/colorOnSurface"
+            app:iconPadding="30dp"
+            android:textAllCaps="false"
+            android:textAlignment="textStart"
+
+            ></com.google.android.material.button.MaterialButton>
+    </LinearLayout>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="10dp"
+        android:text="Sorted by last seen time"
+        android:textColor="?attr/colorOnSurface"
+        ></TextView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ListContact"
+        android:background="?attr/colorOnBackground"
+        android:paddingHorizontal="20dp"
+        ></androidx.recyclerview.widget.RecyclerView>
+
+</LinearLayout>

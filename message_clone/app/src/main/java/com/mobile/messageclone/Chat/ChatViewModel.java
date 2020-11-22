@@ -16,6 +16,6 @@ public class ChatViewModel extends ViewModel {
         titleBar=new MutableLiveData<>();
         ChatID=new MutableLiveData<>();
 
-        titleBar.setValue("Message");
+        //titleBar.setValue("Message");
     }
 }
