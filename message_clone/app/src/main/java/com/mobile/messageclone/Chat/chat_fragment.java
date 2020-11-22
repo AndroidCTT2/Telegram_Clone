@@ -169,7 +169,11 @@ public class chat_fragment extends Fragment {
         btnJumpToEnd.setVisibility(View.GONE);
 
 
-        messagesListAdapter = new MessagesListAdapter<>(UserID,null);
+        MessagesListAdapter.HoldersConfig holdersConfig=new MessagesListAdapter.HoldersConfig();
+
+        holdersConfig.setOutcomingTextLayout(R.layout.one_row_message_sender);
+
+        messagesListAdapter = new MessagesListAdapter<>(UserID,holdersConfig,null);
         messagesList.setAdapter(messagesListAdapter);
 
         btnJumpToEnd.setOnClickListener(new View.OnClickListener() {

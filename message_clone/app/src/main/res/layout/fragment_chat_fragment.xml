@@ -25,7 +25,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/messageList"
-
+            app:incomingTextSize="18sp"
+            app:incomingBubblePaddingBottom="8dp"
+            app:incomingBubblePaddingLeft="8dp"
+            app:incomingBubblePaddingRight="8dp"
+            app:incomingBubblePaddingTop="8dp"
+            app:outcomingTextSize="18sp"
+            app:outcomingBubblePaddingBottom="8dp"
+            app:outcomingBubblePaddingTop="8dp"
+            app:outcomingBubblePaddingLeft="8dp"
+            app:outcomingBubblePaddingRight="8dp"
+            app:outcomingTimeTextSize="14sp"
+            app:incomingTimeTextSize="14sp"
             ></com.stfalcon.chatkit.messages.MessagesList>
 
 
