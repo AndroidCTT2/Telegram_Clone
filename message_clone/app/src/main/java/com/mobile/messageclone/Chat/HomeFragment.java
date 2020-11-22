@@ -161,7 +161,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
         HomeContactList=root.findViewById(R.id.recyclerHomeContact);
 
 
-
+        btnNewMessage = root.findViewById(R.id.btnNewMessage);
 
         HomeContactList.setAdapter(contactListHomeAdapter);
         HomeContactList.setLayoutManager(new LinearLayoutManager(getContext()));
