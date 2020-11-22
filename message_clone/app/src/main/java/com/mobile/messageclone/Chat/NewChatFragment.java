@@ -43,14 +43,12 @@ public class NewChatFragment extends Fragment implements RecyclerViewClickInterf
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
     private LinkedList<Contact> contactLinkedList;
-   //private RecyclerView HomeContactList;
-    private ContactListHomeAdapter contactListHomeAdapter;
 
     private RecyclerView RecyclerViewContact;
-
     private ArrayList<ContactAndSeenTime> contactAndSeenTimeArrayList;
-
     private ContactListAdapter contactListAdapter;
+    //private RecyclerViewClickInterface recyclerViewClickInterface;
+    //private ContactListHomeAdapter contactListHomeAdapter;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -66,7 +64,7 @@ public class NewChatFragment extends Fragment implements RecyclerViewClickInterf
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseDatabase=FirebaseDatabase.getInstance();
         contactAndSeenTimeArrayList=new ArrayList<>();
-
+        //contactListAdapter = new ContactListAdapter(getContext(), contactAndSeenTimeArrayList,getActivity());
     }
 
     @Override
@@ -74,21 +72,31 @@ public class NewChatFragment extends Fragment implements RecyclerViewClickInterf
         View root = inflater.inflate(R.layout.fragment_new_chat, container, false);
 
         RecyclerViewContact=root.findViewById(R.id.ListContact);
+        RecyclerViewContact.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        contactListAdapter=new ContactListAdapter(getContext(),contactAndSeenTimeArrayList,getActivity());
+        contactListAdapter.SetClickInterface(this);
         RecyclerViewContact.setAdapter(contactListAdapter);
         RecyclerViewContact.setLayoutManager(new LinearLayoutManager(getContext()));
+
+
         firebaseDatabase.getReference().child("CONTACT").orderByKey().equalTo(firebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 if (snapshot.exists()==true)
                 {
+
                     for (DataSnapshot childSnapShot:snapshot.getChildren())
                     {
+
                         Contact contact=new Contact();
 
                         for (DataSnapshot child2:childSnapShot.getChildren()) {
                             contact = child2.getValue(Contact.class);
+
+
+
                             Contact finalContact1 = contact;
                             firebaseDatabase.getReference().child("USER").child(contact.getUserIdContact()).child("STATUS").addValueEventListener(new ValueEventListener() {
                                 @Override
@@ -160,14 +168,17 @@ public class NewChatFragment extends Fragment implements RecyclerViewClickInterf
                                             contactAndSeenTime1.SeenTime="at " + fromDateTime.getDayOfMonth() + "-" + fromDateTime.getMonthValue() + "-" + fromDateTime.getYear();
                                             Log.d("Phone",  "yesterday at " + fromDateTime.getDayOfMonth() + "-" + fromDateTime.getMonthValue() + "-" + fromDateTime.getYear());
                                         }
+
                                         contactAndSeenTimeArrayList.clear();
                                         contactAndSeenTimeArrayList.add(contactAndSeenTime1);
                                         contactListAdapter.notifyDataSetChanged();
 
 
+
                                     }
 
                                 }
+
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
@@ -181,8 +192,6 @@ public class NewChatFragment extends Fragment implements RecyclerViewClickInterf
 
 
                     }
-
-
                 }
             }
 
@@ -190,17 +199,21 @@ public class NewChatFragment extends Fragment implements RecyclerViewClickInterf
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
+
+
         });
         return root;
 
         //chatViewModel.titleBar.setValue("Contact");
     }
+
     @Override
     public void onItemClick(int position) {
+        Log.i("Position", "onItemClick at: " + firebaseAuth.getCurrentUser().getUid());
         Bundle bundle=new Bundle();
         bundle.putString("UserID",firebaseAuth.getCurrentUser().getUid());
-        bundle.putString("ContactID",contactLinkedList.get(position).getUserIdContact());
-        bundle.putString("ContactName",contactLinkedList.get(position).getFirstNickName()+" "+contactLinkedList.get(position).getLastNickName());
+        bundle.putString("ContactID",contactAndSeenTimeArrayList.get(position).contact.getUserIdContact());
+        bundle.putString("ContactName",contactAndSeenTimeArrayList.get(position).contact.getFirstNickName()+" "+contactAndSeenTimeArrayList.get(position).contact.getLastNickName());
 
         NavController navController= Navigation.findNavController(getView());
         navController.navigate(R.id.action_fragment_newChat_to_chat_fragment,bundle);
@@ -211,9 +224,12 @@ public class NewChatFragment extends Fragment implements RecyclerViewClickInterf
 
     }
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
     }
+
+
 }

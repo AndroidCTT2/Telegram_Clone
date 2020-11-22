@@ -18,6 +18,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.instacart.library.truetime.TrueTimeRx;
 import com.mobile.messageclone.R;
+import com.mobile.messageclone.SignIn.RecyclerViewClickInterface;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,7 +41,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ContactFragment extends Fragment {
+public class ContactFragment extends Fragment implements RecyclerViewClickInterface {
 
 
 
@@ -277,6 +278,16 @@ public class ContactFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
+    }
+
+    @Override
+    public void onLongItemClick(int position) {
 
     }
 }
