@@ -36,9 +36,7 @@ import java.util.LinkedList;
 
 public class NewChatFragment extends Fragment implements RecyclerViewClickInterface {
     @Nullable
-    private NavController navController;
 
-    private  ChatViewModel chatViewModel;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
@@ -209,7 +207,6 @@ public class NewChatFragment extends Fragment implements RecyclerViewClickInterf
 
     @Override
     public void onItemClick(int position) {
-        Log.i("Position", "onItemClick at: " + firebaseAuth.getCurrentUser().getUid());
         Bundle bundle=new Bundle();
         bundle.putString("UserID",firebaseAuth.getCurrentUser().getUid());
         bundle.putString("ContactID",contactAndSeenTimeArrayList.get(position).contact.getUserIdContact());

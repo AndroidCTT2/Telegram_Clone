@@ -1,5 +1,6 @@
 package com.mobile.messageclone.Chat;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -76,19 +77,25 @@ public class ContactFragment extends Fragment implements RecyclerViewClickInterf
 
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        ChatViewModel chatViewModel =new ViewModelProvider(getActivity()).get(ChatViewModel.class);
+        chatViewModel.titleBar.setValue("Contact");
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View root=inflater.inflate(R.layout.fragment_contact,container,false);
 
-        ChatViewModel chatViewModel =new ViewModelProvider(getActivity()).get(ChatViewModel.class);
-        chatViewModel.titleBar.setValue("Contact");
+
         RecyclerViewContact=root.findViewById(R.id.ListContact);
         RecyclerViewContact.setLayoutManager(new LinearLayoutManager(getContext()));
 
         contactListAdapter=new ContactListAdapter(getContext(),contactAndSeenTimeArrayList,getActivity());
-
+        contactListAdapter.SetClickInterface(this);
         RecyclerViewContact.setAdapter(contactListAdapter);
 
 
@@ -260,7 +267,13 @@ public class ContactFragment extends Fragment implements RecyclerViewClickInterf
 
     @Override
     public void onItemClick(int position) {
+        Bundle bundle=new Bundle();
+        bundle.putString("UserID",firebaseAuth.getCurrentUser().getUid());
+        bundle.putString("ContactID",contactAndSeenTimeArrayList.get(position).contact.getUserIdContact());
+        bundle.putString("ContactName",contactAndSeenTimeArrayList.get(position).contact.getFirstNickName()+" "+contactAndSeenTimeArrayList.get(position).contact.getLastNickName());
 
+        NavController navController= Navigation.findNavController(getView());
+        navController.navigate(R.id.action_fragment_contact_to_chat_fragment,bundle);
     }
 
     @Override

@@ -33,6 +33,10 @@
         <action
             android:id="@+id/action_fragment_contact_to_fragment_find_contact"
             app:destination="@id/fragment_find_contact" />
+        <action
+            android:id="@+id/action_fragment_contact_to_chat_fragment"
+            app:destination="@id/chat_fragment"
+            app:popUpTo="@id/fragment_home" />
     </fragment>
     <fragment
         android:id="@+id/fragment_find_contact"
