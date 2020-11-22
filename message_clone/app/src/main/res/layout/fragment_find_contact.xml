@@ -20,13 +20,17 @@
 
         >
 
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-
-            android:id="@+id/ProfilePicture"
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_gravity="center_vertical"
-            ></ImageView>
+            app:civ_border="false"
+            app:civ_circle_color="?attr/colorOnPrimarySurface"
+            android:id="@+id/ProfilePicture"
+            app:srcCompat="@drawable/ic_baseline_360_24"
+            ></com.mikhaellopez.circularimageview.CircularImageView>
+
+
 
         <LinearLayout
             android:layout_width="wrap_content"
