@@ -2,17 +2,17 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">#023E8A</item>
-        <item name="colorPrimaryDark">#023E6D</item>
+        <item name="colorPrimary">#0353A4</item>
+        <item name="colorPrimaryDark">#023E7D</item>
         <item name="colorOnPrimary">#121212</item>
-        <item name="colorSecondary">#001845</item>
-        <item name="colorSecondaryVariant">#001233</item>
+        <item name="colorSecondary">#0077B6</item>
+        <item name="colorSecondaryVariant">#023E8A</item>
         <item name="colorOnSecondary">#ffffff</item>
         <item name="colorOnBackground">@color/colorBackGround</item>
         <item name="colorSurface">#FFFFFF</item>
         <item name="colorAccent">#979DAC</item>
         <item name="otpViewStyle">@style/OtpWidget.OtpView</item>
-        <item name="colorOnPrimarySurface">#0353A4</item>
+        <item name="colorOnPrimarySurface">#0466C8</item>
         <item name="colorBackgroundFloating">#33959595</item>
         <item name="colorError">#ff414d</item>
         <item name="colorOnError">#ffffff</item>

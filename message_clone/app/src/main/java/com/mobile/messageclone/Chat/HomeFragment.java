@@ -16,6 +16,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -37,14 +38,20 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
     private LinkedList<Contact> contactLinkedList;
     private RecyclerView HomeContactList;
     private ContactListHomeAdapter contactListHomeAdapter;
+     private FloatingActionButton btnNewMessage;
+    private NavController navController;
     private LinkedList<String> chatidlist=new LinkedList<String>();
     private LinkedList<ContactLastMessTime>contactLastMessTimeLinkedList=new LinkedList<>();
     private String LastChat="";
     private ChildEventListener childEventListener;
 
 
+
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        btnNewMessage = root.findViewById(R.id.btnNewMessage);
         super.onCreate(savedInstanceState);
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseDatabase=FirebaseDatabase.getInstance();
@@ -192,7 +199,19 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
     public void onLongItemClick(int position) {
 
     }
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        navController= Navigation.findNavController(view);
 
+        btnNewMessage=view.findViewById(R.id.btnNewMessage);
+
+        btnNewMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.action_fragment_home_to_newChat);
+            }
+        });
+    }
     @Override
     public void onPause() {
         firebaseDatabase.getReference().removeEventListener(childEventListener);
@@ -204,4 +223,5 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
         super.onStop();
         firebaseDatabase.getReference().removeEventListener(childEventListener);
     }
+
 }
