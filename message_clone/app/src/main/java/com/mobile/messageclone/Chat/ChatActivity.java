@@ -10,11 +10,13 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Layout;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
@@ -160,6 +162,7 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
 
     @Override
     public boolean onSupportNavigateUp() {
+        CloseKeyBoard();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
@@ -195,8 +198,18 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
         firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("STATUS").updateChildren(onlineState);
     }
 
-
-
+    @Override
+    public void CloseKeyBoard() {
+        InputMethodManager imm = (InputMethodManager) this.getSystemService(this.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = this.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(this);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        view.clearFocus();
+    }
 
 
     @Override
@@ -206,5 +219,10 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
         {
             UpdateStatus(STATUS_OFFLINE);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }
