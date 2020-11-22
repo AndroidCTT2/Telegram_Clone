@@ -26,10 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.SignIn.RecyclerViewClickInterface;
 
-
-import java.text.ParseException;
 import java.util.LinkedList;
-
 
 public class HomeFragment extends Fragment implements RecyclerViewClickInterface {
 
@@ -106,17 +103,11 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
                             ContactLastMessTime contactLastMessTime=new ContactLastMessTime();
                             contactLastMessTime.LastMess=message.getMessage();
                             contactLastMessTime.contact=new Contact();
-                            DateToString hello = new DateToString();
-                            String a = hello.dateToString(message.getSendTime());
-
-
-                            Log.d("Last time", "active: " + a);
                             contactLastMessTime.contact.setUserIdContact(message.getReceiverID());
-                            contactLastMessTime.LastSendTime=a;
+                            contactLastMessTime.LastSendTime=message.getSendTime();
                             contactLastMessTimeLinkedList.add(contactLastMessTime);
                             contactListHomeAdapter.SetUpContactLastMessTimeList(contactLastMessTimeLinkedList);
                             contactListHomeAdapter.notifyDataSetChanged();
-
                         }
 
                         @Override
@@ -170,7 +161,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
         HomeContactList=root.findViewById(R.id.recyclerHomeContact);
 
 
-
+        btnNewMessage = root.findViewById(R.id.btnNewMessage);
 
         HomeContactList.setAdapter(contactListHomeAdapter);
         HomeContactList.setLayoutManager(new LinearLayoutManager(getContext()));

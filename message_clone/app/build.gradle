@@ -93,9 +93,11 @@ dependencies {
 
     implementation 'com.github.instacart.truetime-android:library-extension-rx:3.4'
 
-    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
 
     implementation 'com.github.stfalcon:chatkit:0.3.3'
+
+    implementation 'com.mikhaellopez:circularimageview:4.2.0'
 
 
 
