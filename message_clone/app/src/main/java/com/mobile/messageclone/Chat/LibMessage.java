@@ -1,11 +1,14 @@
 package com.mobile.messageclone.Chat;
 
+import androidx.annotation.Nullable;
+
 import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.IUser;
+import com.stfalcon.chatkit.commons.models.MessageContentType;
 
 import java.util.Date;
 
-public class LibMessage implements IMessage {
+public class LibMessage implements IMessage, MessageContentType.Image {
 
     public String id;
     public IUser iuser;
@@ -31,5 +34,11 @@ public class LibMessage implements IMessage {
     @Override
     public Date getCreatedAt() {
         return dateSend;
+    }
+
+    @Nullable
+    @Override
+    public String getImageUrl() {
+        return null;
     }
 }

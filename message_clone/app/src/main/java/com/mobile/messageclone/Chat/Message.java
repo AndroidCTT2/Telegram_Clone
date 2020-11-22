@@ -2,15 +2,18 @@ package com.mobile.messageclone.Chat;
 
 import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.IUser;
+import com.stfalcon.chatkit.commons.models.MessageContentType;
 
 import java.util.Date;
 
-public class Message  {
+public class Message {
 
     private String senderID;
     private String receiverID;
     private String message;
     private String sendTime;
+    private String Status;
+
 
     public String getSendTime() {
         return sendTime;
