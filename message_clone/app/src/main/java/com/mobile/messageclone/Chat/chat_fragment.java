@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -64,6 +66,9 @@ public class chat_fragment extends Fragment {
     private  String ContactID;
     private String ContactName;
     private  String ChatID="";
+
+
+    private FloatingActionButton btnJumpToEnd;
 
     private MessagesListAdapter<LibMessage>messagesListAdapter;
 
@@ -160,7 +165,8 @@ public class chat_fragment extends Fragment {
 
         messageInput=root.findViewById(R.id.inputMessage);
         messagesList=root.findViewById(R.id.messageList);
-
+        btnJumpToEnd=root.findViewById(R.id.jumpToEnd);
+        btnJumpToEnd.setVisibility(View.GONE);
 
 
         messagesListAdapter = new MessagesListAdapter<>(UserID,null);
@@ -178,7 +184,24 @@ public class chat_fragment extends Fragment {
                }
            }
        });*/
+        int FirstPostion=((LinearLayoutManager)messagesList.getLayoutManager()).findLastVisibleItemPosition();
 
+     messagesList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+         @Override
+         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+             super.onScrollStateChanged(recyclerView, newState);
+         }
+
+         @Override
+         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+             super.onScrolled(recyclerView, dx, dy);
+
+                int NewPos=((LinearLayoutManager)messagesList.getLayoutManager()).findFirstVisibleItemPosition();
+                 if (dy<FirstPostion) {
+                     btnJumpToEnd.setVisibility(View.VISIBLE);
+                 }
+         }
+     });
 
 
 

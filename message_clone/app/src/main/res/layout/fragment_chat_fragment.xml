@@ -17,11 +17,14 @@
             ></androidx.recyclerview.widget.RecyclerView>
 
       -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
         <com.stfalcon.chatkit.messages.MessagesList
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/messageList"
-            android:layout_weight="1"
 
             ></com.stfalcon.chatkit.messages.MessagesList>
 
@@ -31,16 +34,17 @@
             android:layout_height="wrap_content"
             app:fabSize="mini"
             android:id="@+id/jumpToEnd"
-            android:layout_gravity="center_horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
             app:srcCompat="@drawable/ic_baseline_keyboard_arrow_down_24"
-
             ></com.google.android.material.floatingactionbutton.FloatingActionButton>
-
+    </RelativeLayout>
             <com.stfalcon.chatkit.messages.MessageInput
                 android:id="@+id/inputMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:inputHint="Message"
+
                 app:inputTextSize="20sp"
                 app:inputTextColor="?attr/colorOnSurface"
                 app:inputBackground="@drawable/message_send_box_background"
