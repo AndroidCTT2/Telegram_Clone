@@ -35,7 +35,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.messageclone.DrawProfilePicture;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.SignIn.CountryCodeDialogFragment;
@@ -62,7 +61,7 @@ public class fragment_find_contact extends Fragment {
 
     private SignInViewModel signInViewModel;
 
-    private CircularImageView ProfileImage;
+    private ImageView ProfileImage;
 
     private TextInputEditText inputFirstName;
     private TextInputEditText inputLastName;
@@ -140,7 +139,6 @@ public class fragment_find_contact extends Fragment {
         inputLastName=view.findViewById(R.id.inputNickLastName);
 
         ProfileImage=view.findViewById(R.id.ProfilePicture);
-        ProfileImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
         editChooseCountryCode=view.findViewById(R.id.editChoseCountryCode);
 
@@ -158,7 +156,7 @@ public class fragment_find_contact extends Fragment {
         });
 
 
-//        ProfileImage.setImageBitmap(DrawProfilePicture.textAsBitmap("",60,Color.WHITE));
+        ProfileImage.setImageDrawable(DrawProfilePicture.drawProfileDynamicPicture("",getActivity(),getContext()));
 
         inputCountryCode=view.findViewById(R.id.textInputCountryCode);
         inputPhone=view.findViewById(R.id.textInputPhone);
@@ -230,14 +228,8 @@ public class fragment_find_contact extends Fragment {
                         SecondLetter=String.valueOf(inputLastName.getText().toString().charAt(0));
                     }
 
-                    if (FirstLetter.isEmpty()==false || SecondLetter.isEmpty()==false) {
 
-                        ProfileImage.setImageBitmap(DrawProfilePicture.textAsBitmap(FirstLetter.toUpperCase() + SecondLetter.toUpperCase(), 70, Color.WHITE));
-                    }
-                    else
-                    {
-                        ProfileImage.setImageDrawable(getActivity().getDrawable(R.drawable.ic_baseline_360_24));
-                    }
+                    ProfileImage.setImageDrawable(DrawProfilePicture.drawProfileDynamicPicture(FirstLetter+SecondLetter,getActivity(),getContext()));
             }
 
             @Override
@@ -273,15 +265,8 @@ public class fragment_find_contact extends Fragment {
                 {
                     SecondLetter=String.valueOf(inputLastName.getText().toString().charAt(0));
                 }
-                if (FirstLetter.isEmpty()==false || SecondLetter.isEmpty()==false) {
 
-                    ProfileImage.setImageBitmap(DrawProfilePicture.textAsBitmap(FirstLetter.toUpperCase() + SecondLetter.toUpperCase(), 70, Color.WHITE));
-                }
-                else
-                {
-                    ProfileImage.setImageDrawable(getActivity().getDrawable(R.drawable.ic_baseline_360_24));
-                }
-
+                ProfileImage.setImageDrawable(DrawProfilePicture.drawProfileDynamicPicture(FirstLetter+SecondLetter,getActivity(),getContext()));
             }
 
             @Override

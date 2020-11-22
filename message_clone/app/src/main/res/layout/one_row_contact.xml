@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_marginVertical="10dp">
 
-    <com.mikhaellopez.circularimageview.CircularImageView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:id="@+id/ProfilePicture"
-        app:civ_border="false"
-        app:civ_circle_color="?attr/colorOnPrimarySurface"
-        ></com.mikhaellopez.circularimageview.CircularImageView>
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/ProfilePicture">
+    </ImageView>
 
     <LinearLayout
         android:layout_width="wrap_content"

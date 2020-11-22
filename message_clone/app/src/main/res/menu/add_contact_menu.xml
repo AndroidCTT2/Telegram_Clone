@@ -9,7 +9,7 @@
            app:showAsAction="always"
            android:icon="@drawable/ic_baseline_check_24"
            android:iconTint="?attr/colorOnSurface"
-           android:title="Done"
-           ></item>
+           android:title="Done">
+           </item>
    </group>
 </menu>

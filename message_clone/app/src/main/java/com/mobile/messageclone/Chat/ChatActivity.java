@@ -11,23 +11,18 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.Layout;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
-import com.mikhaellopez.circularimageview.CircularImageView;
-import com.mobile.messageclone.DrawProfilePicture;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.TextDrawableForStaticImage;
 
@@ -35,7 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 
-
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
 
@@ -43,7 +38,7 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
 
     private TextView displayUserName;
     private TextView displayUserPhoneNumber;
-    private CircularImageView ProfilePicture;
+    private CircleImageView ProfilePicture;
 
 
 
@@ -107,9 +102,6 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
 
         ProfilePicture=navigationView.getHeaderView(0).findViewById(R.id.ProfilePicture);
 
-        ProfilePicture.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-
-
         displayUserName=navigationView.getHeaderView(0).findViewById(R.id.displayUserName);
         displayUserPhoneNumber=navigationView.getHeaderView(0).findViewById(R.id.displayPhoneNumber);
 
@@ -135,9 +127,18 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
         }
 
 
-        ProfilePicture.setImageBitmap(DrawProfilePicture.textAsBitmap(firstname.toUpperCase()+lastname.toUpperCase(),60,Color.WHITE));
+        TextDrawableForStaticImage textDrawableForStaticImage =new TextDrawableForStaticImage(this);
+        textDrawableForStaticImage.setText(firstname+lastname);
+        textDrawableForStaticImage.setTextAlign(Layout.Alignment.ALIGN_CENTER);
+        textDrawableForStaticImage.setTypeface(Typeface.MONOSPACE,Typeface.BOLD);
+        textDrawableForStaticImage.setTextColor(Color.WHITE);
 
 
+
+        ProfilePicture.setImageDrawable(textDrawableForStaticImage);
+
+
+        //ProfilePicture.setImageDrawable(DrawProfilePicture.drawProfilePicture(firstname+lastname,this).mutate());
 
         chatViewModel.titleBar.observe(this, new Observer<String>() {
             @Override
