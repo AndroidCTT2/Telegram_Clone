@@ -420,6 +420,7 @@ public class fragment_find_contact extends Fragment {
                             contact.setFirstNickName(UserFirstName);
                             contact.setContactStatus(Contact.NOT_IN_CONTACT);
                             firebaseDatabase.getReference().child("CONTACT").child(userId).child(contact.getUserIdContact()).setValue(contact);
+                            chatViewModel.IsDeleteListContactSeenTimeList.setValue(false);
                             getActivity().onBackPressed();
 
                         } else {

@@ -14,7 +14,13 @@ public class LibMessage implements IMessage, MessageContentType.Image {
     public IUser iuser;
     public Date dateSend;
     public String textMessage;
+    public Boolean IsSeen;
 
+
+    public Boolean getIsSeen()
+    {
+        return IsSeen;
+    }
 
     @Override
     public String getId() {

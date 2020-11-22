@@ -85,7 +85,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
             }
         });
 
-        firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("ChatID").addListenerForSingleValueEvent(new ValueEventListener() {
+       /* firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("ChatID").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot childSnapshot:snapshot.getChildren())
@@ -143,7 +143,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });
+        });*/
 
 
 
@@ -214,14 +214,18 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
     }
     @Override
     public void onPause() {
-        firebaseDatabase.getReference().removeEventListener(childEventListener);
+        if (childEventListener!=null) {
+            firebaseDatabase.getReference().removeEventListener(childEventListener);
+        }
         super.onPause();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        firebaseDatabase.getReference().removeEventListener(childEventListener);
+        if (childEventListener!=null) {
+            firebaseDatabase.getReference().removeEventListener(childEventListener);
+        }
     }
 
 }

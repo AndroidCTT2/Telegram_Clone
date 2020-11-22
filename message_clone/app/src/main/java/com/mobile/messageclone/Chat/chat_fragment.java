@@ -27,6 +27,7 @@ import com.instacart.library.truetime.TrueTime;
 import com.instacart.library.truetime.TrueTimeRx;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.SignIn.User;
+import com.stfalcon.chatkit.messages.MessageHolders;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
@@ -169,9 +170,11 @@ public class chat_fragment extends Fragment {
         btnJumpToEnd.setVisibility(View.GONE);
 
 
-        MessagesListAdapter.HoldersConfig holdersConfig=new MessagesListAdapter.HoldersConfig();
 
-        holdersConfig.setOutcomingTextLayout(R.layout.one_row_message_sender);
+
+        MessageHolders holdersConfig=new MessageHolders().setOutcomingTextLayout(R.layout.one_row_message_sender).setOutcomingTextHolder(CustomOutComingMessageViewHolder.class,null);
+
+
 
         messagesListAdapter = new MessagesListAdapter<>(UserID,holdersConfig,null);
         messagesList.setAdapter(messagesListAdapter);
