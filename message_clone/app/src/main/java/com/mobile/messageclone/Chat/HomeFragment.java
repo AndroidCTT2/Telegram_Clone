@@ -60,7 +60,96 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
         contactListHomeAdapter=new ContactListHomeAdapter(contactLinkedList,getActivity(),getContext());
         contactListHomeAdapter.SetUpContactLastMessTimeList(contactLastMessTimeLinkedList);
         contactListHomeAdapter.SetClickInterface(this);
-        firebaseDatabase.getReference().child("CONTACT").child(firebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+
+
+        firebaseDatabase.getReference().child("CONTACT").child(firebaseAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()==true) {
+                    contactLastMessTimeLinkedList.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        Contact contact = dataSnapshot.getValue(Contact.class);
+
+
+                        firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("ChatID").addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists() == true) {
+                                    for (DataSnapshot child1 : snapshot.getChildren()) {
+                                        String ChatID = child1.child("ChatID").getValue(String.class);
+                                        firebaseDatabase.getReference().child("MESSAGE").child(ChatID).orderByKey().limitToLast(1).addChildEventListener(new ChildEventListener() {
+                                            @Override
+                                            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                                if (snapshot.exists()==true)
+                                                {
+                                                    ContactLastMessTime contactLastMessTime = new ContactLastMessTime();
+                                                    contactLastMessTime.contact = contact;
+                                                    Message message=snapshot.getValue(Message.class);
+                                                    if ((message.getReceiverID().equals(contact.getUserIdContact()) && firebaseAuth.getCurrentUser().getUid().equals(message.getSenderID())) ||
+                                                            (message.getReceiverID().equals(firebaseAuth.getCurrentUser().getUid()) && contact.getUserIdContact().equals(message.getSenderID()))
+
+                                                    ) {
+
+                                                        contactLastMessTime.LastSendTime = message.getSendTime();
+                                                        contactLastMessTime.contact = contact;
+                                                        contactLastMessTime.LastMess = message.getMessage();
+                                                        contactLastMessTimeLinkedList.add(contactLastMessTime);
+
+                                                    }
+                                                    contactListHomeAdapter.notifyItemChanged(0);
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                                            }
+
+                                            @Override
+                                            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                                            }
+
+                                            @Override
+                                            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+
+
+
+
+
+
+
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+        /*firebaseDatabase.getReference().child("CONTACT").child(firebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -75,58 +164,58 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
                         contactLinkedList.add(contact);
                     }
                     contactListHomeAdapter.contacts=contactLinkedList;
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-       /* firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("ChatID").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot childSnapshot:snapshot.getChildren())
-                {
-                    String id=childSnapshot.child("ChatID").getValue(String.class);
-                    String idContact=childSnapshot.child("ContactID").getValue(String.class);
-                    Log.d("Phone",id);
-                    Log.d("Phone",idContact);
-                    chatidlist.add(id);
-                    childEventListener=firebaseDatabase.getReference().child("MESSAGE").child(id).limitToLast(1).addChildEventListener(new ChildEventListener() {
+                    firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("ChatID").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                            contactLastMessTimeLinkedList.clear();
-                            Message message;
-                            message=snapshot.getValue(Message.class);
-                            ContactLastMessTime contactLastMessTime=new ContactLastMessTime();
-                            contactLastMessTime.LastMess=message.getMessage();
-                            contactLastMessTime.contact=new Contact();
-                            contactLastMessTime.contact.setUserIdContact(message.getReceiverID());
-                            DateToString lastSendTime = new DateToString();
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot childSnapshot:snapshot.getChildren())
+                            {
+                                String id=childSnapshot.child("ChatID").getValue(String.class);
+                                String idContact=childSnapshot.child("ContactID").getValue(String.class);
+                                Log.d("Phone",id);
+                                Log.d("Phone",idContact);
+                                chatidlist.add(id);
+                                childEventListener=firebaseDatabase.getReference().child("MESSAGE").child(id).limitToLast(1).addChildEventListener(new ChildEventListener() {
+                                    @Override
+                                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                        contactLastMessTimeLinkedList.clear();
+                                        Message message;
+                                        message=snapshot.getValue(Message.class);
+                                        ContactLastMessTime contactLastMessTime=new ContactLastMessTime();
+                                        contactLastMessTime.LastMess=message.getMessage();
+                                        contactLastMessTime.contact=new Contact();
+                                        contactLastMessTime.contact.setUserIdContact(message.getReceiverID());
+                                        DateToString lastSendTime = new DateToString();
 
 
-                            contactLastMessTime.LastSendTime=lastSendTime.dateToString(message.getSendTime());
-                            contactLastMessTimeLinkedList.add(contactLastMessTime);
-                            contactListHomeAdapter.SetUpContactLastMessTimeList(contactLastMessTimeLinkedList);
-                            contactListHomeAdapter.notifyDataSetChanged();
-                        }
+                                        contactLastMessTime.LastSendTime=lastSendTime.dateToString(message.getSendTime());
+                                        contactLastMessTimeLinkedList.add(contactLastMessTime);
+                                        contactListHomeAdapter.SetUpContactLastMessTimeList(contactLastMessTimeLinkedList);
+                                        contactListHomeAdapter.notifyDataSetChanged();
+                                    }
 
-                        @Override
-                        public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                    @Override
+                                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-                        }
+                                    }
 
-                        @Override
-                        public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                                    @Override
+                                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
 
-                        }
+                                    }
 
-                        @Override
-                        public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                    @Override
+                                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+
+
+                            }
                         }
 
                         @Override
@@ -134,7 +223,6 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
 
                         }
                     });
-
 
                 }
             }
@@ -144,6 +232,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
 
             }
         });*/
+
 
 
 
@@ -188,9 +277,8 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
     public void onItemClick(int position) {
         Bundle bundle=new Bundle();
         bundle.putString("UserID",firebaseAuth.getCurrentUser().getUid());
-        bundle.putString("ContactID",contactLinkedList.get(position).getUserIdContact());
-        bundle.putString("ContactName",contactLinkedList.get(position).getFirstNickName()+" "+contactLinkedList.get(position).getLastNickName());
-
+        bundle.putString("ContactID",contactLastMessTimeLinkedList.get(position).contact.getUserIdContact());
+        bundle.putString("ContactName",contactLastMessTimeLinkedList.get(position).contact.getFirstNickName()+" "+contactLastMessTimeLinkedList.get(position).contact.getLastNickName());
         NavController navController= Navigation.findNavController(getView());
         navController.navigate(R.id.action_fragment_home_to_chat_fragment,bundle);
     }

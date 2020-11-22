@@ -112,7 +112,7 @@ public class ContactFragment extends Fragment implements RecyclerViewClickInterf
 
                         Contact contact = new Contact();
                         contact = childSnapShot.getValue(Contact.class);
-                     
+
 
 
 
