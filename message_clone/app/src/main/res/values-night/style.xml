@@ -8,7 +8,7 @@
         <item name="colorSecondary">#0077B6</item>
         <item name="colorOnSecondary">#ffffff</item>
         <item name="colorOnBackground">@color/colorBackGround</item>
-        <item name="colorBackgroundFloating">#1a1A1A</item>
+        <item name="colorBackgroundFloating">#2B2B2B</item>
         <item name="android:colorBackground">#121212</item>
 
         <item name="colorSurface">#121212</item>
@@ -18,8 +18,9 @@
 
         <item name="colorError">#ff414d</item>
         <item name="colorOnError">#ffffff</item>
-        <item name="colorButtonNormal">#ffffff</item>
+        <item name="colorButtonNormal">#0077B6</item>
         <item name="android:textColor">#ffffff</item>
+        <item name="incomingTextColor">#ffffff</item>
 
 
     </style>

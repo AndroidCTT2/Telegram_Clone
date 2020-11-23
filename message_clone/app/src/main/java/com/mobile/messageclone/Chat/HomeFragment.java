@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -360,7 +361,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
 
         HomeContactList.setAdapter(contactListHomeAdapter);
         HomeContactList.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        HomeContactList.addItemDecoration(new DividerItemDecoration(HomeContactList.getContext(),DividerItemDecoration.VERTICAL));
 
 
 

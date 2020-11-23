@@ -30,6 +30,8 @@
             app:incomingBubblePaddingLeft="8dp"
             app:incomingBubblePaddingRight="8dp"
             app:incomingBubblePaddingTop="8dp"
+            app:outcomingDefaultBubbleColor="?attr/colorSecondary"
+            app:incomingDefaultBubbleColor="?attr/colorBackgroundFloating"
             app:outcomingTextSize="18sp"
             app:outcomingBubblePaddingBottom="8dp"
             app:outcomingBubblePaddingTop="8dp"
@@ -48,6 +50,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerInParent="true"
             app:srcCompat="@drawable/ic_baseline_keyboard_arrow_down_24"
+            app:backgroundTint="?attr/colorButtonNormal"
             ></com.google.android.material.floatingactionbutton.FloatingActionButton>
     </RelativeLayout>
             <com.stfalcon.chatkit.messages.MessageInput
