@@ -12,7 +12,7 @@ public class Message {
     private String receiverID;
     private String message;
     private String sendTime;
-    private String Status;
+    private Boolean IsSeen;
 
 
     public String getSendTime() {
@@ -45,5 +45,13 @@ public class Message {
 
     public void setSendTime(String sendTime) {
         this.sendTime = sendTime;
+    }
+
+    public Boolean getSeen() {
+        return IsSeen;
+    }
+
+    public void setSeen(Boolean seen) {
+        IsSeen = seen;
     }
 }
