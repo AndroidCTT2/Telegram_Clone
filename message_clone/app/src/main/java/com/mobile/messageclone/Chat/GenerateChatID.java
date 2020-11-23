@@ -24,4 +24,9 @@ public class GenerateChatID {
     }
 
 
+    public static String SplitID (String userID, String chatID){
+        String contactID ="";
+
+        return contactID;
+    }
 }

@@ -24,6 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.instacart.library.truetime.TrueTimeRx;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.SignIn.RecyclerViewClickInterface;
+import com.mobile.messageclone.Chat.ChatViewModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,10 +42,12 @@ public class NewChatFragment extends Fragment implements RecyclerViewClickInterf
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
     private LinkedList<Contact> contactLinkedList;
+    private  ChatViewModel chatViewModel;
 
     private RecyclerView RecyclerViewContact;
     private ArrayList<ContactAndSeenTime> contactAndSeenTimeArrayList;
     private ContactListAdapter contactListAdapter;
+    private ValueEventListener valueEventListener;
     //private RecyclerViewClickInterface recyclerViewClickInterface;
     //private ContactListHomeAdapter contactListHomeAdapter;
 
@@ -75,8 +78,8 @@ public class NewChatFragment extends Fragment implements RecyclerViewClickInterf
         contactListAdapter=new ContactListAdapter(getContext(),contactAndSeenTimeArrayList,getActivity());
         contactListAdapter.SetClickInterface(this);
         RecyclerViewContact.setAdapter(contactListAdapter);
-        RecyclerViewContact.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        //RecyclerViewContact.setLayoutManager(new LinearLayoutManager(getContext()));
+        //chatViewModel.IsDeleteListContactSeenTimeList.setValue(false);
 
         firebaseDatabase.getReference().child("CONTACT").orderByKey().equalTo(firebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override

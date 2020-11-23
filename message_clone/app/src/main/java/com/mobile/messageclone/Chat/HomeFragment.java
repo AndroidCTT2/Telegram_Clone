@@ -27,6 +27,10 @@ import com.mobile.messageclone.R;
 import com.mobile.messageclone.SignIn.RecyclerViewClickInterface;
 import com.mobile.messageclone.Chat.DateToString;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.LinkedList;
 
 public class HomeFragment extends Fragment implements RecyclerViewClickInterface {
@@ -45,7 +49,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
     private LinkedList<ContactLastMessTime>contactLastMessTimeLinkedList=new LinkedList<>();
     private String LastChat="";
     private ChildEventListener childEventListener;
-
+    private String thisUserID;
 
 
 
@@ -58,69 +62,76 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
         firebaseDatabase=FirebaseDatabase.getInstance();
         contactLinkedList=new LinkedList<>();
         contactListHomeAdapter=new ContactListHomeAdapter(contactLinkedList,getActivity(),getContext());
-        contactListHomeAdapter.SetUpContactLastMessTimeList(contactLastMessTimeLinkedList);
+        //contactListHomeAdapter.SetUpContactLastMessTimeList(contactLastMessTimeLinkedList);
         contactListHomeAdapter.SetClickInterface(this);
+        thisUserID = firebaseAuth.getCurrentUser().getUid();
 
 
-        firebaseDatabase.getReference().child("CONTACT").child(firebaseAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("ChatID").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()==true) {
-                    contactLastMessTimeLinkedList.clear();
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        Contact contact = dataSnapshot.getValue(Contact.class);
 
-
-                        firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("ChatID").addValueEventListener(new ValueEventListener() {
+                if (snapshot.exists()==true)
+                {
+                    for (DataSnapshot child1:snapshot.getChildren())
+                    {
+                        ContactLastMessTime contactLastMessTime=new ContactLastMessTime();
+                        //contactLastMessTimeLinkedList.clear();
+                        String id=child1.child("ChatID").getValue(String.class);
+                        String contactID = child1.child("ContactID").getValue(String.class);
+                        firebaseDatabase.getReference().child("CONTACT").child(thisUserID).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.exists() == true) {
-                                    for (DataSnapshot child1 : snapshot.getChildren()) {
-                                        String ChatID = child1.child("ChatID").getValue(String.class);
-                                        firebaseDatabase.getReference().child("MESSAGE").child(ChatID).orderByKey().limitToLast(1).addChildEventListener(new ChildEventListener() {
-                                            @Override
-                                            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                                                if (snapshot.exists()==true)
-                                                {
-                                                    ContactLastMessTime contactLastMessTime = new ContactLastMessTime();
-                                                    contactLastMessTime.contact = contact;
-                                                    Message message=snapshot.getValue(Message.class);
-                                                    if ((message.getReceiverID().equals(contact.getUserIdContact()) && firebaseAuth.getCurrentUser().getUid().equals(message.getSenderID())) ||
-                                                            (message.getReceiverID().equals(firebaseAuth.getCurrentUser().getUid()) && contact.getUserIdContact().equals(message.getSenderID()))
+                                if(snapshot.exists()==true){
+                                    for(DataSnapshot child3:snapshot.getChildren()){
+                                        Contact contact = child3.getValue(Contact.class);
+                                        if(contact.getUserIdContact().equals(contactID)){
+                                            Log.d("Message","Name - " + contact.getFirstNickName() + " " + contact.getLastNickName());
+                                            contactLastMessTime.contact=contact;
+                                        }
 
-                                                    ) {
-
-                                                        contactLastMessTime.LastSendTime = message.getSendTime();
-                                                        contactLastMessTime.contact = contact;
-                                                        contactLastMessTime.LastMess = message.getMessage();
-                                                        contactLastMessTimeLinkedList.add(contactLastMessTime);
-
-                                                    }
-                                                    contactListHomeAdapter.notifyItemChanged(0);
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-                                            }
-
-                                            @Override
-                                            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-                                            }
-
-                                            @Override
-                                            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                            }
-                                        });
                                     }
+
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                        firebaseDatabase.getReference().child("MESSAGE").child(id).limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()==true)
+                                {
+
+                                    for (DataSnapshot child2:snapshot.getChildren())
+                                    {
+
+                                        Message message=child2.getValue(Message.class);
+
+                                        contactLastMessTime.LastMess=message.getMessage();
+                                        contactLastMessTime.LastSendTime=message.getSendTime();
+                                        contactLastMessTime.contact.setUserIdContact(contactID);
+                                        contactLastMessTimeLinkedList.add(contactLastMessTime);
+
+
+
+
+                                        Log.d("Message","contactID - " + contactID);
+                                        Log.d("Message",message.getMessage());
+                                        Log.d("Message",message.getSenderID());
+                                    }
+
+
+
+
+                                    contactListHomeAdapter.contactLastMessTimeLinkedList=contactLastMessTimeLinkedList;
+                                    contactListHomeAdapter.SortTime();
+
+                                    contactListHomeAdapter.notifyDataSetChanged();
                                 }
                             }
 
@@ -131,15 +142,6 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
                         });
                     }
                 }
-
-
-
-
-
-
-
-
-
             }
 
             @Override
@@ -147,6 +149,106 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
 
             }
         });
+
+        firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("ChatID").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                if (snapshot.exists()==true)
+                {
+                    for (DataSnapshot child1:snapshot.getChildren())
+                    {
+                        ContactLastMessTime contactLastMessTime=new ContactLastMessTime();
+                        //contactLastMessTimeLinkedList.clear();
+                        String id=child1.child("ChatID").getValue(String.class);
+                        String contactID = child1.child("ContactID").getValue(String.class);
+                        firebaseDatabase.getReference().child("CONTACT").child(thisUserID).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if(snapshot.exists()==true){
+                                    for(DataSnapshot child3:snapshot.getChildren()){
+                                        Contact contact = child3.getValue(Contact.class);
+                                        if(contact.getUserIdContact().equals(contactID)){
+                                            Log.d("Message","Name - " + contact.getFirstNickName() + " " + contact.getLastNickName());
+                                            contactLastMessTime.contact=contact;
+                                        }
+
+                                    }
+
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                        firebaseDatabase.getReference().child("MESSAGE").child(id).limitToLast(1).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()==true)
+                                {
+
+                                    for (DataSnapshot child2:snapshot.getChildren())
+                                    {
+
+                                        Message message=child2.getValue(Message.class);
+
+                                        contactLastMessTime.LastMess=message.getMessage();
+                                        contactLastMessTime.LastSendTime=message.getSendTime();
+                                        contactLastMessTime.contact.setUserIdContact(contactID);
+                                        for(int i = 0; i<contactLastMessTimeLinkedList.size(); i++){
+                                            if(contactLastMessTimeLinkedList.get(i).contact.getUserIdContact().equals(contactID)){
+                                                contactLastMessTimeLinkedList.get(i).LastSendTime=message.getSendTime();
+                                                contactLastMessTimeLinkedList.get(i).LastMess=message.getMessage();
+                                                Log.d("Message","updated");
+                                                break;
+                                            }
+                                            if(i == contactLastMessTimeLinkedList.size() - 1)
+                                            {
+                                                contactLastMessTimeLinkedList.add(contactLastMessTime);
+                                                Log.d("Message","added");
+                                            }
+                                        }
+
+
+
+                                        Log.d("Message","contactID - " + contactID);
+                                        Log.d("Message",message.getMessage());
+                                        Log.d("Message",message.getSenderID());
+                                    }
+
+
+                                    contactListHomeAdapter.contactLastMessTimeLinkedList=contactLastMessTimeLinkedList;
+                                    contactListHomeAdapter.SortTime();
+                                    contactListHomeAdapter.notifyDataSetChanged();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
+
+
+
+
+
+
 
 
         /*firebaseDatabase.getReference().child("CONTACT").child(firebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {

@@ -13,10 +13,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 public class DateToString {
-    public DateToString() {
-    }
-
-
 
     public static String dateToString(String dateInput){
         String dateToString = "";
@@ -44,7 +40,7 @@ public class DateToString {
             if (days < 1) {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
                 dateToString = simpleDateFormat.format(dateFromInput);
-            } else if (years < 0) {
+            } else if (years < 1) {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM");
                 dateToString = simpleDateFormat.format(dateFromInput);
             } else {

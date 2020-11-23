@@ -17,6 +17,10 @@ import com.mobile.messageclone.DrawProfilePicture;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.SignIn.RecyclerViewClickInterface;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.LinkedList;
 
 public class ContactListHomeAdapter extends RecyclerView.Adapter<ContactListHomeAdapter.viewHolder> {
@@ -35,6 +39,30 @@ public class ContactListHomeAdapter extends RecyclerView.Adapter<ContactListHome
         this.contacts=contacts;
         this.context=context;
     }
+
+    public void SortTime()
+    {
+        Comparator<ContactLastMessTime> compareLastMessTime = new Comparator<ContactLastMessTime>() {
+            @Override
+            public int compare(ContactLastMessTime o1, ContactLastMessTime o2) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss-X");
+
+                try {
+                    Date firstDate = dateFormat.parse(o1.LastSendTime);
+                    Date secondDate = dateFormat.parse(o2.LastSendTime);
+                    return firstDate.compareTo(secondDate);
+
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return 0;
+
+            }
+        };
+        contactLastMessTimeLinkedList.sort(compareLastMessTime.reversed());
+    }
+
 
     public void SetUpContactLastMessTimeList(LinkedList<ContactLastMessTime>contactLastMessTimes)
     {
@@ -76,7 +104,7 @@ public class ContactListHomeAdapter extends RecyclerView.Adapter<ContactListHome
         }
 
 
-        holder.SendTime.setText(contactLastMessTimeLinkedList.get(position).LastSendTime);
+        holder.SendTime.setText(DateToString.dateToString(contactLastMessTimeLinkedList.get(position).LastSendTime));
     }
 
     @Override
