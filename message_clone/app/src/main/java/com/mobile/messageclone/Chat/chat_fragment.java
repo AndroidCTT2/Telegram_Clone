@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,9 @@ import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -73,6 +77,7 @@ public class chat_fragment extends Fragment {
     private  String ContactID;
     private String ContactName;
     private  String ChatID="";
+    private boolean CheckInternetFlag=true;
 
 
     private FloatingActionButton btnJumpToEnd;
@@ -80,7 +85,7 @@ public class chat_fragment extends Fragment {
     private MessagesListAdapter<LibMessage>messagesListAdapter;
 
 
-
+    private Boolean HaveInternet;
 
     private SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss-X");
 
@@ -156,15 +161,65 @@ public class chat_fragment extends Fragment {
         });
 
 
+        Handler handler=new Handler();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (CheckInternetFlag) {
+                    try {
+                        Thread.sleep(500);
+                        HaveInternet=hasActiveInternetConnection(getContext());
+                        if (HaveInternet==true)
+                        {
+                            Log.d("Connect", "Kết nối thành công");
+                        }
+                        else if (HaveInternet==false)
+                        {
+                            Log.d("Connect", "Kết nối thất bại");
+                        }
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+
+                            }
+
+
+                        });
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
 
 
 
 
+        }).start();
 
+    }
+    private boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null;
+    }
+    public  boolean hasActiveInternetConnection(Context context) {
+        if (isNetworkAvailable(context)) {
+            try {
+                HttpURLConnection urlc = (HttpURLConnection) (new URL("https://www.google.com/").openConnection());
+                urlc.setRequestProperty("User-Agent", "Test");
+                urlc.setRequestProperty("Connection", "close");
 
-
-
-
+                urlc.setConnectTimeout(1500);
+                urlc.connect();
+                return (urlc.getResponseCode() == 200);
+            } catch (IOException e) {
+                Log.d("Connect", "Error checking internet connection", e);
+            }
+        } else {
+            Log.d("Connect", "No network available!");
+        }
+        return false;
     }
 
     @Override
@@ -319,7 +374,7 @@ public class chat_fragment extends Fragment {
         }
         message.setMessage(messageInput.getInputEditText().getText().toString().trim());
         String key=firebaseDatabase.getReference().child("MESSAGE").child(ChatID).push().getKey();
-        if (haveNetworkConnection()==true) {
+
             firebaseDatabase.getReference().child("MESSAGE").child(ChatID).child(key).setValue(message, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
@@ -329,11 +384,8 @@ public class chat_fragment extends Fragment {
                     firebaseDatabase.getReference().child("MESSAGE").child(ChatID).child(key).updateChildren(hashMap);
                 }
             });
-        }
-        else
-        {
 
-        }
+
 
     }
 
@@ -518,22 +570,8 @@ public class chat_fragment extends Fragment {
         }
     };
 
-    private boolean haveNetworkConnection() {
-        boolean haveConnectedWifi = false;
-        boolean haveConnectedMobile = false;
 
-        ConnectivityManager cm = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
-        for (NetworkInfo ni : netInfo) {
-            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
-                if (ni.isConnected())
-                    haveConnectedWifi = true;
-            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
-                if (ni.isConnected())
-                    haveConnectedMobile = true;
-        }
-        return haveConnectedWifi || haveConnectedMobile;
-    }
+
 
 
 }
