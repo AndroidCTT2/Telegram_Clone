@@ -1,5 +1,8 @@
 package com.mobile.messageclone.Chat;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.instacart.library.truetime.TrueTime;
@@ -185,8 +189,13 @@ public class chat_fragment extends Fragment {
 
     }
     private boolean isNetworkAvailable(Context context) {
-
-
+      if (getActivity()!=null) {
+          ConnectivityManager connectivityManager
+                  = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+          NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+          return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+      }
+      return false;
     }
     public  boolean hasActiveInternetConnection(Context context) {
         if (isNetworkAvailable(context)) {
@@ -420,11 +429,12 @@ public class chat_fragment extends Fragment {
 
 
 
-                Message message = snapshot.getValue(Message.class);
+
 
 
                 if (message.getSenderID().equals(UserID) == true) {
 
+                    LibMessage iMessage=new LibMessage();
 
 
                     try {

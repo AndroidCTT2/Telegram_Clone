@@ -3,6 +3,7 @@ package com.mobile.messageclone.Chat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.mobile.messageclone.R;
 import com.stfalcon.chatkit.messages.MessageHolders;
