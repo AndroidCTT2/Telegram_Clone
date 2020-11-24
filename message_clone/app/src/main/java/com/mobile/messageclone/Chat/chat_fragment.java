@@ -1,8 +1,5 @@
 package com.mobile.messageclone.Chat;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,14 +17,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.instacart.library.truetime.TrueTime;
@@ -192,14 +186,6 @@ public class chat_fragment extends Fragment {
     }
     private boolean isNetworkAvailable(Context context) {
 
-        if (getActivity()!=null) {
-            ConnectivityManager connectivityManager
-                    = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-            return activeNetworkInfo != null;
-        }
-        return false;
-
 
     }
     public  boolean hasActiveInternetConnection(Context context) {
@@ -280,7 +266,7 @@ public class chat_fragment extends Fragment {
 
 
        messageInput.getInputEditText().setPadding(30,20,0,20);
-       
+
 
         messageInput.setInputListener(new MessageInput.InputListener() {
             @Override
@@ -309,7 +295,6 @@ public class chat_fragment extends Fragment {
                 else {
                     messagesList.smoothScrollToPosition(0);
                 }
-                //messagesListAdapter.addToStart(message1,true);
 
                 return true;
             }
@@ -339,8 +324,6 @@ public class chat_fragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         List<LibMessage> iMessageList = new ArrayList<>();
-
-
 
         chatViewModel.ChatID.observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -427,11 +410,6 @@ public class chat_fragment extends Fragment {
         return iMessage;
 
     }
-
-
-
-
-
     private ChildEventListener UpdateMessage=new ChildEventListener() {
         @Override
         public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -442,8 +420,7 @@ public class chat_fragment extends Fragment {
 
 
 
-
-                LibMessage iMessage = new LibMessage();
+                Message message = snapshot.getValue(Message.class);
 
 
                 if (message.getSenderID().equals(UserID) == true) {
@@ -461,8 +438,6 @@ public class chat_fragment extends Fragment {
                         iMessage.Status=message.getStatus();
 
                         messagesListAdapter.addToStart(iMessage,true);
-                        messagesListAdapter.notifyDataSetChanged();
-
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -471,7 +446,7 @@ public class chat_fragment extends Fragment {
 
                 } else if (message.getSenderID().equals(ContactID)==true) {
 
-
+                    LibMessage iMessage=new LibMessage();
 
                     Date date= null;
                     try {
@@ -484,16 +459,9 @@ public class chat_fragment extends Fragment {
                         iMessage.dateSend=date;
                         Log.d("Sender", iMessage.getText());
                         messagesListAdapter.addToStart(iMessage,true);
-
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-
-
-
-
-
-
 
                 }
 
