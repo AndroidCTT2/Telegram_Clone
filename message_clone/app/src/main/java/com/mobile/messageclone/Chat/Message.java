@@ -8,11 +8,18 @@ import java.util.Date;
 
 public class Message {
 
+    enum STATUS
+    {
+        Delivered,
+        Seen,
+        Sending,
+    }
+
     private String senderID;
     private String receiverID;
     private String message;
     private String sendTime;
-    private Boolean IsSeen;
+    private STATUS Status;
 
 
     public String getSendTime() {
@@ -47,11 +54,11 @@ public class Message {
         this.sendTime = sendTime;
     }
 
-    public Boolean getSeen() {
-        return IsSeen;
+    public void setStatus(STATUS status) {
+        Status = status;
     }
 
-    public void setSeen(Boolean seen) {
-        IsSeen = seen;
+    public STATUS getStatus() {
+        return Status;
     }
 }

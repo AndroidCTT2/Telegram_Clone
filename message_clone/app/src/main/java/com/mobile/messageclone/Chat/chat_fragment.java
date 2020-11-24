@@ -79,6 +79,8 @@ public class chat_fragment extends Fragment {
     private  String ChatID="";
     private boolean CheckInternetFlag=true;
 
+    private boolean IsSeen=false;
+
 
     private FloatingActionButton btnJumpToEnd;
 
@@ -90,6 +92,8 @@ public class chat_fragment extends Fragment {
     private SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss-X");
 
     private ChatViewModel chatViewModel;
+
+    private ValueEventListener SeenEvent;
 
     private LinearLayoutManager linearLayoutManager;
 
@@ -111,7 +115,7 @@ public class chat_fragment extends Fragment {
         chatViewModel.titleBar.setValue(ContactName);
         chatViewModel.ChatID.setValue(ChatID);
 
-        firebaseDatabase.getReference().child("MESSAGE").keepSynced(true);
+
 
 
         firebaseDatabase.getReference().child("CONVERSATION_ID").orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
@@ -161,47 +165,42 @@ public class chat_fragment extends Fragment {
         });
 
 
-        Handler handler=new Handler();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while (CheckInternetFlag) {
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(100);
                         HaveInternet=hasActiveInternetConnection(getContext());
                         if (HaveInternet==true)
                         {
-                            Log.d("Connect", "Kết nối thành công");
+
                         }
                         else if (HaveInternet==false)
                         {
                             Log.d("Connect", "Kết nối thất bại");
                         }
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-
-                            }
-
-
-                        });
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
             }
 
-
-
-
         }).start();
 
     }
     private boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null;
+
+        if (getActivity()!=null) {
+            ConnectivityManager connectivityManager
+                    = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null;
+        }
+        return false;
+
+
     }
     public  boolean hasActiveInternetConnection(Context context) {
         if (isNetworkAvailable(context)) {
@@ -301,7 +300,7 @@ public class chat_fragment extends Fragment {
                 }
                 message1.iuser= author;
                 message1.textMessage=input.toString().trim();
-                message1.IsSeen=false;
+                message1.Status=Message.STATUS.Sending;
                 UpdateMessageToServer();
                 if (messagesListAdapter.getMessagesCount()==0)
                 {
@@ -348,6 +347,7 @@ public class chat_fragment extends Fragment {
             public void onChanged(String s) {
                 if (chatViewModel.ChatID.getValue().isEmpty()==false) {
                     firebaseDatabase.getReference().child("MESSAGE").child(ChatID).orderByKey().addChildEventListener(UpdateMessage);
+                    UpDateSeenStatus();
 
                 }
             }
@@ -363,7 +363,7 @@ public class chat_fragment extends Fragment {
         Message message=new Message();
         message.setSenderID(this.UserID);
         message.setReceiverID(this.ContactID);
-        message.setSeen(false);
+        message.setStatus(Message.STATUS.Sending);
         if (TrueTimeRx.isInitialized()==true)
         {
             message.setSendTime(simpleDateFormat.format(TrueTimeRx.now()));
@@ -373,17 +373,21 @@ public class chat_fragment extends Fragment {
             message.setSendTime(simpleDateFormat.format(Calendar.getInstance().getTime()));
         }
         message.setMessage(messageInput.getInputEditText().getText().toString().trim());
-        String key=firebaseDatabase.getReference().child("MESSAGE").child(ChatID).push().getKey();
 
+
+
+            String key=firebaseDatabase.getReference().child("MESSAGE").child(ChatID).push().getKey();
+            Log.d("Connect", "Kết nối thành công");
             firebaseDatabase.getReference().child("MESSAGE").child(ChatID).child(key).setValue(message, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                    Boolean isSend = true;
+
                     HashMap<String, Object> hashMap = new HashMap<>();
-                    hashMap.put("seen", isSend);
+                    hashMap.put("status", Message.STATUS.Delivered);
                     firebaseDatabase.getReference().child("MESSAGE").child(ChatID).child(key).updateChildren(hashMap);
                 }
             });
+
 
 
 
@@ -433,6 +437,7 @@ public class chat_fragment extends Fragment {
         public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
             if (snapshot.exists()==true) {
                 String messageKey = snapshot.getKey();
+
                 Message message = snapshot.getValue(Message.class);
 
 
@@ -443,9 +448,7 @@ public class chat_fragment extends Fragment {
 
                 if (message.getSenderID().equals(UserID) == true) {
 
-                    if (message.getSeen()==true) {
-                        Log.d("Change", "add message ");
-                    }
+
 
                     try {
                         Author author =new Author();
@@ -455,7 +458,7 @@ public class chat_fragment extends Fragment {
                         iMessage.id=messageKey;
                         iMessage.textMessage=message.getMessage();
                         iMessage.dateSend=date;
-                        iMessage.IsSeen=message.getSeen();
+                        iMessage.Status=message.getStatus();
 
                         messagesListAdapter.addToStart(iMessage,true);
                         messagesListAdapter.notifyDataSetChanged();
@@ -520,7 +523,7 @@ public class chat_fragment extends Fragment {
                         iMessage.id = messageKey;
                         iMessage.textMessage = message.getMessage();
                         iMessage.dateSend = date;
-                        iMessage.IsSeen = message.getSeen();
+                        iMessage.Status = message.getStatus();
 
                         messagesListAdapter.update(iMessage);
                         //messagesListAdapter.addToStart(iMessage, true);
@@ -530,7 +533,7 @@ public class chat_fragment extends Fragment {
                     }
 
 
-                } else if (message.getSenderID().equals(ContactID) == true) {
+                } /*else if (message.getSenderID().equals(ContactID) == true) {
 
 
                     Date date = null;
@@ -543,14 +546,15 @@ public class chat_fragment extends Fragment {
                         iMessage.textMessage = message.getMessage();
                         iMessage.dateSend = date;
                         Log.d("Sender", iMessage.getText());
-                        messagesListAdapter.addToStart(iMessage, true);
+                       // messagesListAdapter.update(iMessage);
+                        //messagesListAdapter.addToStart(iMessage,true);
 
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
 
 
-                }
+                }*/
             }
         }
 
@@ -570,8 +574,44 @@ public class chat_fragment extends Fragment {
         }
     };
 
+    private void UpDateSeenStatus()
+    {
+        SeenEvent=firebaseDatabase.getReference().child("MESSAGE").child(ChatID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot:snapshot.getChildren())
+                {
+                    Message message=dataSnapshot.getValue(Message.class);
+                    if (message.getSenderID().equals(ContactID) && message.getReceiverID().equals(UserID) && IsSeen==false)
+                    {
+                        HashMap<String,Object>hashMap=new HashMap<>();
+                        hashMap.put("status", Message.STATUS.Seen);
+                        dataSnapshot.getRef().updateChildren(hashMap);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        IsSeen=false;
+    }
 
+    @Override
+    public void onPause() {
+        CheckInternetFlag=false;
+        IsSeen=true;
+        firebaseDatabase.getReference().removeEventListener(SeenEvent);
+        super.onPause();
+
+    }
 }

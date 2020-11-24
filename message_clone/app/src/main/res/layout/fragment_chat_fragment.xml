@@ -37,8 +37,8 @@
             app:outcomingBubblePaddingTop="8dp"
             app:outcomingBubblePaddingLeft="8dp"
             app:outcomingBubblePaddingRight="8dp"
-            app:outcomingTimeTextSize="14sp"
-            app:incomingTimeTextSize="14sp"
+            app:outcomingTimeTextSize="16sp"
+            app:incomingTimeTextSize="16sp"
             ></com.stfalcon.chatkit.messages.MessagesList>
 
 

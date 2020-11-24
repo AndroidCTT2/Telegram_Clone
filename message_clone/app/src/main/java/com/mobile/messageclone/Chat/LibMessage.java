@@ -14,12 +14,12 @@ public class LibMessage implements IMessage, MessageContentType.Image {
     public IUser iuser;
     public Date dateSend;
     public String textMessage;
-    public Boolean IsSeen;
+
+    public Message.STATUS Status;
 
 
-    public Boolean getIsSeen()
-    {
-        return IsSeen;
+    public Message.STATUS getStatus() {
+        return Status;
     }
 
     @Override

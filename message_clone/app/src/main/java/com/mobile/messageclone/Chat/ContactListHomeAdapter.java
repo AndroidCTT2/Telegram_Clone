@@ -3,6 +3,7 @@ package com.mobile.messageclone.Chat;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.messageclone.DrawProfilePicture;
 import com.mobile.messageclone.R;
@@ -48,8 +50,8 @@ public class ContactListHomeAdapter extends RecyclerView.Adapter<ContactListHome
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss-X");
 
                 try {
-                    Date firstDate = dateFormat.parse(o1.LastSendTime);
-                    Date secondDate = dateFormat.parse(o2.LastSendTime);
+                    Date firstDate = dateFormat.parse(o1.LastMess.getSendTime());
+                    Date secondDate = dateFormat.parse(o2.LastMess.getSendTime());
                     return firstDate.compareTo(secondDate);
 
 
@@ -92,7 +94,18 @@ public class ContactListHomeAdapter extends RecyclerView.Adapter<ContactListHome
     public void onBindViewHolder(@NonNull ContactListHomeAdapter.viewHolder holder, int position) {
         String name=contactLastMessTimeLinkedList.get(position).contact.getFirstNickName()+" "+contactLastMessTimeLinkedList.get(position).contact.getLastNickName();
         holder.ContactName.setText(name);
-        holder.LastMessage.setText(contactLastMessTimeLinkedList.get(position).LastMess);
+
+        Message message=contactLastMessTimeLinkedList.get(position).LastMess;
+
+        if (message.getStatus()!= Message.STATUS.Seen && message.getReceiverID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+
+            holder.LastMessage.setTypeface(Typeface.DEFAULT_BOLD);
+        }
+        else
+        {
+            holder.LastMessage.setAlpha(0.6f);
+        }
+        holder.LastMessage.setText(contactLastMessTimeLinkedList.get(position).LastMess.getMessage());
 
         if (contactLastMessTimeLinkedList.get(position).contact.getLastNickName().isEmpty()==false)
         {
@@ -104,7 +117,7 @@ public class ContactListHomeAdapter extends RecyclerView.Adapter<ContactListHome
         }
 
 
-        holder.SendTime.setText(DateToString.dateToString(contactLastMessTimeLinkedList.get(position).LastSendTime));
+        holder.SendTime.setText(DateToString.dateToString(contactLastMessTimeLinkedList.get(position).LastMess.getSendTime()));
     }
 
     @Override

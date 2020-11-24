@@ -20,15 +20,30 @@ public class CustomOutComingMessageViewHolder extends MessageHolders.OutcomingTe
 
         ImageView tickIcon=itemView.findViewById(R.id.SeenStatus);
         ProgressBar progressBar=itemView.findViewById(R.id.ProgressBarSending);
-        if (message.getIsSeen()==true)
+        switch(message.Status)
         {
-            progressBar.setVisibility(View.GONE);
-            Log.d("TAG","HUHU");
+            case Seen:
+            {
+                tickIcon.setImageResource(R.drawable.ic_double_tick_indicator);
+                tickIcon.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                break;
+            }
+            case Sending:
+            {
+                tickIcon.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+                break;
+            }
+            case Delivered:
+            {
+                tickIcon.setImageResource(R.drawable.ic_baseline_check_24);
+                progressBar.setVisibility(View.GONE);
+                tickIcon.setVisibility(View.VISIBLE);
+                break;
+            }
         }
-        else
-        {
-            progressBar.setVisibility(View.VISIBLE);
-        }
+
         //if (message.getIsSeen()==true)
         //{
        //     tickIcon.setImageResource(R.drawable.ic_double_tick_indicator);

@@ -32,10 +32,12 @@
         ></TextView>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Hello"
             android:textSize="18sp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:id="@+id/displayLastMessage"
             android:textColor="?attr/colorOnSurface"
             ></TextView>

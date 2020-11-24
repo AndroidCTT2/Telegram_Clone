@@ -17,6 +17,7 @@ public class Application extends android.app.Application {
         super.onCreate();
 
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+       FirebaseDatabase.getInstance().getReference().child("MESSAGE").keepSynced(true);
 
         Runnable runnablen=new Runnable() {
             @Override
