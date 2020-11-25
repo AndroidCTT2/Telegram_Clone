@@ -1,6 +1,7 @@
 package com.mobile.messageclone.Chat;
 
 import android.content.Context;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -118,102 +119,108 @@ public class ContactFragment extends Fragment implements RecyclerViewClickInterf
 
 
 
-                            Contact finalContact1 = contact;
-                            firebaseDatabase.getReference().child("USER").child(contact.getUserIdContact()).child("STATUS").addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if (snapshot.exists() == true) {
-                                        String DbDate;
-                                        String DbTime;
-                                        String status;
-                                        ContactAndSeenTime contactAndSeenTime = null;
-                                        DbDate = snapshot.child("Date").getValue(String.class);
-                                        DbTime = snapshot.child("Time").getValue(String.class);
-                                        status = snapshot.child("State").getValue(String.class);
-                                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy,X-HH-mm-ss");
-                                        DbDate = DbDate + "-" + DbTime;
+                        Contact finalContact1 = contact;
+                        firebaseDatabase.getReference().child("USER").child(contact.getUserIdContact()).child("STATUS").addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists() == true) {
+                                    String DbDate;
+                                    String DbTime;
+                                    String status;
+                                    ContactAndSeenTime contactAndSeenTime = null;
+                                    DbDate = snapshot.child("Date").getValue(String.class);
+                                    DbTime = snapshot.child("Time").getValue(String.class);
+                                    status = snapshot.child("State").getValue(String.class);
+                                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy,X-HH-mm-ss");
+                                    DbDate = DbDate + "-" + DbTime;
 
-                                        Date date = new Date();
-                                        try {
-                                            date = dateFormat.parse(DbDate);
-                                        } catch (ParseException e) {
-                                            e.printStackTrace();
-                                        }
-
-                                        Date todayDate = TrueTimeRx.now();
-                                        LocalDateTime fromDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-                                        LocalDateTime toDateTime = todayDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-
-                                        LocalDateTime tempDateTime = LocalDateTime.from(fromDateTime);
-
-                                        long years = tempDateTime.until(toDateTime, ChronoUnit.YEARS);
-                                        tempDateTime = tempDateTime.plusYears(years);
-
-                                        long months = tempDateTime.until(toDateTime, ChronoUnit.MONTHS);
-                                        tempDateTime = tempDateTime.plusMonths(months);
-
-                                        long days = tempDateTime.until(toDateTime, ChronoUnit.DAYS);
-                                        tempDateTime = tempDateTime.plusDays(days);
-
-
-                                        long hours = tempDateTime.until(toDateTime, ChronoUnit.HOURS);
-                                        tempDateTime = tempDateTime.plusHours(hours);
-
-                                        long minutes = tempDateTime.until(toDateTime, ChronoUnit.MINUTES);
-                                        tempDateTime = tempDateTime.plusMinutes(minutes);
-
-                                        long seconds = tempDateTime.until(toDateTime, ChronoUnit.SECONDS);
-                                        ContactAndSeenTime contactAndSeenTime1 = new ContactAndSeenTime();
-                                        contactAndSeenTime1.Status = status;
-                                        Log.d("Phone", contactAndSeenTime1.Status);
-                                        Log.d("Phone", finalContact1.getFirstNickName());
-                                        contactAndSeenTime1.contact = finalContact1;
-
-
-                                        if (days >= 1 && days <= 2) {
-                                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
-                                            Log.d("Phone", "yesterday at " + simpleDateFormat.format(date));
-                                            contactAndSeenTime1.SeenTime = "yesterday at " + simpleDateFormat.format(date);
-                                        } else if (days < 1 && hours >= 1) {
-
-                                            Log.d("Phone", "at " + hours + " hours ago");
-                                            contactAndSeenTime1.SeenTime = "at " + hours + " hours ago";
-                                        } else if (days < 1 && hours < 1) {
-                                            Log.d("Phone", +minutes + " minutes ago");
-                                            contactAndSeenTime1.SeenTime = "at " + minutes + " minutes ago";
-                                        } else {
-                                            contactAndSeenTime1.SeenTime = "at " + fromDateTime.getDayOfMonth() + "-" + fromDateTime.getMonthValue() + "-" + fromDateTime.getYear();
-                                            Log.d("Phone", "yesterday at " + fromDateTime.getDayOfMonth() + "-" + fromDateTime.getMonthValue() + "-" + fromDateTime.getYear());
-                                        }
-                                        if (contactAndSeenTimeArrayList.size()!=0) {
-                                            for (int i = 0; i < contactAndSeenTimeArrayList.size(); i++) {
-                                                if (contactAndSeenTime1.contact.getUserIdContact().equals(contactAndSeenTimeArrayList.get(i).contact.getUserIdContact())) {
-                                                    contactAndSeenTimeArrayList.get(i).Status = contactAndSeenTime1.Status;
-                                                    contactAndSeenTimeArrayList.get(i).SeenTime = contactAndSeenTime1.SeenTime;
-                                                    break;
-                                                }
-                                                if (i == contactAndSeenTimeArrayList.size() - 1) {
-                                                    contactAndSeenTimeArrayList.add(contactAndSeenTime1);
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            contactAndSeenTimeArrayList.add(contactAndSeenTime1);
-                                        }
-
-                                        contactListAdapter.notifyDataSetChanged();
-
-
+                                    Date date = new Date();
+                                    try {
+                                        date = dateFormat.parse(DbDate);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                    Date todayDate;
+                                    if (TrueTimeRx.isInitialized() == true){
+                                        todayDate = TrueTimeRx.now();
+                                    }
+                                    else{
+                                        todayDate = Calendar.getInstance().getTime();
                                     }
 
+                                    LocalDateTime fromDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                                    LocalDateTime toDateTime = todayDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+                                    LocalDateTime tempDateTime = LocalDateTime.from(fromDateTime);
+
+                                    long years = tempDateTime.until(toDateTime, ChronoUnit.YEARS);
+                                    tempDateTime = tempDateTime.plusYears(years);
+
+                                    long months = tempDateTime.until(toDateTime, ChronoUnit.MONTHS);
+                                    tempDateTime = tempDateTime.plusMonths(months);
+
+                                    long days = tempDateTime.until(toDateTime, ChronoUnit.DAYS);
+                                    tempDateTime = tempDateTime.plusDays(days);
+
+
+                                    long hours = tempDateTime.until(toDateTime, ChronoUnit.HOURS);
+                                    tempDateTime = tempDateTime.plusHours(hours);
+
+                                    long minutes = tempDateTime.until(toDateTime, ChronoUnit.MINUTES);
+                                    tempDateTime = tempDateTime.plusMinutes(minutes);
+
+                                    long seconds = tempDateTime.until(toDateTime, ChronoUnit.SECONDS);
+                                    ContactAndSeenTime contactAndSeenTime1 = new ContactAndSeenTime();
+                                    contactAndSeenTime1.Status = status;
+                                    Log.d("Phone", contactAndSeenTime1.Status);
+                                    Log.d("Phone", finalContact1.getFirstNickName());
+                                    contactAndSeenTime1.contact = finalContact1;
+
+
+                                    if (days >= 1 && days <= 2) {
+                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+                                        Log.d("Phone", "yesterday at " + simpleDateFormat.format(date));
+                                        contactAndSeenTime1.SeenTime = "yesterday at " + simpleDateFormat.format(date);
+                                    } else if (days < 1 && hours >= 1) {
+
+                                        Log.d("Phone", "at " + hours + " hours ago");
+                                        contactAndSeenTime1.SeenTime = "at " + hours + " hours ago";
+                                    } else if (days < 1 && hours < 1) {
+                                        Log.d("Phone", +minutes + " minutes ago");
+                                        contactAndSeenTime1.SeenTime = "at " + minutes + " minutes ago";
+                                    } else {
+                                        contactAndSeenTime1.SeenTime = "at " + fromDateTime.getDayOfMonth() + "-" + fromDateTime.getMonthValue() + "-" + fromDateTime.getYear();
+                                        Log.d("Phone", "yesterday at " + fromDateTime.getDayOfMonth() + "-" + fromDateTime.getMonthValue() + "-" + fromDateTime.getYear());
+                                    }
+                                    if (contactAndSeenTimeArrayList.size()!=0) {
+                                        for (int i = 0; i < contactAndSeenTimeArrayList.size(); i++) {
+                                            if (contactAndSeenTime1.contact.getUserIdContact().equals(contactAndSeenTimeArrayList.get(i).contact.getUserIdContact())) {
+                                                contactAndSeenTimeArrayList.get(i).Status = contactAndSeenTime1.Status;
+                                                contactAndSeenTimeArrayList.get(i).SeenTime = contactAndSeenTime1.SeenTime;
+                                                break;
+                                            }
+                                            if (i == contactAndSeenTimeArrayList.size() - 1) {
+                                                contactAndSeenTimeArrayList.add(contactAndSeenTime1);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        contactAndSeenTimeArrayList.add(contactAndSeenTime1);
+                                    }
+
+                                    contactListAdapter.notifyDataSetChanged();
+
+
                                 }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
+                            }
 
-                                }
-                            });
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
 
                     }
                 }

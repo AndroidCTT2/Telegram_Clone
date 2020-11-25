@@ -101,6 +101,7 @@ public class ContactListHomeAdapter extends RecyclerView.Adapter<ContactListHome
 
             holder.LastMessage.setTypeface(Typeface.DEFAULT_BOLD);
             holder.ContactName.setTypeface(Typeface.DEFAULT_BOLD);
+            holder.SendTime.setTypeface(Typeface.DEFAULT);
             holder.LastMessage.setAlpha(1.0f);
         }
         else{

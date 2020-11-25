@@ -1,6 +1,7 @@
 package com.mobile.messageclone.Chat;
 
 import android.content.Context;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -239,8 +240,14 @@ public class NewChatFragment extends Fragment implements RecyclerViewClickInterf
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
+                                    Date todayDate;
+                                    if (TrueTimeRx.isInitialized() == true){
+                                       todayDate = TrueTimeRx.now();
+                                    }
+                                    else{
+                                        todayDate = Calendar.getInstance().getTime();
+                                    }
 
-                                    Date todayDate = TrueTimeRx.now();
                                     LocalDateTime fromDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
                                     LocalDateTime toDateTime = todayDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 
