@@ -101,6 +101,6 @@ dependencies {
 
     implementation "androidx.preference:preference:1.1.1"
 
-
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 
 }

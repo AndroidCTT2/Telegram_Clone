@@ -5,7 +5,7 @@
         <item name="colorPrimary">#0353A4</item>
         <item name="colorPrimaryDark">#023E7D</item>
         <item name="colorOnPrimary">#ffffff</item>
-        <item name="colorSecondary">#0353A4</item>
+        <item name="colorSecondary">#F44336</item>
         <item name="colorOnSecondary">#ffffff</item>
         <item name="colorOnBackground">@color/colorBackGround</item>
         <item name="colorSurface">#FFFFFF</item>

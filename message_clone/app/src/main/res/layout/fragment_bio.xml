@@ -12,6 +12,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="150dp"
+        android:id="@+id/appBarLayout"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -28,6 +29,7 @@
 
 
 
+
             <com.google.android.material.appbar.MaterialToolbar
                 android:layout_width="match_parent"
                 app:title="Hello"
@@ -36,10 +38,19 @@
                 android:layout_height="?attr/actionBarSize"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
                 app:layout_collapseMode="pin"
-                ></com.google.android.material.appbar.MaterialToolbar>
+                >
+
+
+
+            </com.google.android.material.appbar.MaterialToolbar>
+
+
+
+
 
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
+
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -190,4 +201,19 @@
     </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchorGravity="bottom|end"
+        app:layout_anchor="@id/collapsing"
+        app:backgroundTint="?attr/colorSecondary"
+        android:id="@+id/btnChoosePicture"
+        android:layout_marginRight="10dp"
+        app:srcCompat="@drawable/ic_baseline_add_a_photo_24"
+        ></com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
