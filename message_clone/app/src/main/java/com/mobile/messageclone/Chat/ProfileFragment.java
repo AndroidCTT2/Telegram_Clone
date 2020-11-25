@@ -5,10 +5,14 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,10 +20,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.SignIn.MainActivity;
+import com.mobile.messageclone.SignIn.User;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,7 +51,21 @@ public class ProfileFragment extends Fragment {
 
     private NavController navController;
     private FirebaseAuth firebaseAuth;
+    private FirebaseDatabase firebaseDatabase;
     private ChatViewModel chatViewModel;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
+    private TextView displayPhoneNum;
+    private TextView displayName;
+    private TextView displayBio;
+
+
+    private String UserId;
+    private LinearLayout ChangeName;
+    private LinearLayout ChangeBio;
+
+
+
+    private ValueEventListener InfoListener;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -63,6 +89,8 @@ public class ProfileFragment extends Fragment {
         return fragment;
     }
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,20 +98,40 @@ public class ProfileFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         firebaseAuth=FirebaseAuth.getInstance();
+        firebaseDatabase=FirebaseDatabase.getInstance();
+
+        UserId=firebaseAuth.getCurrentUser().getUid();
+
+
         setHasOptionsMenu(true);
         ((CloseDrawer)getActivity()).CloseDrawer(true);
+
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        View root=inflater.inflate(R.layout.fragment_bio,container,false);
+        Toolbar toolbar=root.findViewById(R.id.toolbar);
+
+       ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
+
+
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
 
         chatViewModel =new ViewModelProvider(getActivity()).get(ChatViewModel.class);
         chatViewModel.titleBar.setValue("Your profile");
-        return inflater.inflate(R.layout.fragment_bio, container, false);
+        return root;
     }
 
     @Override
@@ -97,6 +145,64 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController=Navigation.findNavController(view);
+        collapsingToolbarLayout=view.findViewById(R.id.collapsing);
+        displayName=view.findViewById(R.id.displayUserName);
+        displayBio=view.findViewById(R.id.displayBio);
+        displayPhoneNum=view.findViewById(R.id.displayPhoneNumber);
+        ChangeName=view.findViewById(R.id.ChangeName);
+        ChangeBio=view.findViewById(R.id.ChangeBio);
+
+        collapsingToolbarLayout.setTitle(firebaseAuth.getCurrentUser().getDisplayName());
+
+
+        InfoListener=new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+
+                    String firstName=snapshot.child("firstName").getValue(String.class);
+                    String lastName=snapshot.child("lastName").getValue(String.class);
+                    String bio=snapshot.child("bio").getValue(String.class);
+                    String phone=snapshot.child("phoneNum").getValue(String.class);
+                    displayName.setText(firstName+" "+lastName);
+                    if (bio.isEmpty()==false) {
+                        displayBio.setText(bio);
+                    }
+                    else
+                    {
+                        displayBio.setText("Bio");
+                    }
+                    displayPhoneNum.setText(phone);
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+
+        firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).addValueEventListener(InfoListener);
+
+
+
+        ChangeName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    fragment_change_name fragment_change_name1=new fragment_change_name();
+                    fragment_change_name1.show(getParentFragmentManager(),null);
+            }
+        });
+        ChangeBio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BioChangeDialogFragment bioChangeDialogFragment=new BioChangeDialogFragment();
+                bioChangeDialogFragment.show(getParentFragmentManager(),null);
+            }
+        });
+
+
     }
 
     @Override
@@ -112,5 +218,17 @@ public class ProfileFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((CloseDrawer)getActivity()).ReattachToolbar();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        firebaseDatabase.getReference().removeEventListener(InfoListener);
     }
 }

@@ -99,6 +99,7 @@ dependencies {
 
     implementation 'com.mikhaellopez:circularimageview:4.2.0'
 
+    implementation "androidx.preference:preference:1.1.1"
 
 
 

@@ -10,6 +10,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -45,7 +46,7 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
     private TextView displayUserPhoneNumber;
     private CircularImageView ProfilePicture;
 
-
+    private Toolbar toolbar;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
@@ -79,7 +80,7 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
 
         firebaseAuth=FirebaseAuth.getInstance();
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -208,6 +209,27 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         view.clearFocus();
+    }
+
+    @SuppressLint("RestrictedApi")
+    @Override
+    public void ReattachToolbar() {
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+       NavigationView navigationView = findViewById(R.id.nav_view);
+
+
+
+
+       final NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+
+       mAppBarConfiguration=new AppBarConfiguration.Builder(navController.getGraph()).setOpenableLayout(drawer).build();
+       NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+        NavigationUI.setupWithNavController(navigationView, navController);
+
+        getSupportActionBar().setShowHideAnimationEnabled(true);
+        getSupportActionBar().show();
     }
 
 

@@ -1,67 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Chat.ProfileFragment"
     android:background="@color/colorBackGround"
     android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
-    <LinearLayout
+
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="20dp"
-        >
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:id="@+id/ProfilePicture"
-            ></ImageView>
+        android:layout_height="150dp"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:title="Your profile"
+            app:maxLines="1"
+            android:id="@+id/collapsing"
+            app:collapsedTitleTextAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            app:expandedTitleTextAppearance="@style/TextAppearance.Design.CollapsingToolbar.Expanded"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+
+            >
+
+
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:layout_width="match_parent"
+                app:title="Hello"
+                android:id="@+id/toolbar"
+                app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                android:layout_height="?attr/actionBarSize"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:layout_collapseMode="pin"
+                ></com.google.android.material.appbar.MaterialToolbar>
+
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical">
+            >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Tên người dùng"
-            android:id="@+id/HeaderDisplayName"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
-            ></TextView>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Online"
-                android:textSize="15sp"
-                ></TextView>
-        </LinearLayout>
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginTop="20dp"
-        android:layout_marginHorizontal="20dp"
+
         >
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Account"
-            android:textSize="16sp"
+            android:textSize="20sp"
+            android:layout_marginBottom="20dp"
+            android:paddingLeft="20dp"
             android:textColor="?attr/colorOnSurface"
             ></TextView>
 
@@ -70,14 +78,17 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:id="@+id/ChangePhoneNumber"
+            android:clickable="true"
+            android:background="@drawable/box_backround_for_profile"
             >
             <TextView
+                android:paddingLeft="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="+840909603608"
                 android:id="@+id/displayPhoneNumber"
                 android:textColor="?attr/colorOnSurface"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:textStyle="normal"
                 ></TextView>
 
@@ -86,10 +97,17 @@
                 android:layout_height="wrap_content"
                 android:text="Tap to change phone number"
                 android:textColor="?attr/colorOnSurface"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textStyle="normal"
                 android:alpha="0.6"
+                android:paddingLeft="20dp"
                 ></TextView>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:alpha="0.4"
+                android:layout_marginTop="5dp"
+                android:background="@android:color/darker_gray"/>
 
 
         </LinearLayout>
@@ -100,6 +118,8 @@
             android:orientation="vertical"
             android:layout_marginTop="10dp"
             android:id="@+id/ChangeName"
+            android:clickable="true"
+            android:background="@drawable/box_backround_for_profile"
             >
             <TextView
                 android:layout_width="match_parent"
@@ -107,8 +127,9 @@
                 android:text="Lê Đức Thành"
                 android:id="@+id/displayUserName"
                 android:textColor="?attr/colorOnSurface"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:textStyle="normal"
+                android:paddingLeft="20dp"
                 ></TextView>
 
             <TextView
@@ -116,10 +137,17 @@
                 android:layout_height="wrap_content"
                 android:text="Tap to change your name"
                 android:textColor="?attr/colorOnSurface"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textStyle="normal"
                 android:alpha="0.6"
+                android:paddingLeft="20dp"
                 ></TextView>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:alpha="0.4"
+                android:layout_marginTop="5dp"
+                android:background="@android:color/darker_gray"/>
 
 
 
@@ -131,13 +159,17 @@
             android:orientation="vertical"
             android:layout_marginTop="10dp"
             android:id="@+id/ChangeBio"
+            android:clickable="true"
+            android:background="@drawable/box_backround_for_profile"
             >
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Bio"
+                android:id="@+id/displayBio"
                 android:textColor="?attr/colorOnSurface"
-                android:textSize="16sp"
+                android:textSize="20sp"
+                android:paddingLeft="20dp"
                 android:textStyle="normal"
                 ></TextView>
 
@@ -146,15 +178,16 @@
                 android:layout_height="wrap_content"
                 android:text="Add a few words about yourself"
                 android:textColor="?attr/colorOnSurface"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textStyle="normal"
                 android:alpha="0.6"
+                android:paddingLeft="20dp"
                 ></TextView>
 
 
         </LinearLayout>
 
     </LinearLayout>
-
-
-</LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

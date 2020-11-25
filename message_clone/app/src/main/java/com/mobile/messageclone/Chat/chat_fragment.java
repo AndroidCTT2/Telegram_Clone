@@ -70,6 +70,8 @@ public class chat_fragment extends Fragment {
     private MessageInput messageInput;
     private MessageAdapter messageAdapter;
 
+    private boolean IsScrollUpSeen=false;
+
 
     private String UserID;
     private  String ContactID;
@@ -266,6 +268,7 @@ public class chat_fragment extends Fragment {
                 {
                    // btnJumpToEnd.setVisibility(View.VISIBLE);
                     btnJumpToEnd.show();
+                    IsScrollUpSeen=true;
                 }
 
          }

@@ -1,0 +1,22 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Account"
+        android:key="Account"
+        >
+        <Preference
+            android:title="+0901321"
+            android:key="value"
+            android:summary="Tap to change phone number"
+            ></Preference>
+        <Preference
+            android:title="User name"
+            android:summary="Your name"
+            ></Preference>
+        <Preference
+            android:title="Bio"
+            android:summary="Add a few words about yourself"
+            ></Preference>
+    </PreferenceCategory>
+</PreferenceScreen>
