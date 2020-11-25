@@ -209,7 +209,7 @@ public class NewChatFragment extends Fragment implements RecyclerViewClickInterf
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if (snapshot.exists() == true) {
-                    contactAndSeenTimeArrayList.clear();
+
                     for (DataSnapshot childSnapShot : snapshot.getChildren()) {
 
                         Contact contact = new Contact();
@@ -285,9 +285,23 @@ public class NewChatFragment extends Fragment implements RecyclerViewClickInterf
                                         contactAndSeenTime1.SeenTime = "at " + fromDateTime.getDayOfMonth() + "-" + fromDateTime.getMonthValue() + "-" + fromDateTime.getYear();
                                         Log.d("Phone", "yesterday at " + fromDateTime.getDayOfMonth() + "-" + fromDateTime.getMonthValue() + "-" + fromDateTime.getYear());
                                     }
+                                    if (contactAndSeenTimeArrayList.size()!=0) {
+                                        for (int i = 0; i < contactAndSeenTimeArrayList.size(); i++) {
+                                            if (contactAndSeenTime1.contact.getUserIdContact().equals(contactAndSeenTimeArrayList.get(i).contact.getUserIdContact())) {
+                                                contactAndSeenTimeArrayList.get(i).Status = contactAndSeenTime1.Status;
+                                                contactAndSeenTimeArrayList.get(i).SeenTime = contactAndSeenTime1.SeenTime;
+                                                break;
+                                            }
+                                            if (i == contactAndSeenTimeArrayList.size() - 1) {
+                                                contactAndSeenTimeArrayList.add(contactAndSeenTime1);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        contactAndSeenTimeArrayList.add(contactAndSeenTime1);
+                                    }
 
-
-                                    contactAndSeenTimeArrayList.add(contactAndSeenTime1);
                                     contactListAdapter.notifyDataSetChanged();
 
 
@@ -325,6 +339,9 @@ public class NewChatFragment extends Fragment implements RecyclerViewClickInterf
 
             }
         });
+
+
+
 
         return root;
 

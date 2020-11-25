@@ -3,22 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".Chat.ChatActivity">
-        
         <item
-            android:title="Edit name"
-            android:id="@+id/btnDelete"
-            app:showAsAction="never"
-            android:icon="@drawable/ic_baseline_search_24"
-            android:iconTint="?attr/colorOnPrimary"
-            ></item>
-        <item
+            android:title=""
+            app:showAsAction="always"
+            android:icon="@drawable/ic_baseline_more_vert_24"
+            >
 
-            android:title="Log out"
-            android:id="@+id/btnLogOut"
-            app:showAsAction="collapseActionView"
-            android:icon="@drawable/ic_baseline_power_settings_new_24"
-            android:iconTint="?attr/colorOnPrimary"
-            ></item>
+                <menu>
+                        <item
+
+                            android:title="Log out"
+                            android:id="@+id/btnLogOut"
+                            app:showAsAction="collapseActionView"
+                            android:icon="@drawable/ic_baseline_power_settings_new_24"
+                            android:iconTint="?attr/colorOnSurface"
+                            ></item>
+                </menu>
+
+        </item>
+
+
+
 
 
 </menu>

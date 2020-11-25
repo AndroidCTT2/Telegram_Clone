@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -72,7 +74,7 @@ public class ContactFragment extends Fragment implements RecyclerViewClickInterf
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseDatabase=FirebaseDatabase.getInstance();
        contactAndSeenTimeArrayList=new ArrayList<>();
-
+        setHasOptionsMenu(true);
 
 
     }
@@ -301,5 +303,12 @@ public class ContactFragment extends Fragment implements RecyclerViewClickInterf
     @Override
     public void onLongItemClick(int position) {
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.contact_menu,menu);
     }
 }

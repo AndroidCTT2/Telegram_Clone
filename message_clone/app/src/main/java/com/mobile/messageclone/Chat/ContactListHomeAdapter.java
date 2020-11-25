@@ -94,17 +94,19 @@ public class ContactListHomeAdapter extends RecyclerView.Adapter<ContactListHome
     public void onBindViewHolder(@NonNull ContactListHomeAdapter.viewHolder holder, int position) {
         String name=contactLastMessTimeLinkedList.get(position).contact.getFirstNickName()+" "+contactLastMessTimeLinkedList.get(position).contact.getLastNickName();
         holder.ContactName.setText(name);
-
+        holder.SendTime.setText(DateToString.dateToString(contactLastMessTimeLinkedList.get(position).LastMess.getSendTime()));
         Message message=contactLastMessTimeLinkedList.get(position).LastMess;
 
         if (message.getStatus()!= Message.STATUS.Seen && message.getReceiverID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
 
             holder.LastMessage.setTypeface(Typeface.DEFAULT_BOLD);
+            holder.ContactName.setTypeface(Typeface.DEFAULT_BOLD);
+            holder.LastMessage.setAlpha(1.0f);
         }
-        else
-        {
+        else{
             holder.LastMessage.setAlpha(0.6f);
         }
+
         holder.LastMessage.setText(contactLastMessTimeLinkedList.get(position).LastMess.getMessage());
 
         if (contactLastMessTimeLinkedList.get(position).contact.getLastNickName().isEmpty()==false)
@@ -117,7 +119,7 @@ public class ContactListHomeAdapter extends RecyclerView.Adapter<ContactListHome
         }
 
 
-        holder.SendTime.setText(DateToString.dateToString(contactLastMessTimeLinkedList.get(position).LastMess.getSendTime()));
+
     }
 
     @Override

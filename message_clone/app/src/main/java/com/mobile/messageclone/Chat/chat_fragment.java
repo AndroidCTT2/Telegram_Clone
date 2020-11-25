@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -112,8 +113,13 @@ public class chat_fragment extends Fragment {
         firebaseDatabase=FirebaseDatabase.getInstance();
         messageLinkedList=new LinkedList<>();
         chatViewModel =new ViewModelProvider(getActivity()).get(ChatViewModel.class);
-        chatViewModel.titleBar.setValue(ContactName);
+        //chatViewModel.titleBar.setValue(ContactName);
+
+
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(ContactName);
+
         chatViewModel.ChatID.setValue(ChatID);
+        chatViewModel.IsScrollingMutableLiveData.setValue(false);
 
 
 
@@ -254,6 +260,7 @@ public class chat_fragment extends Fragment {
              super.onScrollStateChanged(recyclerView, newState);
              if (!recyclerView.canScrollVertically(1) && newState==RecyclerView.SCROLL_STATE_IDLE) {
                //  btnJumpToEnd.setVisibility(View.GONE);
+                 chatViewModel.IsScrollingMutableLiveData.setValue(false);
                  btnJumpToEnd.hide();
              }
          }
@@ -269,6 +276,7 @@ public class chat_fragment extends Fragment {
                    // btnJumpToEnd.setVisibility(View.VISIBLE);
                     btnJumpToEnd.show();
                     IsScrollUpSeen=true;
+                    chatViewModel.IsScrollingMutableLiveData.setValue(true);
                 }
 
          }
@@ -343,10 +351,36 @@ public class chat_fragment extends Fragment {
                 if (chatViewModel.ChatID.getValue().isEmpty()==false) {
                     firebaseDatabase.getReference().child("MESSAGE").child(ChatID).orderByKey().addChildEventListener(UpdateMessage);
                     UpDateSeenStatus();
+                    chatViewModel.IsScrollingMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                        @Override
+                        public void onChanged(Boolean aBoolean) {
+                            firebaseDatabase.getReference().child("MESSAGE").child(ChatID).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for (DataSnapshot dataSnapshot:snapshot.getChildren())
+                                    {
+                                        Message message=dataSnapshot.getValue(Message.class);
+                                        if (message.getSenderID().equals(ContactID) && message.getReceiverID().equals(UserID) && IsSeen==false && chatViewModel.IsScrollingMutableLiveData.getValue()==false && message.getStatus()!= Message.STATUS.Seen)
+                                        {
+                                            HashMap<String,Object>hashMap=new HashMap<>();
+                                            hashMap.put("status", Message.STATUS.Seen);
+                                            dataSnapshot.getRef().updateChildren(hashMap);
+                                        }
+                                    }
+                                }
 
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
+                    });
                 }
             }
         });
+
+
 
     }
 
@@ -471,7 +505,13 @@ public class chat_fragment extends Fragment {
                         iMessage.textMessage=message.getMessage();
                         iMessage.dateSend=date;
                         Log.d("Sender", iMessage.getText());
-                        messagesListAdapter.addToStart(iMessage,true);
+                        if (chatViewModel.IsScrollingMutableLiveData.getValue()==true)
+                        {
+                            messagesListAdapter.addToStart(iMessage,false);
+                        }
+                        else {
+                            messagesListAdapter.addToStart(iMessage, true);
+                        }
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -563,7 +603,8 @@ public class chat_fragment extends Fragment {
                 for (DataSnapshot dataSnapshot:snapshot.getChildren())
                 {
                     Message message=dataSnapshot.getValue(Message.class);
-                    if (message.getSenderID().equals(ContactID) && message.getReceiverID().equals(UserID) && IsSeen==false)
+                    if (message.getSenderID().equals(ContactID) && message.getReceiverID().equals(UserID) && IsSeen==false && chatViewModel.IsScrollingMutableLiveData.getValue()==false
+                    && message.getStatus()!= Message.STATUS.Seen)
                     {
                         HashMap<String,Object>hashMap=new HashMap<>();
                         hashMap.put("status", Message.STATUS.Seen);

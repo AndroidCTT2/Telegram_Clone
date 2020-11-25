@@ -8,8 +8,7 @@
     <fragment
         android:id="@+id/fragment_home"
         android:name="com.mobile.messageclone.Chat.HomeFragment"
-        android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment2_to_mainScreen2"
             app:destination="@id/fragment_contact" />
@@ -28,8 +27,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragment_contact"
-        android:name="com.mobile.messageclone.Chat.ContactFragment"
-        android:label="MainScreen" >
+        android:name="com.mobile.messageclone.Chat.ContactFragment">
         <action
             android:id="@+id/action_fragment_contact_to_fragment_find_contact"
             app:destination="@id/fragment_find_contact" />
@@ -40,28 +38,23 @@
     </fragment>
     <fragment
         android:id="@+id/fragment_find_contact"
-        android:name="com.mobile.messageclone.Chat.fragment_find_contact"
-        android:label="fragment_find_contact" />
+        android:name="com.mobile.messageclone.Chat.fragment_find_contact" />
     <fragment
         android:id="@+id/bio"
         android:name="com.mobile.messageclone.Chat.ProfileFragment"
-        android:label="fragment_bio"
         tools:layout="@layout/fragment_bio" />
     <fragment
         android:id="@+id/chat_fragment"
         android:name="com.mobile.messageclone.Chat.chat_fragment"
-        android:label="fragment_chat_fragment"
         tools:layout="@layout/fragment_chat_fragment" />
     <fragment
         android:id="@+id/newGroupFragment"
         android:name="com.mobile.messageclone.Chat.NewGroupFragment"
-        android:label="fragment_new_group"
         tools:layout="@layout/fragment_new_group" />
     <fragment
         android:id="@+id/newChat"
         android:name="com.mobile.messageclone.Chat.NewChatFragment"
-        android:label="fragment_new_chat"
-        tools:layout="@layout/fragment_new_chat" >
+        tools:layout="@layout/fragment_new_chat">
         <action
             android:id="@+id/action_fragment_newChat_to_chat_fragment"
             app:destination="@id/chat_fragment"

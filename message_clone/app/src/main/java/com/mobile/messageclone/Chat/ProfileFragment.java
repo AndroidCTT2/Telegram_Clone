@@ -11,8 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
+
 
 import android.view.LayoutInflater;
 import android.view.Menu;

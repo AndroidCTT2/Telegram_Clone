@@ -21,6 +21,7 @@
         <item name="colorButtonNormal">#0077B6</item>
         <item name="android:textColor">#ffffff</item>
         <item name="incomingTextColor">#ffffff</item>
+        <item name="colorOnSurface">#ffffff</item>
 
 
     </style>
