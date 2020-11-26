@@ -178,14 +178,14 @@ public class ProfileFragment extends Fragment {
 
                     btnAddImage.animate().scaleX(1).scaleY(1).setDuration(150).start();
 
-                    imgBio.animate().scaleX(1).scaleY(1).setDuration(150).start();
+                    imgBio.animate().scaleX(1).scaleY(1).setDuration(100).start();
 
                 }
                 else
                 {
                     btnAddImage.animate().scaleX(0).scaleY(0).setDuration(150).start();
 
-                    imgBio.animate().scaleX(1).scaleY(1).setDuration(150).start();
+                    imgBio.animate().scaleX(0).scaleY(0).setDuration(100).start();
 
 
                 }
@@ -206,6 +206,9 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+
+
+
         return root;
     }
 
@@ -279,6 +282,22 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
                 BioChangeDialogFragment bioChangeDialogFragment=new BioChangeDialogFragment();
                 bioChangeDialogFragment.show(getParentFragmentManager(),null);
+            }
+        });
+
+        firebaseDatabase.getReference().child("USER").child(UserId).child("ProfileImg").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()==true)
+                {
+                    String imgurl=snapshot.getValue(String.class);
+                    Glide.with(fragment).load(imgurl).into(imgBio);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
 
@@ -381,7 +400,15 @@ public class ProfileFragment extends Fragment {
         uploadtask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                Log.d("Image",task.getResult().toString());
+                firebaseStorage.getReference().child("USER").child(UserId).child("UserProfileImage").child("ProfileImage").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.getResult()!=null) {
+                            Log.d("Url", task.getResult().toString());
+                            firebaseDatabase.getReference().child("USER").child(UserId).child("ProfileImg").setValue(task.getResult().toString());
+                        }
+                    }
+                });
             }
 
 
