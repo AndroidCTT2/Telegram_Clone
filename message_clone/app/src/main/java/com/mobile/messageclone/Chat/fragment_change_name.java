@@ -81,11 +81,12 @@ public class fragment_change_name extends DialogFragment {
                 {
                     LastName=inputLastName.getText().toString().trim();
                 }
-                hashMap.put("firstName",FirstName);
-                hashMap.put("lastName",LastName);
+               // hashMap.put("firstName",FirstName);
+                //hashMap.put("lastName",LastName);
 
 
-                firebaseDatabase.getReference().child("USER").child(UserId).updateChildren(hashMap);
+                firebaseDatabase.getReference().child("USER").child(UserId).child("firstName").setValue(FirstName);
+                firebaseDatabase.getReference().child("USER").child(UserId).child("lastName").setValue(LastName);
 
                 UserProfileChangeRequest userProfileChangeRequest= new UserProfileChangeRequest.Builder().setDisplayName(FirstName+" "+LastName).build();
                 firebaseAuth.getCurrentUser().updateProfile(userProfileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {

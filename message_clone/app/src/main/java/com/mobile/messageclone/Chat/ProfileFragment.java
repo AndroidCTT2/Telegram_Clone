@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -34,6 +36,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -42,11 +47,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.SignIn.MainActivity;
 import com.mobile.messageclone.SignIn.User;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+
+import java.io.ByteArrayOutputStream;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -74,7 +85,8 @@ public class ProfileFragment extends Fragment {
     private TextView displayPhoneNum;
     private TextView displayName;
     private TextView displayBio;
-
+    private CircularImageView imgBio;
+    private FirebaseStorage firebaseStorage;
 
     private FloatingActionButton btnAddImage;
     private String UserId;
@@ -82,7 +94,7 @@ public class ProfileFragment extends Fragment {
     private LinearLayout ChangeBio;
     private AppBarLayout appBarLayout;
     private Fragment fragment=this;
-
+    
     private Uri mCropImageUri;
 
     private Toolbar toolbar;
@@ -124,6 +136,7 @@ public class ProfileFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseDatabase=FirebaseDatabase.getInstance();
+        firebaseStorage=FirebaseStorage.getInstance();
 
         UserId=firebaseAuth.getCurrentUser().getUid();
 
@@ -143,6 +156,7 @@ public class ProfileFragment extends Fragment {
          toolbar=root.findViewById(R.id.toolbar);
         appBarLayout=root.findViewById(R.id.appBarLayout);
         btnAddImage=root.findViewById(R.id.btnChoosePicture);
+
        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
 
@@ -161,15 +175,22 @@ public class ProfileFragment extends Fragment {
                 if (verticalOffset==0)
                 {
 
-                    btnAddImage.show();
+
+                    btnAddImage.animate().scaleX(1).scaleY(1).setDuration(150).start();
+
+                    imgBio.animate().scaleX(1).scaleY(1).setDuration(150).start();
 
                 }
                 else
                 {
+                    btnAddImage.animate().scaleX(0).scaleY(0).setDuration(150).start();
 
-                    btnAddImage.hide();
+                    imgBio.animate().scaleX(1).scaleY(1).setDuration(150).start();
+
 
                 }
+
+
             }
         });
 
@@ -205,6 +226,7 @@ public class ProfileFragment extends Fragment {
         displayPhoneNum=view.findViewById(R.id.displayPhoneNumber);
         ChangeName=view.findViewById(R.id.ChangeName);
         ChangeBio=view.findViewById(R.id.ChangeBio);
+        imgBio = view.findViewById(R.id.imgBio);
 
         collapsingToolbarLayout.setTitle(firebaseAuth.getCurrentUser().getDisplayName());
 
@@ -219,6 +241,9 @@ public class ProfileFragment extends Fragment {
                     String bio=snapshot.child("bio").getValue(String.class);
                     String phone=snapshot.child("phoneNum").getValue(String.class);
                     displayName.setText(firstName+" "+lastName);
+                    displayPhoneNum.setText(phone);
+                    collapsingToolbarLayout.setTitle(firebaseAuth.getCurrentUser().getDisplayName());
+                    Log.d("Phone","number: " + phone);
                     if (bio.isEmpty()==false) {
                         displayBio.setText(bio);
                     }
@@ -226,7 +251,7 @@ public class ProfileFragment extends Fragment {
                     {
                         displayBio.setText("Bio");
                     }
-                    displayPhoneNum.setText(phone);
+
 
 
             }
@@ -309,6 +334,8 @@ public class ProfileFragment extends Fragment {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 Uri resultUri = result.getUri();
+                Glide.with(this).load(resultUri).into(imgBio);
+                UploadImge(resultUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
@@ -338,4 +365,28 @@ public class ProfileFragment extends Fragment {
         super.onResume();
 
     }
+
+    public void UploadImge(Uri imageUri)
+    {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 8; // shrink it down otherwise we will use stupid amounts of memory
+        Bitmap bitmap = BitmapFactory.decodeFile(imageUri.getPath(), options);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] bytes = baos.toByteArray();
+        FirebaseStorage firebaseStorage=FirebaseStorage.getInstance();
+
+
+        UploadTask uploadtask=firebaseStorage.getReference().child("USER").child(UserId).child("UserProfileImage").child("ProfileImage").putBytes(bytes);
+        uploadtask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                Log.d("Image",task.getResult().toString());
+            }
+
+
+        });
+    }
+
+
 }

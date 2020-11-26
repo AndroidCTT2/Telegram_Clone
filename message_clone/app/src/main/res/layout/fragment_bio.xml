@@ -11,9 +11,10 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="250dp"
         android:id="@+id/appBarLayout"
         android:theme="@style/AppTheme.AppBarOverlay">
+
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
@@ -24,6 +25,7 @@
             app:collapsedTitleTextAppearance="@style/TextAppearance.MaterialComponents.Headline5"
             app:expandedTitleTextAppearance="@style/TextAppearance.Design.CollapsingToolbar.Expanded"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:expandedTitleGravity="bottom|center_horizontal"
 
             >
 
@@ -196,12 +198,24 @@
                 ></TextView>
 
 
+
         </LinearLayout>
 
+
     </LinearLayout>
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/imgBio"
+        app:layout_anchor="@id/collapsing"
+        app:layout_anchorGravity="center_horizontal|center_vertical"
+        app:civ_border="false">
+
+    </com.mikhaellopez.circularimageview.CircularImageView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
