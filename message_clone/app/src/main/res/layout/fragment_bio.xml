@@ -207,15 +207,32 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@id/collapsing"
+        app:layout_anchorGravity="center_horizontal|center_vertical">
+
     <com.mikhaellopez.circularimageview.CircularImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:id="@+id/imgBio"
-        app:layout_anchor="@id/collapsing"
-        app:layout_anchorGravity="center_horizontal|center_vertical"
-        app:civ_border="false">
+        app:civ_border="false"
+        app:civ_circle_color="?attr/colorOnPrimarySurface">
 
     </com.mikhaellopez.circularimageview.CircularImageView>
+
+
+        <ProgressBar
+            android:id="@+id/progressbarImage"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"/>
+
+
+    </RelativeLayout>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"

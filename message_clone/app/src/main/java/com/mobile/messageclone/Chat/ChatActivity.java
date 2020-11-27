@@ -1,5 +1,6 @@
 package com.mobile.messageclone.Chat;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -22,17 +23,23 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.Layout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.messageclone.DrawProfilePicture;
 import com.mobile.messageclone.R;
@@ -57,6 +64,7 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
 
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
+    private ValueEventListener changeImageListener;
 
     public static final String STATUS_OFFLINE="OFFLINE";
     public static final String STATUS_ONLINE="ONLINE";
@@ -143,9 +151,33 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
         }
 
 
-        ProfilePicture.setImageBitmap(DrawProfilePicture.textAsBitmap(firstname.toUpperCase()+lastname.toUpperCase(),60,Color.WHITE));
+        String finalLastname = lastname;
+
+        changeImageListener=new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()==true)
+                {
+                    String url=snapshot.getValue(String.class);
+                    Log.d("Dowload",url);
+                    ProfilePicture.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    Glide.with(getBaseContext()).load(url).into(ProfilePicture);
+                }
+                else
+                {
+                    ProfilePicture.setImageBitmap(DrawProfilePicture.textAsBitmap(firstname.toUpperCase()+ finalLastname.toUpperCase(),60,Color.WHITE));
+                    Log.d("Dowload","NoImage");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
 
 
+        firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("ProfileImg").addValueEventListener(changeImageListener);
 
         chatViewModel.titleBar.observe(this, new Observer<String>() {
             @Override
@@ -164,6 +196,7 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
 
 
     }
+
 
 
 
@@ -244,6 +277,7 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
     @Override
     protected void onStop() {
         super.onStop();
+
         if (firebaseAuth.getCurrentUser()!=null)
         {
             UpdateStatus(STATUS_OFFLINE);
@@ -253,6 +287,14 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
     @Override
     protected void onResume() {
         super.onResume();
+
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("ProfileImg").addValueEventListener(changeImageListener);
     }
 
     @Override

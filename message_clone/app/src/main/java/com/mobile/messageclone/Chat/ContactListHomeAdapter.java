@@ -4,15 +4,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.messageclone.DrawProfilePicture;
@@ -110,14 +113,28 @@ public class ContactListHomeAdapter extends RecyclerView.Adapter<ContactListHome
 
         holder.LastMessage.setText(contactLastMessTimeLinkedList.get(position).LastMess.getMessage());
 
-        if (contactLastMessTimeLinkedList.get(position).contact.getLastNickName().isEmpty()==false)
-        {
-            holder.ProfileImageView.setImageBitmap(DrawProfilePicture.textAsBitmap((String.valueOf(name.charAt(0)).toUpperCase()+(String.valueOf(contactLastMessTimeLinkedList.get(position).contact.getLastNickName().charAt(0)).toUpperCase())),70, Color.WHITE));
+        if (contactLastMessTimeLinkedList.get(position).profileImg==null) {
+
+            holder.ProfileImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            if (contactLastMessTimeLinkedList.get(position).contact.getLastNickName().isEmpty()==false)
+            {
+                holder.ProfileImageView.setImageBitmap(DrawProfilePicture.textAsBitmap((String.valueOf(name.charAt(0)).toUpperCase()+(String.valueOf(contactLastMessTimeLinkedList.get(position).contact.getLastNickName().charAt(0)).toUpperCase())),70, Color.WHITE));
+            }
+            else
+            {
+                holder.ProfileImageView.setImageBitmap(DrawProfilePicture.textAsBitmap((String.valueOf(name.charAt(0)).toUpperCase()),70,Color.WHITE));
+            }
+
         }
         else
         {
-            holder.ProfileImageView.setImageBitmap(DrawProfilePicture.textAsBitmap((String.valueOf(name.charAt(0)).toUpperCase()),70,Color.WHITE));
+           // Toast.makeText(context,contactLastMessTimeLinkedList.get(position).profileImg,Toast.LENGTH_SHORT).show();
+            holder.ProfileImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            Glide.with(context).load(contactLastMessTimeLinkedList.get(position).profileImg).into(holder.ProfileImageView);
         }
+
+
+
 
 
 

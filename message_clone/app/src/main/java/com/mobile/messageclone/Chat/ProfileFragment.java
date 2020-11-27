@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -32,12 +34,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -51,6 +60,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.mobile.messageclone.DrawProfilePicture;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.SignIn.MainActivity;
 import com.mobile.messageclone.SignIn.User;
@@ -94,12 +104,16 @@ public class ProfileFragment extends Fragment {
     private LinearLayout ChangeBio;
     private AppBarLayout appBarLayout;
     private Fragment fragment=this;
-    
+
+    private ProgressBar progressBar;
+
+
     private Uri mCropImageUri;
 
     private Toolbar toolbar;
 
     private ValueEventListener InfoListener;
+    private ValueEventListener changeImageListener;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -172,23 +186,14 @@ public class ProfileFragment extends Fragment {
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (verticalOffset==0)
-                {
+                float percentage = ((float)Math.abs(verticalOffset)/appBarLayout.getTotalScrollRange());
 
 
-                    btnAddImage.animate().scaleX(1).scaleY(1).setDuration(150).start();
-
-                    imgBio.animate().scaleX(1).scaleY(1).setDuration(100).start();
-
-                }
-                else
-                {
-                    btnAddImage.animate().scaleX(0).scaleY(0).setDuration(150).start();
-
-                    imgBio.animate().scaleX(0).scaleY(0).setDuration(100).start();
-
-
-                }
+                Log.d("Percent",String.valueOf(percentage));
+                imgBio.setScaleX(1-percentage);
+                imgBio.setScaleY(1-percentage);
+                btnAddImage.setScaleX(1-percentage);
+                btnAddImage.setScaleY(1-percentage);
 
 
             }
@@ -233,6 +238,10 @@ public class ProfileFragment extends Fragment {
 
         collapsingToolbarLayout.setTitle(firebaseAuth.getCurrentUser().getDisplayName());
 
+        progressBar=view.findViewById(R.id.progressbarImage);
+
+
+
 
         InfoListener=new ValueEventListener() {
             @Override
@@ -254,8 +263,31 @@ public class ProfileFragment extends Fragment {
                     {
                         displayBio.setText("Bio");
                     }
+                    changeImageListener=new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()==true)
+                        {
+                            progressBar.setVisibility(View.VISIBLE);
+                            imgBio.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                            String imgurl=snapshot.getValue(String.class);
+                            Glide.with(getActivity()).load(imgurl).into(imgBio);
+                        }
+                        else
+                        {
+                            imgBio.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                            String text=String.valueOf(firstName.charAt(0))+String.valueOf(lastName.charAt(0));
+                            Bitmap bitmap=DrawProfilePicture.textAsBitmap(text,100, Color.WHITE);
+                            imgBio.setImageBitmap(bitmap);
+                        }
+                    }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
+                    }
+                };
+                    firebaseDatabase.getReference().child("USER").child(UserId).child("ProfileImg").addValueEventListener(changeImageListener);
 
             }
 
@@ -285,21 +317,7 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        firebaseDatabase.getReference().child("USER").child(UserId).child("ProfileImg").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()==true)
-                {
-                    String imgurl=snapshot.getValue(String.class);
-                    Glide.with(fragment).load(imgurl).into(imgBio);
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
 
     }
@@ -385,6 +403,13 @@ public class ProfileFragment extends Fragment {
 
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        firebaseDatabase.getReference().removeEventListener(changeImageListener);
+        firebaseDatabase.getReference().removeEventListener(InfoListener);
+    }
+
     public void UploadImge(Uri imageUri)
     {
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -412,6 +437,11 @@ public class ProfileFragment extends Fragment {
             }
 
 
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(),"Image upload unseccesful",Toast.LENGTH_SHORT).show();
+            }
         });
     }
 

@@ -90,6 +90,27 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
                                         if(contact.getUserIdContact().equals(contactID)){
                                             Log.d("Message","Name - " + contact.getFirstNickName() + " " + contact.getLastNickName());
                                             contactLastMessTime.contact=contact;
+                                            firebaseDatabase.getReference().child("USER").child(contactLastMessTime.contact.getUserIdContact()).child("ProfileImg").addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    if (snapshot.exists()==true)
+                                                    {
+                                                        String url=snapshot.getValue(String.class);
+                                                        contactLastMessTime.profileImg=url;
+                                                        Log.d("Image","Co vo day");
+                                                    }
+                                                    else
+                                                    {
+                                                        contactLastMessTime.profileImg=null;
+                                                        Log.d("Image","Khong vo day");
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
                                         }
 
                                     }
@@ -212,6 +233,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
     @Override
     public void onResume() {
         super.onResume();
+        contactListHomeAdapter.notifyDataSetChanged();
 
 
     }
@@ -245,18 +267,14 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
     }
     @Override
     public void onPause() {
-        if (childEventListener!=null) {
-            firebaseDatabase.getReference().removeEventListener(childEventListener);
-        }
+
         super.onPause();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (childEventListener!=null) {
-            firebaseDatabase.getReference().removeEventListener(childEventListener);
-        }
+
     }
 
 }
