@@ -5,10 +5,12 @@ public class ContactAndSeenTime {
     public String SeenTime;
     public String Status;
 
+
     public ContactAndSeenTime()
     {
         contact=new Contact();
         SeenTime="";
         Status="";
+
     }
 }

@@ -3,6 +3,7 @@ package com.mobile.messageclone.Chat;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,8 @@ public class ContactListNewGroupChatAdapter extends RecyclerView.Adapter<Contact
     Activity activity;
     ArrayList<ContactAndSeenTime> contactAndSeenTimeList=new ArrayList();
     RecyclerViewClickInterface recyclerViewClickInterface;
+
+    private SparseBooleanArray itemStateArray=new SparseBooleanArray();
 
 
 
@@ -58,7 +61,13 @@ public class ContactListNewGroupChatAdapter extends RecyclerView.Adapter<Contact
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
         String ContactName=contactAndSeenTimeList.get(position).contact.getFirstNickName()+" "+contactAndSeenTimeList.get(position).contact.getLastNickName();
 
-
+        if (itemStateArray.get(position)==true) {
+            holder.materialCheckBox.setChecked(itemStateArray.get(position));
+        }
+        else
+        {
+            holder.materialCheckBox.setChecked(false);
+        }
         holder.NameContact.setText(ContactName);
         if (contactAndSeenTimeList.get(position).Status.equals("ONLINE")) {
             holder.Status.setText(contactAndSeenTimeList.get(position).Status+" ");
@@ -106,6 +115,21 @@ public class ContactListNewGroupChatAdapter extends RecyclerView.Adapter<Contact
                 @Override
                 public void onClick(View v) {
                     recyclerViewClickInterface.onItemClick(getAdapterPosition());
+                }
+            });
+
+            materialCheckBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int adapterPosition = getAdapterPosition();
+                    if (!itemStateArray.get(adapterPosition, false)) {
+                        materialCheckBox.setChecked(true);
+                        itemStateArray.put(adapterPosition, true);
+                    }
+                    else  {
+                        materialCheckBox.setChecked(false);
+                        itemStateArray.put(adapterPosition, false);
+                    }
                 }
             });
         }
