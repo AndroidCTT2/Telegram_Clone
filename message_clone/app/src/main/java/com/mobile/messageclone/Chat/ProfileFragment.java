@@ -87,6 +87,8 @@ public class ProfileFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+
+
     private NavController navController;
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
@@ -147,7 +149,12 @@ public class ProfileFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+
+        chatViewModel =new ViewModelProvider(getActivity()).get(ChatViewModel.class);
+
+        chatViewModel.IsHideAppBar.setValue(true);
+        chatViewModel.IsHideNavBar.setValue(true);
+
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseDatabase=FirebaseDatabase.getInstance();
         firebaseStorage=FirebaseStorage.getInstance();
@@ -156,7 +163,7 @@ public class ProfileFragment extends Fragment {
 
 
         setHasOptionsMenu(true);
-        ((CloseDrawer)getActivity()).CloseDrawer(true);
+
 
     }
 
@@ -171,14 +178,14 @@ public class ProfileFragment extends Fragment {
         appBarLayout=root.findViewById(R.id.appBarLayout);
         btnAddImage=root.findViewById(R.id.btnChoosePicture);
 
-       ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        if (isAdded()) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
 
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+           // ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
 
-
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
+        }
 
         chatViewModel =new ViewModelProvider(getActivity()).get(ChatViewModel.class);
         chatViewModel.titleBar.setValue("Your profile");
@@ -220,7 +227,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
+        Log.d("SignOut","có nhấn");
         inflater.inflate(R.menu.profile_menu,menu);
     }
 
@@ -254,7 +261,7 @@ public class ProfileFragment extends Fragment {
                     String phone=snapshot.child("phoneNum").getValue(String.class);
                     displayName.setText(firstName+" "+lastName);
                     displayPhoneNum.setText(phone);
-                    collapsingToolbarLayout.setTitle(firebaseAuth.getCurrentUser().getDisplayName());
+                    collapsingToolbarLayout.setTitle(firstName+" "+lastName);
                     Log.d("Phone","number: " + phone);
                     if (bio.isEmpty()==false) {
                         displayBio.setText(bio);
@@ -268,10 +275,23 @@ public class ProfileFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()==true)
                         {
-                            progressBar.setVisibility(View.VISIBLE);
-                            imgBio.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                            String imgurl=snapshot.getValue(String.class);
-                            Glide.with(getActivity()).load(imgurl).into(imgBio);
+                            if (isAdded()==true) {
+                                progressBar.setVisibility(View.VISIBLE);
+                                imgBio.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                                String imgurl = snapshot.getValue(String.class);
+                                Glide.with(fragment).load(imgurl).addListener(new RequestListener<Drawable>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                        progressBar.setVisibility(View.INVISIBLE);
+                                        return false;
+                                    }
+                                }).into(imgBio);
+                            }
                         }
                         else
                         {
@@ -327,11 +347,18 @@ public class ProfileFragment extends Fragment {
         if (item.getItemId()==R.id.btnLogOut)
         {
             ((CloseDrawer)getActivity()).UpdateStatus(ChatActivity.STATUS_OFFLINE);
+            Log.d("SignOut","Vo day");
             firebaseAuth.signOut();
+            firebaseDatabase.getReference().removeEventListener(InfoListener);
             Intent intent=new Intent(getActivity(), MainActivity.class);
             startActivity(intent);
             getActivity().finish();
             return true;
+        }
+        if (item.getItemId() == android.R.id.home) {
+            getActivity().onBackPressed();
+
+           return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -341,6 +368,7 @@ public class ProfileFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
+
     }
 
     @Override
@@ -348,6 +376,7 @@ public class ProfileFragment extends Fragment {
         super.onDetach();
         ((CloseDrawer)getActivity()).ReattachToolbar();
         firebaseDatabase.getReference().removeEventListener(InfoListener);
+        Toast.makeText(getContext(),"Co click",Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -413,7 +442,7 @@ public class ProfileFragment extends Fragment {
     public void UploadImge(Uri imageUri)
     {
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 8; // shrink it down otherwise we will use stupid amounts of memory
+        options.inSampleSize = 4; // shrink it down otherwise we will use stupid amounts of memory
         Bitmap bitmap = BitmapFactory.decodeFile(imageUri.getPath(), options);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);

@@ -239,7 +239,7 @@
         android:layout_height="wrap_content"
         app:layout_anchorGravity="bottom|end"
         app:layout_anchor="@id/collapsing"
-        app:backgroundTint="?attr/colorSecondary"
+        app:backgroundTint="?attr/colorAccent"
         android:id="@+id/btnChoosePicture"
         android:layout_marginRight="10dp"
         app:srcCompat="@drawable/ic_baseline_add_a_photo_24"

@@ -31,7 +31,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:layout_marginVertical="10dp"
-        android:text="sorted by last seen time"
+        android:textSize="16sp"
+        android:text="Sorted by last seen time"
         android:textColor="?attr/colorOnSurface"
         ></TextView>
 
@@ -41,7 +42,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ListContact"
-        android:background="?attr/colorOnBackground"
         android:paddingHorizontal="20dp"
         ></androidx.recyclerview.widget.RecyclerView>
 
@@ -55,11 +55,11 @@
             android:id="@+id/btnAddContact"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:backgroundTint="?attr/colorPrimary"
+            app:backgroundTint="?attr/colorButtonNormal"
             app:fabSize="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-
+            android:elevation="6dp"
             app:layout_constraintHorizontal_bias="0.954"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

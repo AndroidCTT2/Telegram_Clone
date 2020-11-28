@@ -116,7 +116,9 @@ public class chat_fragment extends Fragment {
         //chatViewModel.titleBar.setValue(ContactName);
 
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(ContactName);
+
+        chatViewModel.titleBar.setValue(ContactName);
+
 
         chatViewModel.ChatID.setValue(ChatID);
         chatViewModel.IsScrollingMutableLiveData.setValue(false);

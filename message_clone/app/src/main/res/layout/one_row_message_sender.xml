@@ -43,14 +43,16 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/bubble"
             android:alpha="0.5"
-            android:text="24:56" />
+            android:text="24:56"
+            android:paddingRight="8dp"/>
 
         <ProgressBar
             android:id="@+id/ProgressBarSending"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_gravity="center_vertical"
-
+            android:indeterminate="true"
+            android:indeterminateTint="#ffffff"
             ></ProgressBar>
 
         <ImageView

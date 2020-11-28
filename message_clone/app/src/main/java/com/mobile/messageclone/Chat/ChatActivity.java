@@ -193,6 +193,35 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
             }
         });
 
+        chatViewModel.IsHideAppBar.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (chatViewModel.IsHideAppBar.getValue()==false)
+                {
+
+                }
+                else
+                {
+                    getSupportActionBar().hide();
+                    chatViewModel.IsHideAppBar.setValue(false);
+                }
+            }
+        });
+
+        chatViewModel.IsHideNavBar.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (chatViewModel.IsHideNavBar.getValue()==false)
+                {
+
+                }
+                else
+                {
+                    mAppBarConfiguration.getOpenableLayout().close();
+                }
+            }
+        });
+
 
 
     }
@@ -271,6 +300,14 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
         getSupportActionBar().setShowHideAnimationEnabled(true);
         getSupportActionBar().show();
         getSupportActionBar().setTitle("Message");
+    }
+
+
+
+
+    @Override
+    public void HideAppBar() {
+        getSupportActionBar().hide();
     }
 
 

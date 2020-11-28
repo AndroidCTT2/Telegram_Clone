@@ -5,4 +5,5 @@ public interface CloseDrawer {
     public void UpdateStatus(String status);
     public void CloseKeyBoard();
     public void ReattachToolbar();
+    public void HideAppBar();
 }

@@ -50,7 +50,9 @@
             android:layout_alignParentBottom="true"
             android:layout_centerInParent="true"
             app:srcCompat="@drawable/ic_baseline_keyboard_arrow_down_24"
-            app:backgroundTint="?attr/colorButtonNormal"
+            app:backgroundTint="?attr/colorOnBackground"
+            android:elevation="6dp"
+            app:tint="?attr/colorButtonNormal"
             ></com.google.android.material.floatingactionbutton.FloatingActionButton>
     </RelativeLayout>
             <com.stfalcon.chatkit.messages.MessageInput
@@ -59,13 +61,15 @@
                 android:layout_height="wrap_content"
                 app:inputHint="Message"
 
+
                 app:inputTextSize="20sp"
                 app:inputTextColor="?attr/colorOnSurface"
                 app:inputBackground="@drawable/message_send_box_background"
                 app:inputMaxLines="5"
                 app:inputButtonMargin="5dp"
-                app:inputButtonDefaultBgColor="?attr/colorPrimary"
-                app:inputButtonDefaultIconColor="?attr/colorOnBackground"
+                app:inputButtonDefaultBgDisabledColor="@color/transparent"
+                app:inputButtonDefaultBgColor="@color/transparent"
+                app:inputButtonDefaultIconColor="?attr/colorButtonNormal"
                 ></com.stfalcon.chatkit.messages.MessageInput>
 
 

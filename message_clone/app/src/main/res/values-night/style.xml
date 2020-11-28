@@ -12,13 +12,13 @@
         <item name="android:colorBackground">#121212</item>
 
         <item name="colorSurface">#121212</item>
-        <item name="colorAccent">#979DAC</item>
+        <item name="colorAccent">#FF5252</item>
         <item name="otpViewStyle">@style/OtpWidget.OtpView</item>
         <item name="colorOnPrimarySurface">#959595</item>
 
         <item name="colorError">#ff414d</item>
         <item name="colorOnError">#ffffff</item>
-        <item name="colorButtonNormal">#0077B6</item>
+        <item name="colorButtonNormal">#00A8FF</item>
         <item name="android:textColor">#ffffff</item>
         <item name="incomingTextColor">#ffffff</item>
         <item name="colorOnSurface">#ffffff</item>

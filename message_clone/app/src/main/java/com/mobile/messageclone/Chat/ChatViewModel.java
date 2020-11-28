@@ -11,6 +11,8 @@ public class ChatViewModel extends ViewModel {
     public MutableLiveData<String> titleBar;
     public MutableLiveData<String> ChatID;
     public MutableLiveData<Boolean>IsScrollingMutableLiveData;
+    public MutableLiveData<Boolean>IsHideAppBar;
+    public MutableLiveData<Boolean>IsHideNavBar;
 
     public MutableLiveData<Boolean>IsDeleteListContactSeenTimeList;
 
@@ -21,6 +23,8 @@ public class ChatViewModel extends ViewModel {
         ChatID=new MutableLiveData<>();
         IsDeleteListContactSeenTimeList=new MutableLiveData<>();
         IsScrollingMutableLiveData=new MutableLiveData<>();
+        IsHideAppBar=new MutableLiveData<>();
+        IsHideNavBar=new MutableLiveData<>();
         //titleBar.setValue("Message");
     }
 }
