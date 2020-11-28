@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,6 +23,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.instacart.library.truetime.TrueTimeRx;
 import com.mobile.messageclone.R;
+import com.mobile.messageclone.RecyclerCheckBoxClick;
 import com.mobile.messageclone.SignIn.RecyclerViewClickInterface;
 
 import androidx.annotation.NonNull;
@@ -45,7 +47,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class NewGroupFragment extends Fragment implements RecyclerViewClickInterface {
+public class NewGroupFragment extends Fragment implements RecyclerViewClickInterface, RecyclerCheckBoxClick
+{
 
 
 
@@ -68,6 +71,8 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
 
     private ValueEventListener valueEventListener;
 
+    private TextView displayAddedUser;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,14 +89,14 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         chatViewModel =new ViewModelProvider(getActivity()).get(ChatViewModel.class);
-        chatViewModel.titleBar.setValue("Contact");
+        chatViewModel.titleBar.setValue("New group");
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View root=inflater.inflate(R.layout.fragment_contact,container,false);
+        View root=inflater.inflate(R.layout.fragment_new_group,container,false);
 
 
         RecyclerViewContact=root.findViewById(R.id.ListContact);
@@ -99,12 +104,14 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
 
         contactListAdapter=new ContactListNewGroupChatAdapter(getContext(),contactAndSeenTimeArrayList,getActivity());
         contactListAdapter.SetClickInterface(this);
+        contactListAdapter.SetCheckBoxInterface(this::CheckBoxClick);
+
         RecyclerViewContact.setAdapter(contactListAdapter);
 
 
         chatViewModel.IsDeleteListContactSeenTimeList.setValue(false);
 
-
+        displayAddedUser=root.findViewById(R.id.textDisplayContactAdded);
 
         firebaseDatabase.getReference().child("CONTACT").orderByKey().equalTo(firebaseAuth.getCurrentUser().getUid()).addChildEventListener(new ChildEventListener() {
             @Override
@@ -272,12 +279,7 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
 
         btnAddContact=view.findViewById(R.id.btnAddContact);
 
-        btnAddContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navController.navigate(R.id.action_fragment_contact_to_fragment_find_contact);
-            }
-        });
+
 
 
 
@@ -317,5 +319,11 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
         inflater.inflate(R.menu.contact_menu,menu);
+    }
+
+    @Override
+    public void CheckBoxClick(int position) {
+
+        displayAddedUser.setText(contactAndSeenTimeArrayList.get(position).contact.getFirstNickName()+" "+contactAndSeenTimeArrayList.get(position).contact.getLastNickName());
     }
 }

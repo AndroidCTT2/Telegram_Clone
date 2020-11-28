@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/textDisplayContactAdded"
         android:textSize="25sp"
+        android:text="Hello"
         ></TextView>
 
     <androidx.recyclerview.widget.RecyclerView

@@ -17,6 +17,7 @@ import com.google.android.material.checkbox.MaterialCheckBox;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.messageclone.DrawProfilePicture;
 import com.mobile.messageclone.R;
+import com.mobile.messageclone.RecyclerCheckBoxClick;
 import com.mobile.messageclone.SignIn.RecyclerViewClickInterface;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class ContactListNewGroupChatAdapter extends RecyclerView.Adapter<Contact
     Activity activity;
     ArrayList<ContactAndSeenTime> contactAndSeenTimeList=new ArrayList();
     RecyclerViewClickInterface recyclerViewClickInterface;
+    RecyclerCheckBoxClick recyclerCheckBoxClick;
 
     private SparseBooleanArray itemStateArray=new SparseBooleanArray();
 
@@ -47,6 +49,12 @@ public class ContactListNewGroupChatAdapter extends RecyclerView.Adapter<Contact
     {
         this.recyclerViewClickInterface=recyclerViewClickInterface;
     }
+
+    public void SetCheckBoxInterface(RecyclerCheckBoxClick recyclerCheckBoxClick)
+    {
+        this.recyclerCheckBoxClick=recyclerCheckBoxClick;
+    }
+
     @NonNull
     @Override
     public viewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -125,6 +133,7 @@ public class ContactListNewGroupChatAdapter extends RecyclerView.Adapter<Contact
                     if (!itemStateArray.get(adapterPosition, false)) {
                         materialCheckBox.setChecked(true);
                         itemStateArray.put(adapterPosition, true);
+                        recyclerCheckBoxClick.CheckBoxClick(getAdapterPosition());
                     }
                     else  {
                         materialCheckBox.setChecked(false);
