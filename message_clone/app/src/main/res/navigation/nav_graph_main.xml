@@ -48,7 +48,7 @@
     <fragment
         android:id="@+id/bio"
         android:name="com.mobile.messageclone.Chat.ProfileFragment"
-        tools:layout="@layout/fragment_bio" />
+        tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/chat_fragment"
         android:name="com.mobile.messageclone.Chat.chat_fragment"

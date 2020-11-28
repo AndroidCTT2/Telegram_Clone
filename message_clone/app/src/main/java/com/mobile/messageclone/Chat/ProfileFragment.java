@@ -11,22 +11,16 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -57,13 +51,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.messageclone.DrawProfilePicture;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.SignIn.MainActivity;
-import com.mobile.messageclone.SignIn.User;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -173,7 +165,7 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root=inflater.inflate(R.layout.fragment_bio,container,false);
+        View root=inflater.inflate(R.layout.fragment_profile,container,false);
          toolbar=root.findViewById(R.id.toolbar);
         appBarLayout=root.findViewById(R.id.appBarLayout);
         btnAddImage=root.findViewById(R.id.btnChoosePicture);
@@ -254,7 +246,13 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
+                    if (isAdded()==true) {
+                        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
+
+                        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    }
+                // ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
                     String firstName=snapshot.child("firstName").getValue(String.class);
                     String lastName=snapshot.child("lastName").getValue(String.class);
                     String bio=snapshot.child("bio").getValue(String.class);
@@ -336,6 +334,8 @@ public class ProfileFragment extends Fragment {
                 bioChangeDialogFragment.show(getParentFragmentManager(),null);
             }
         });
+
+
 
 
 

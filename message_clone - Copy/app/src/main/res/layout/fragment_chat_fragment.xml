@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Chat.chat_fragment"
+    android:orientation="vertical">
+
+    <!--
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+           android:layout_weight="1"
+            android:id="@+id/messageList"
+
+            ></androidx.recyclerview.widget.RecyclerView>
+
+      -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+        <com.stfalcon.chatkit.messages.MessagesList
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/messageList"
+            app:incomingTextSize="18sp"
+            app:incomingBubblePaddingBottom="8dp"
+            app:incomingBubblePaddingLeft="8dp"
+            app:incomingBubblePaddingRight="8dp"
+            app:incomingBubblePaddingTop="8dp"
+            app:outcomingDefaultBubbleColor="?attr/colorSecondary"
+            app:incomingDefaultBubbleColor="?attr/colorBackgroundFloating"
+            app:outcomingTextSize="18sp"
+            app:outcomingBubblePaddingBottom="8dp"
+            app:outcomingBubblePaddingTop="8dp"
+            app:outcomingBubblePaddingLeft="8dp"
+            app:outcomingBubblePaddingRight="8dp"
+            app:outcomingTimeTextSize="16sp"
+            app:incomingTimeTextSize="16sp"
+            ></com.stfalcon.chatkit.messages.MessagesList>
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fabSize="mini"
+            android:id="@+id/jumpToEnd"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            app:srcCompat="@drawable/ic_baseline_keyboard_arrow_down_24"
+            app:backgroundTint="?attr/colorOnBackground"
+            android:elevation="6dp"
+            app:tint="?attr/colorButtonNormal"
+            ></com.google.android.material.floatingactionbutton.FloatingActionButton>
+    </RelativeLayout>
+            <com.stfalcon.chatkit.messages.MessageInput
+                android:id="@+id/inputMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:inputHint="Message"
+
+
+                app:inputTextSize="20sp"
+                app:inputTextColor="?attr/colorOnSurface"
+                app:inputBackground="@drawable/message_send_box_background"
+                app:inputMaxLines="5"
+                app:inputButtonMargin="5dp"
+                app:inputButtonDefaultBgDisabledColor="@color/transparent"
+                app:inputButtonDefaultBgColor="@color/transparent"
+                app:inputButtonDefaultIconColor="?attr/colorButtonNormal"
+                ></com.stfalcon.chatkit.messages.MessageInput>
+
+
+            <!--
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="10dp"
+                android:orientation="horizontal">
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/message_send_box_background"
+                android:textColor="?attr/colorOnSurface"
+                android:hint="Message"
+                android:paddingVertical="5dp"
+                android:paddingLeft="15dp"
+                android:maxLines="4"
+                android:textSize="18sp"
+                android:layout_weight="1"
+                ></com.google.android.material.textfield.TextInputEditText>
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:icon="@drawable/ic_baseline_send_24"
+                    app:iconTint="?attr/colorPrimary"
+                    android:background="#0003DAC5"
+                    android:minWidth="0dp"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    ></com.google.android.material.button.MaterialButton>
+            </LinearLayout>
+              -->
+</LinearLayout>

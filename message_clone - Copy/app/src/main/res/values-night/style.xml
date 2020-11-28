@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar" tools:ignore="DuplicateDefinition">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#121212</item>
+        <item name="colorPrimaryDark">#131313</item>
+        <item name="colorOnPrimary">#ffffff</item>
+        <item name="colorSecondary">#0077B6</item>
+        <item name="colorOnSecondary">#ffffff</item>
+        <item name="colorOnBackground">@color/colorBackGround</item>
+        <item name="colorBackgroundFloating">#2B2B2B</item>
+        <item name="android:colorBackground">#121212</item>
+
+        <item name="colorSurface">#121212</item>
+        <item name="colorAccent">#FF5252</item>
+        <item name="otpViewStyle">@style/OtpWidget.OtpView</item>
+        <item name="colorOnPrimarySurface">#959595</item>
+
+        <item name="colorError">#ff414d</item>
+        <item name="colorOnError">#ffffff</item>
+        <item name="colorButtonNormal">#00A8FF</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="incomingTextColor">#ffffff</item>
+        <item name="colorOnSurface">#ffffff</item>
+
+
+    </style>
+</resources>

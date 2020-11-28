@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="10dp"
+    android:layout_marginVertical="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Việt Nam"
+        android:textSize="16sp"
+        android:id="@+id/textCountry"
+        android:layout_weight="2"
+        android:ems="8"
+        android:textColor="?attr/colorOnSurface">
+    </TextView>
+
+    <TextView
+        android:paddingLeft="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="+84"
+        android:id="@+id/textCode"
+
+        android:textColor="?attr/colorOnSurface"></TextView>
+
+
+
+
+</LinearLayout>

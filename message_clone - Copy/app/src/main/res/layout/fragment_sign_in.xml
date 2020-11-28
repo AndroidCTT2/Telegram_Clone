@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SignIn.MainActivity"
+    android:background="?attr/colorOnBackground"
+    >
+
+
+
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            style="@style/Widget.MaterialComponents.Toolbar"
+            android:layout_width="match_parent"
+            android:elevation="4dp"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorSurface"
+
+            app:title="Your phone"
+            android:outlineProvider="bounds"
+
+            app:titleTextColor="?attr/colorOnSurface" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="false"
+        android:layout_marginTop="20dp"
+        android:textSize="20sp"
+        android:id="@+id/editChoseCountryCode"
+        android:text="Vietnam"
+        android:textColor="?attr/colorOnSurface"
+        android:layout_marginHorizontal="20dp"
+        ></com.google.android.material.textfield.TextInputEditText>
+
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="20dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="+"
+            android:textSize="25sp"
+            android:textColor="?attr/colorOnSurface"
+            android:gravity="center_vertical"
+            ></TextView>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:maxLength="4"
+            android:minEms="2"
+            android:text="84"
+            android:inputType="phone"
+            android:imeOptions="actionNext"
+            android:id="@+id/textInputCountryCode"
+            android:maxLines="1"
+
+            >
+
+        </com.google.android.material.textfield.TextInputEditText>
+
+
+
+
+
+
+
+        <com.google.android.material.textfield.TextInputEditText
+
+            android:hint="Nhập số điện thoại"
+            android:maxEms="10"
+            android:id="@+id/textInputPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:inputType="phone"
+            android:imeOptions="actionNext"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="20sp"></com.google.android.material.textfield.TextInputEditText>
+
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_marginHorizontal="20dp"
+        android:textColor="?attr/colorOnSurface"
+        android:elevation="2dp"
+        android:text="Please confirm your country code and enter your phone number"
+        ></TextView>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_weight="3">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnSignIn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_arrow_forward_24"
+            app:fabSize="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.954"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.966"
+            app:backgroundTint="?attr/colorButtonNormal"
+            ></com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SignIn.MainActivity"
+    android:background="?attr/colorOnBackground"
+    >
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="20dp"
+
+        >
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center_vertical"
+            app:civ_border="false"
+            app:civ_circle_color="?attr/colorOnPrimarySurface"
+            android:id="@+id/ProfilePicture"
+            app:srcCompat="@drawable/ic_baseline_360_24"
+            ></com.mikhaellopez.circularimageview.CircularImageView>
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="First name (required)"
+            android:imeOptions="actionNext"
+            android:inputType="text"
+            android:id="@+id/inputNickFirstName"
+            ></com.google.android.material.textfield.TextInputEditText>
+
+           <com.google.android.material.textfield.TextInputEditText
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:hint="Last name (optional)"
+               android:id="@+id/inputNickLastName"
+               android:imeOptions="actionNext"
+
+               android:inputType="text"
+               ></com.google.android.material.textfield.TextInputEditText>
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="false"
+        android:layout_marginTop="20dp"
+        android:textSize="20sp"
+        android:id="@+id/editChoseCountryCode"
+        android:text="Vietnam"
+        android:textColor="?attr/colorOnSurface"
+        android:layout_marginHorizontal="20dp"
+        ></com.google.android.material.textfield.TextInputEditText>
+
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="20dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="+"
+            android:textSize="25sp"
+
+            android:textColor="?attr/colorOnSurface"
+            android:gravity="center_vertical"
+            ></TextView>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:maxLength="4"
+            android:minEms="2"
+            android:text="84"
+            android:inputType="phone"
+            android:imeOptions="actionNext"
+            android:id="@+id/textInputCountryCode"
+            android:maxLines="1"
+
+            >
+
+        </com.google.android.material.textfield.TextInputEditText>
+
+
+
+
+
+
+
+        <com.google.android.material.textfield.TextInputEditText
+
+            android:hint="Phone number"
+            android:maxEms="10"
+            android:id="@+id/textInputPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:inputType="phone"
+            android:imeOptions="actionDone"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="20sp"></com.google.android.material.textfield.TextInputEditText>
+
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:id="@+id/demo"
+        android:layout_marginHorizontal="20dp"
+        android:textColor="?attr/colorOnSurface"
+        android:elevation="2dp"
+        android:text="Please add your contact phone and country code above"
+        ></TextView>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_weight="3">
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

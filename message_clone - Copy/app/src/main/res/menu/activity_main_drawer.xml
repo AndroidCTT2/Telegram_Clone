@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/fragment_home"
+            android:icon="@drawable/ic_baseline_home_24"
+            android:title="@string/menu_home"
+            />
+        <item
+            android:id="@+id/newGroupFragment"
+            android:icon="@drawable/ic_baseline_people_24"
+            android:title="New group" />
+        <item
+            android:id="@+id/fragment_contact"
+            android:icon="@drawable/ic_round_contacts_24"
+            android:title="Contact" />
+        <item
+            android:id="@+id/fragment_new_video_call"
+            android:icon="@drawable/ic_baseline_video_call_24"
+            android:title="Video call" />
+        <item
+            android:id="@+id/fragment_new_voice_call"
+            android:icon="@drawable/ic_baseline_call_24"
+            android:title="Voice call" />
+    </group>
+
+
+</menu>
