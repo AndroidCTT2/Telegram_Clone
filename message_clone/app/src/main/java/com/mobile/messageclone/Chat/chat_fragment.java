@@ -7,19 +7,18 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,10 +28,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.instacart.library.truetime.TrueTime;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.instacart.library.truetime.TrueTimeRx;
+import com.mobile.messageclone.APIService;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.SignIn.User;
+import com.mobile.messageclone.notification.Client;
+import com.mobile.messageclone.notification.Data;
+import com.mobile.messageclone.notification.MyResponse;
+import com.mobile.messageclone.notification.Sender;
+import com.mobile.messageclone.notification.Token;
 import com.stfalcon.chatkit.messages.MessageHolders;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
@@ -49,6 +54,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class chat_fragment extends Fragment {
@@ -98,6 +107,8 @@ public class chat_fragment extends Fragment {
 
     private LinearLayoutManager linearLayoutManager;
 
+    APIService apiService;
+    boolean notify =false;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,7 +119,7 @@ public class chat_fragment extends Fragment {
             ContactName=getArguments().getString("ContactName");
 
         }
-
+        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseDatabase=FirebaseDatabase.getInstance();
         messageLinkedList=new LinkedList<>();
@@ -197,6 +208,9 @@ public class chat_fragment extends Fragment {
 
         }).start();
 
+    }
+    private void updateToken(String token){
+        FirebaseDatabase.getInstance().getReference().child("USER").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("DeviceToken").setValue(token);
     }
     private boolean isNetworkAvailable(Context context) {
       if (getActivity()!=null) {
@@ -321,7 +335,7 @@ public class chat_fragment extends Fragment {
                 return true;
             }
         });
-
+        updateToken(FirebaseInstanceId.getInstance().getToken());
 
 
 
@@ -416,6 +430,9 @@ public class chat_fragment extends Fragment {
                     HashMap<String, Object> hashMap = new HashMap<>();
                     hashMap.put("status", Message.STATUS.Delivered);
                     firebaseDatabase.getReference().child("MESSAGE").child(ChatID).child(key).updateChildren(hashMap);
+                    sendNotification(ContactID,firebaseAuth.getCurrentUser().getDisplayName(),message.getMessage());
+                    notify = false;
+
                 }
             });
 
@@ -423,7 +440,50 @@ public class chat_fragment extends Fragment {
 
 
     }
+    private void sendNotification(String receiver, String sender, String msg){
+        firebaseDatabase.getReference().child("USER").child(receiver).child("DeviceToken").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists() == true){
 
+                    Token token = new Token(snapshot.getValue(String.class));
+                    Log.d("Token ", "onDataChange: " + token.getToken());
+                    Data data = new Data(UserID,
+                            R.mipmap.ic_launcher,
+                            sender + " : " + msg,
+                            "New message",
+                            ContactID);
+                    Sender sender = new Sender(data, token.getToken());
+                    Log.d("Callback", "onResponse: " + data.getBody());
+                    apiService.sendNotification(sender)
+                            .enqueue(new Callback<MyResponse>() {
+
+                                @Override
+                                public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+
+                                    if(response.code() == 200){
+
+                                        if(response.body().success == 1){
+                                            Log.d("200 code ", "onResponse: " + response.body().success);
+                                            Toast.makeText(getActivity(),"Failed", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<MyResponse> call, Throwable t) {
+
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
     private boolean CheckExistID(DataSnapshot dataSnapshot)
     {
         String ID=GenerateChatID.GenerateKey(this.UserID,this.ContactID,GenerateChatID.ID_CHAT_PERSONAL);
@@ -548,7 +608,10 @@ public class chat_fragment extends Fragment {
                         iMessage.dateSend = date;
                         iMessage.Status = message.getStatus();
 
-                        messagesListAdapter.update(iMessage);
+
+                        if(messagesListAdapter != null) {
+                            messagesListAdapter.update(iMessage);
+                        }
                         //messagesListAdapter.addToStart(iMessage, true);
 
                     } catch (ParseException e) {

@@ -31,8 +31,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,6 +43,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.messageclone.DrawProfilePicture;
 import com.mobile.messageclone.R;
@@ -64,7 +69,10 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
 
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
+    private Task<String> firebaseMessaging;
+    private String deviceToken;
     private ValueEventListener changeImageListener;
+
 
     public static final String STATUS_OFFLINE="OFFLINE";
     public static final String STATUS_ONLINE="ONLINE";
@@ -111,8 +119,24 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
         NavigationUI.setupWithNavController(navigationView, navController);
 
         firebaseDatabase=FirebaseDatabase.getInstance();
+        /*
+        firebaseMessaging = FirebaseMessaging.getInstance().getToken()
+            .addOnCompleteListener(new OnCompleteListener<String>() {
+                @Override
+                public void onComplete(@NonNull Task<String> task) {
+                    if(task.isSuccessful()==false){
+                        Log.d("Fetching FCM registration token failed", task.getException().toString());
+                        return;
+                    }
+                    deviceToken=task.getResult();
 
+                    Log.d("Token message: ", deviceToken);
+                    Toast.makeText(ChatActivity.this, deviceToken, Toast.LENGTH_SHORT).show();
+                    firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("DeviceToken").push().setValue(deviceToken);
 
+                }
+            });
+        */
 
 
 
