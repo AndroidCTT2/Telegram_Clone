@@ -464,7 +464,7 @@ public class chat_fragment extends Fragment {
                                     if(response.code() == 200){
 
                                         if(response.body().success == 1){
-                                            Log.d("200 code ", "onResponse: " + response.body().success);
+                                            Log.d("Hello", "onResponse: " + response.body());
                                             Toast.makeText(getActivity(),"Failed", Toast.LENGTH_LONG).show();
                                         }
                                     }

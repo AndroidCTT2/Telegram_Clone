@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -26,8 +27,33 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String sented = remoteMessage.getData().get("Sented");
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if(firebaseUser != null && sented.equals(firebaseUser.getUid())){
-            sendNotification(remoteMessage);
+            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O)
+            {
+                sendOreoNotification(remoteMessage);
+            }
+            else {
+                sendNotification(remoteMessage);
+            }
         }
+    }
+    private void sendOreoNotification(RemoteMessage remoteMessage)
+    {
+        String user = remoteMessage.getData().get("user");
+        String icon = remoteMessage.getData().get("icon");
+        String body = remoteMessage.getData().get("body");
+        String title = remoteMessage.getData().get("title");
+        RemoteMessage.Notification notification = remoteMessage.getNotification();
+        Intent intent = new Intent(this, ChatActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("userId", user);
+        intent.putExtras(bundle);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT);
+
+        Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        OreoNotification oreoNotification=new OreoNotification(this);
+        Notification.Builder builder=oreoNotification.getOreoNotification(title,body,pendingIntent,defaultSound,icon);
+        oreoNotification.getManager().notify(Integer.parseInt(user),builder.build());
     }
 
     private void sendNotification(RemoteMessage remoteMessage) {
