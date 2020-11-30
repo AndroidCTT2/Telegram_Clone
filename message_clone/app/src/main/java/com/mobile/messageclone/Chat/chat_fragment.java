@@ -90,7 +90,7 @@ public class chat_fragment extends Fragment {
     private boolean CheckInternetFlag=true;
 
     private boolean IsSeen=false;
-
+    private String userNameInReceiverContact;
 
     private FloatingActionButton btnJumpToEnd;
 
@@ -207,6 +207,25 @@ public class chat_fragment extends Fragment {
             }
 
         }).start();
+
+        firebaseDatabase.getReference().child("CONTACT").child(ContactID).child(UserID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()==true){
+                    Contact contact = snapshot.getValue(Contact.class);
+                    userNameInReceiverContact = contact.getFirstNickName() + " " + contact.getLastNickName();
+                    Log.d("UIRC: ",userNameInReceiverContact);
+                }
+                else{
+                    userNameInReceiverContact = firebaseAuth.getCurrentUser().getDisplayName();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
     }
     private void updateToken(String token){
@@ -430,7 +449,7 @@ public class chat_fragment extends Fragment {
                     HashMap<String, Object> hashMap = new HashMap<>();
                     hashMap.put("status", Message.STATUS.Delivered);
                     firebaseDatabase.getReference().child("MESSAGE").child(ChatID).child(key).updateChildren(hashMap);
-                    sendNotification(ContactID,firebaseAuth.getCurrentUser().getDisplayName(),message.getMessage());
+                    sendNotification(ContactID,userNameInReceiverContact,message.getMessage());
                     notify = false;
 
                 }
@@ -450,8 +469,8 @@ public class chat_fragment extends Fragment {
                     Log.d("Token ", "onDataChange: " + token.getToken());
                     Data data = new Data(UserID,
                             R.mipmap.ic_launcher,
-                            sender + " : " + msg,
-                            "New message",
+                            msg,
+                            sender,
                             ContactID);
                     Sender sender = new Sender(data, token.getToken());
                     Log.d("Callback", "onResponse: " + data.getBody());

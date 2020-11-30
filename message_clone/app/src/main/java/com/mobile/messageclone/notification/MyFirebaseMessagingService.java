@@ -24,7 +24,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        String sented = remoteMessage.getData().get("Sented");
+        String sented = remoteMessage.getData().get("sented");
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if(firebaseUser != null && sented.equals(firebaseUser.getUid())){
             if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O)
@@ -44,20 +44,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String title = remoteMessage.getData().get("title");
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         Intent intent = new Intent(this, ChatActivity.class);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
         Bundle bundle = new Bundle();
         bundle.putString("userId", user);
+        bundle.putString("name",title);
+
         intent.putExtras(bundle);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //intent.putExtras("NewMessage",bundle);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT);
 
-        Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        OreoNotification oreoNotification=new OreoNotification(this);
-        Notification.Builder builder=oreoNotification.getOreoNotification(title,body,pendingIntent,defaultSound,icon);
-        oreoNotification.getManager().notify(Integer.parseInt(user),builder.build());
-    }
-
-    private void sendNotification(RemoteMessage remoteMessage) {
-        String user = remoteMessage.getData().get("user");
+        /*String user = remoteMessage.getData().get("user");
         String icon = remoteMessage.getData().get("icon");
         String body = remoteMessage.getData().get("body");
         String title = remoteMessage.getData().get("title");
@@ -67,7 +65,29 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         bundle.putString("userId", user);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT);*/
+
+        Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        OreoNotification oreoNotification=new OreoNotification(this);
+        Notification.Builder builder=oreoNotification.getOreoNotification(title,body,pendingIntent,defaultSound,icon);
+        oreoNotification.getManager().notify(0,builder.build());
+    }
+
+    private void sendNotification(RemoteMessage remoteMessage) {
+        String user = remoteMessage.getData().get("user");
+        String icon = remoteMessage.getData().get("icon");
+        String body = remoteMessage.getData().get("body");
+        String title = remoteMessage.getData().get("title");
+        RemoteMessage.Notification notification = remoteMessage.getNotification();
+        Intent intent = new Intent(this, ChatActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("userId", user);
+        bundle.putString("name",title);
+        intent.putExtra("NewMessage",bundle);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
 
         Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
@@ -81,4 +101,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         noti.notify(Integer.parseInt(user),builder.build());
 
     }
+
+
 }

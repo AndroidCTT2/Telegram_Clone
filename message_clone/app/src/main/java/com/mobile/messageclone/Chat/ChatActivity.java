@@ -246,7 +246,7 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
             }
         });
 
-
+        //onNewIntent(getIntent());
 
     }
 
@@ -365,5 +365,36 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
             fragment.onActivityResult(requestCode, resultCode, data);
         }
 
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if(intent != null){
+            Log.d("NewIntent", "onNewIntent: ");
+            Bundle bundle = intent.getExtras();
+
+            String contactID = bundle.getString("userId");
+            String contactName = bundle.getString("name");
+            Bundle bundle1 = new Bundle();
+            bundle1.putString("UserID",firebaseAuth.getCurrentUser().getUid());
+            bundle1.putString("ContactID",contactID);
+            bundle1.putString("ContactName",contactName);
+
+
+            NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+            NavController navController = navHostFragment.getNavController();
+            navController.popBackStack(R.id.fragment_home,false);
+            //navController.getCurrentDestination()
+            navController.navigate(R.id.action_fragment_home_to_chat_fragment,bundle1);
+           // chat_fragment chatFragment = new chat_fragment();
+         //   chatFragment.setArguments(bundle1);
+          //  getSupportFragmentManager().beginTransaction().replace(android.R.id.content,chatFragment).addToBackStack(null).commit();
+
+        }
+        else
+        {
+            Log.d("NewIntent","Vo day ne");
+        }
     }
 }

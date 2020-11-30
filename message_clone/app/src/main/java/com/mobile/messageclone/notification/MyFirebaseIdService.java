@@ -1,5 +1,7 @@
 package com.mobile.messageclone.notification;
 
+import android.util.Log;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
@@ -11,9 +13,12 @@ public class MyFirebaseIdService extends FirebaseInstanceIdService {
     public void onTokenRefresh() {
         super.onTokenRefresh();
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
         String refreshToken = FirebaseInstanceId.getInstance().getToken();
+        Log.d("Demo",refreshToken);
+       // String refreshToken=firebaseUser.getIdToken(true);
         if(firebaseUser != null){
-            updateToken(refreshToken);
+           updateToken(refreshToken);
         }
     }
     private void updateToken(String refreshToken){
