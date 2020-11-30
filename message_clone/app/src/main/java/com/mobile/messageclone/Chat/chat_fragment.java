@@ -83,6 +83,8 @@ public class chat_fragment extends Fragment {
     private boolean IsScrollUpSeen=false;
 
 
+
+
     private String UserID;
     private  String ContactID;
     private String ContactName;
@@ -386,6 +388,9 @@ public class chat_fragment extends Fragment {
                 if (chatViewModel.ChatID.getValue().isEmpty()==false) {
                     firebaseDatabase.getReference().child("MESSAGE").child(ChatID).orderByKey().addChildEventListener(UpdateMessage);
                     UpDateSeenStatus();
+
+                    firebaseDatabase.getReference().child("USER").child(UserID).child("CurrentChatID").setValue(ChatID);
+
                     chatViewModel.IsScrollingMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
                         @Override
                         public void onChanged(Boolean aBoolean) {
@@ -449,8 +454,44 @@ public class chat_fragment extends Fragment {
                     HashMap<String, Object> hashMap = new HashMap<>();
                     hashMap.put("status", Message.STATUS.Delivered);
                     firebaseDatabase.getReference().child("MESSAGE").child(ChatID).child(key).updateChildren(hashMap);
-                    sendNotification(ContactID,userNameInReceiverContact,message.getMessage());
-                    notify = false;
+                    firebaseDatabase.getReference().child("USER").child(ContactID).child("CurrentChatID").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()==true)
+                            {
+                                String chatid1=snapshot.getValue(String.class);
+                                firebaseDatabase.getReference().child("USER").child(UserID).child("CurrentChatID").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.exists()==true)
+                                        {
+                                            String chatid2=snapshot.getValue(String.class);
+                                            if (chatid1.equals(chatid2))
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                sendNotification(ContactID,userNameInReceiverContact,message.getMessage());
+                                                notify = false;
+
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
 
                 }
             });
