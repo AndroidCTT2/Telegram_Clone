@@ -97,13 +97,69 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
                                                     {
                                                         String url=snapshot.getValue(String.class);
                                                         contactLastMessTime.profileImg=url;
-                                                        Log.d("Image","Co vo day");
+                                                        Log.d("Image",url);
                                                     }
                                                     else
                                                     {
                                                         contactLastMessTime.profileImg=null;
                                                         Log.d("Image","Khong vo day");
                                                     }
+                                                    firebaseDatabase.getReference().child("MESSAGE").child(id).limitToLast(1).addValueEventListener(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            if (snapshot.exists()==true)
+                                                            {
+
+                                                                for (DataSnapshot child2:snapshot.getChildren())
+                                                                {
+
+                                                                    Message message=child2.getValue(Message.class);
+
+                                                                    contactLastMessTime.LastMess=message;
+
+
+                                                                    contactLastMessTime.contact.setUserIdContact(contactID);
+                                                                    if (contactLastMessTimeLinkedList.size()!=0) {
+
+                                                                        for (int i = 0; i < contactLastMessTimeLinkedList.size(); i++) {
+                                                                            if (contactLastMessTimeLinkedList.get(i).contact.getUserIdContact().equals(contactID)) {
+                                                                                contactLastMessTimeLinkedList.get(i).LastMess = message;
+
+                                                                                Log.d("Message", "updated");
+                                                                                break;
+                                                                            }
+                                                                            if (i == contactLastMessTimeLinkedList.size() - 1) {
+                                                                                contactLastMessTimeLinkedList.add(contactLastMessTime);
+                                                                                Log.d("Message", "added");
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        contactLastMessTimeLinkedList.add(contactLastMessTime);
+                                                                    }
+
+
+
+                                                                //    Log.d("Image",contactLastMessTime.profileImg);
+
+                                                                    Log.d("Message","contactID - " + contactID);
+                                                                    Log.d("Message",message.getMessage());
+                                                                    Log.d("Message",message.getSenderID());
+                                                                }
+
+
+                                                                contactListHomeAdapter.contactLastMessTimeLinkedList=contactLastMessTimeLinkedList;
+                                                                contactListHomeAdapter.SortTime();
+                                                                contactListHomeAdapter.notifyDataSetChanged();
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                        }
+                                                    });
                                                 }
 
                                                 @Override
@@ -124,62 +180,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
 
                             }
                         });
-                        firebaseDatabase.getReference().child("MESSAGE").child(id).limitToLast(1).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.exists()==true)
-                                {
 
-                                    for (DataSnapshot child2:snapshot.getChildren())
-                                    {
-
-                                        Message message=child2.getValue(Message.class);
-
-                                        contactLastMessTime.LastMess=message;
-
-
-                                        contactLastMessTime.contact.setUserIdContact(contactID);
-                                        if (contactLastMessTimeLinkedList.size()!=0) {
-
-                                            for (int i = 0; i < contactLastMessTimeLinkedList.size(); i++) {
-                                                if (contactLastMessTimeLinkedList.get(i).contact.getUserIdContact().equals(contactID)) {
-                                                    contactLastMessTimeLinkedList.get(i).LastMess = message;
-
-                                                    Log.d("Message", "updated");
-                                                    break;
-                                                }
-                                                if (i == contactLastMessTimeLinkedList.size() - 1) {
-                                                    contactLastMessTimeLinkedList.add(contactLastMessTime);
-                                                    Log.d("Message", "added");
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            contactLastMessTimeLinkedList.add(contactLastMessTime);
-                                        }
-
-
-
-
-
-                                        Log.d("Message","contactID - " + contactID);
-                                        Log.d("Message",message.getMessage());
-                                        Log.d("Message",message.getSenderID());
-                                    }
-
-
-                                    contactListHomeAdapter.contactLastMessTimeLinkedList=contactLastMessTimeLinkedList;
-                                    contactListHomeAdapter.SortTime();
-                                    contactListHomeAdapter.notifyDataSetChanged();
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
                     }
                 }
             }

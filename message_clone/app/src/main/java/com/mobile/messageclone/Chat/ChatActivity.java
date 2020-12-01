@@ -139,6 +139,9 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
         */
 
 
+        firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("CurrentChatID").setValue("");
+
+
 
         navigationView.getHeaderView(0);
 

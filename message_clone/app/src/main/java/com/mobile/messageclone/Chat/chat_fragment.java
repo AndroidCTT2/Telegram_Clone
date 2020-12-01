@@ -454,26 +454,32 @@ public class chat_fragment extends Fragment {
                     HashMap<String, Object> hashMap = new HashMap<>();
                     hashMap.put("status", Message.STATUS.Delivered);
                     firebaseDatabase.getReference().child("MESSAGE").child(ChatID).child(key).updateChildren(hashMap);
-                    firebaseDatabase.getReference().child("USER").child(ContactID).child("CurrentChatID").addListenerForSingleValueEvent(new ValueEventListener() {
+                    firebaseDatabase.getReference().child("USER").child(UserID).child("CurrentChatID").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.exists()==true)
                             {
-                                String chatid1=snapshot.getValue(String.class);
-                                firebaseDatabase.getReference().child("USER").child(UserID).child("CurrentChatID").addListenerForSingleValueEvent(new ValueEventListener() {
+                                final String[] chatid1 = {snapshot.getValue(String.class)};
+                                Log.d("ChatID", chatid1[0]);
+                                firebaseDatabase.getReference().child("USER").child(ContactID).child("CurrentChatID").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                                         if (snapshot.exists()==true)
                                         {
                                             String chatid2=snapshot.getValue(String.class);
-                                            if (chatid1.equals(chatid2))
+                                            Log.d("ChatID",chatid2);
+                                            if (chatid1[0].equals(chatid2)==true)
                                             {
-
+                                                Log.d("Noti","Vao day");
+                                                chatid1[0] ="";
+                                                chatid2="";
                                             }
                                             else
                                             {
                                                 sendNotification(ContactID,userNameInReceiverContact,message.getMessage());
                                                 notify = false;
+                                                Log.d("Noti","Ko Vao day");
 
                                             }
                                         }
@@ -523,10 +529,6 @@ public class chat_fragment extends Fragment {
 
                                     if(response.code() == 200){
 
-                                        if(response.body().success == 1){
-                                            Log.d("Hello", "onResponse: " + response.body());
-                                            Toast.makeText(getActivity(),"Failed", Toast.LENGTH_LONG).show();
-                                        }
                                     }
                                 }
 
@@ -760,5 +762,11 @@ public class chat_fragment extends Fragment {
         firebaseDatabase.getReference().removeEventListener(SeenEvent);
         super.onPause();
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        firebaseDatabase.getReference().child("USER").child(UserID).child("CurrentChatID").setValue("");
     }
 }
