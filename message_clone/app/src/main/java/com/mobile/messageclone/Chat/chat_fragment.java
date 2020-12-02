@@ -515,10 +515,12 @@ public class chat_fragment extends Fragment {
                     Token token = new Token(snapshot.getValue(String.class));
                     Log.d("Token ", "onDataChange: " + token.getToken());
                     Data data = new Data(UserID,
-                            R.mipmap.ic_launcher,
+                            chatViewModel.UserProfileImageUrl.getValue(),
                             msg,
                             sender,
                             ContactID);
+                    Toast.makeText(getContext(),chatViewModel.UserProfileImageUrl.getValue(),Toast.LENGTH_SHORT).show();
+                    data.setIconUrl(chatViewModel.UserProfileImageUrl.getValue());
                     Sender sender = new Sender(data, token.getToken());
                     Log.d("Callback", "onResponse: " + data.getBody());
                     apiService.sendNotification(sender)

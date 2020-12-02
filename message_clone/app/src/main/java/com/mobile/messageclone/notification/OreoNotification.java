@@ -12,6 +12,8 @@ import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 
+import com.mobile.messageclone.R;
+
 public class OreoNotification extends ContextWrapper {
     public OreoNotification(Context base) {
         super(base);
@@ -44,12 +46,13 @@ public class OreoNotification extends ContextWrapper {
         return notificationManager;
     }
     @TargetApi(Build.VERSION_CODES.O)
-    public Notification.Builder getOreoNotification(String title, String body, PendingIntent pendingIntent, Uri uri, String icon)
+    public NotificationCompat.Builder getOreoNotification(String title, String body, PendingIntent pendingIntent, Uri uri, String icon, NotificationCompat.MessagingStyle messagingStyle)
     {
-        return new Notification.Builder(getApplicationContext(),Channel_ID).setContentIntent(pendingIntent)
+        return new  NotificationCompat.Builder(getApplicationContext(),Channel_ID).setContentIntent(pendingIntent)
                 .setContentTitle(title)
                 .setContentText(body)
-                .setSmallIcon(Integer.parseInt(icon))
+                .setStyle(messagingStyle)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setSound(uri)
                 .setAutoCancel(true)
                 .setPriority(Notification.PRIORITY_DEFAULT);

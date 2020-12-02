@@ -2,12 +2,13 @@ package com.mobile.messageclone.notification;
 
 public class Data {
     private String user;
-    private int icon;
+    private String icon;
     private String body;
     private String title;
     private String sented;
+    private String iconUrl;
 
-    public Data(String user, int icon, String body, String title, String sented){
+    public Data(String user, String icon, String body, String title, String sented){
         this.user = user;
         this.icon = icon;
         this.body = body;
@@ -16,7 +17,15 @@ public class Data {
 
     }
 
-    public int getIcon() {
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
+    }
+
+    public String getIcon() {
         return icon;
     }
 
@@ -40,7 +49,7 @@ public class Data {
         this.body = body;
     }
 
-    public void setIcon(int icon) {
+    public void setIcon(String icon) {
         this.icon = icon;
     }
 

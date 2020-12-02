@@ -189,11 +189,13 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
                     Log.d("Dowload",url);
                     ProfilePicture.setScaleType(ImageView.ScaleType.FIT_CENTER);
                     Glide.with(getBaseContext()).load(url).into(ProfilePicture);
+                    chatViewModel.UserProfileImageUrl.setValue(url);
                 }
                 else
                 {
                     ProfilePicture.setImageBitmap(DrawProfilePicture.textAsBitmap(firstname.toUpperCase()+ finalLastname.toUpperCase(),60,Color.WHITE));
                     Log.d("Dowload","NoImage");
+                    chatViewModel.UserProfileImageUrl.setValue("");
                 }
             }
 

@@ -460,6 +460,7 @@ public class ProfileFragment extends Fragment {
                         if (task.getResult()!=null) {
                             Log.d("Url", task.getResult().toString());
                             firebaseDatabase.getReference().child("USER").child(UserId).child("ProfileImg").setValue(task.getResult().toString());
+                            chatViewModel.UserProfileImageUrl.setValue(task.getResult().toString());
                         }
                     }
                 });

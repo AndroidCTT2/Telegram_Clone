@@ -1,26 +1,52 @@
 package com.mobile.messageclone.notification;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.Person;
+import androidx.core.graphics.drawable.IconCompat;
+import androidx.core.graphics.drawable.IconCompatParcelizer;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.mobile.messageclone.Chat.ChatActivity;
 
+import java.util.Date;
+import java.util.LinkedList;
+
+
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+
+
+    public static LinkedList<Message> ListMessage;
+
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
@@ -42,6 +68,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String icon = remoteMessage.getData().get("icon");
         String body = remoteMessage.getData().get("body");
         String title = remoteMessage.getData().get("title");
+        String sendted=remoteMessage.getData().get("sented");
+        String iconUrl=remoteMessage.getData().get("iconUrl");
+        Log.d("sendted",icon);
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         Intent intent = new Intent(this, ChatActivity.class);
         //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -68,9 +97,54 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT);*/
 
         Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        OreoNotification oreoNotification=new OreoNotification(this);
-        Notification.Builder builder=oreoNotification.getOreoNotification(title,body,pendingIntent,defaultSound,icon);
-        oreoNotification.getManager().notify(0,builder.build());
+
+        Glide.with(this)
+                .asBitmap()
+                .load(icon).addListener(new RequestListener<Bitmap>() {
+            @Override
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+
+
+                Person sender=new Person.Builder().setIcon(null).setName(title).setKey(user).build();
+
+
+                // Person sender=new Person.Builder().setIcon(null).setName(title).setKey(user).build();
+                NotificationCompat.MessagingStyle style= new NotificationCompat.MessagingStyle(sender);
+                style.addMessage(new NotificationCompat.MessagingStyle.Message(body,System.currentTimeMillis(),sender));
+                OreoNotification oreoNotification=new OreoNotification(getApplicationContext());
+                NotificationCompat.Builder builder=oreoNotification.getOreoNotification(title,body,pendingIntent,defaultSound,icon,style);
+                oreoNotification.getManager().notify(0,builder.build());
+                return false;
+            }
+
+            @Override
+            public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+
+                return false;
+            }
+        })
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        IconCompat iconCompat=IconCompat.createWithBitmap(resource);
+                        Person sender=new Person.Builder().setIcon(iconCompat).setName(title).setKey(user).build();
+
+
+                        // Person sender=new Person.Builder().setIcon(null).setName(title).setKey(user).build();
+                        NotificationCompat.MessagingStyle style= new NotificationCompat.MessagingStyle(sender);
+                        style.addMessage(new NotificationCompat.MessagingStyle.Message(body,System.currentTimeMillis(),sender));
+                        OreoNotification oreoNotification=new OreoNotification(getApplicationContext());
+                        NotificationCompat.Builder builder=oreoNotification.getOreoNotification(title,body,pendingIntent,defaultSound,icon,style);
+                        oreoNotification.getManager().notify(0,builder.build());
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
+                });
+
+
+
     }
 
     private void sendNotification(RemoteMessage remoteMessage) {
