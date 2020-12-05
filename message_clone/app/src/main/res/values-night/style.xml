@@ -22,6 +22,7 @@
         <item name="android:textColor">#ffffff</item>
         <item name="incomingTextColor">#ffffff</item>
         <item name="colorOnSurface">#ffffff</item>
+        <item name="colorControlActivated">#3B3D3E</item>
 
 
     </style>

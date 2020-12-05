@@ -21,6 +21,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.Layout;
 import android.util.Log;
@@ -42,6 +44,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -50,9 +53,14 @@ import com.mobile.messageclone.DrawProfilePicture;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.TextDrawableForStaticImage;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -65,6 +73,9 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
     private TextView displayUserPhoneNumber;
     private CircularImageView ProfilePicture;
 
+
+    private Boolean HaveInternet;
+    private boolean CheckInternetFlag=true;
     private Toolbar toolbar;
 
     private FirebaseAuth firebaseAuth;
@@ -72,10 +83,11 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
     private Task<String> firebaseMessaging;
     private String deviceToken;
     private ValueEventListener changeImageListener;
+    private ChatViewModel chatViewModel;
 
 
-    public static final String STATUS_OFFLINE="OFFLINE";
-    public static final String STATUS_ONLINE="ONLINE";
+    public static final String STATUS_OFFLINE="Offline";
+    public static final String STATUS_ONLINE="Online";
 
 
     @Override
@@ -99,7 +111,7 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
 
         setContentView(R.layout.activity_main_menu);
 
-        final ChatViewModel chatViewModel =new ViewModelProvider(this).get(ChatViewModel.class);
+        chatViewModel =new ViewModelProvider(this).get(ChatViewModel.class);
 
         firebaseAuth=FirebaseAuth.getInstance();
 
@@ -215,6 +227,14 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
             }
         });
 
+        chatViewModel.subtitleBar.observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                getSupportActionBar().setSubtitle(chatViewModel.subtitleBar.getValue());
+            }
+        });
+
+
         ProfilePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -251,9 +271,39 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
             }
         });
 
-        //onNewIntent(getIntent());
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (CheckInternetFlag) {
+                    try {
+                        Thread.sleep(100);
+                        HaveInternet=hasActiveInternetConnection(getApplicationContext());
+                        if (HaveInternet==true)
+                        {
+
+                        }
+                        else if (HaveInternet==false)
+                        {
+
+
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        }).start();
+
+        firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("STATUS").child("State").onDisconnect().setValue(STATUS_OFFLINE);
+        firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("STATUS").child("Time").onDisconnect().setValue(ServerValue.TIMESTAMP);
+
+
 
     }
+
+
 
 
 
@@ -276,21 +326,10 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
 
     @Override
     public void UpdateStatus(String status) {
-        String CurrentDate;
-        String CurrentTime;
-        Calendar calendar=Calendar.getInstance();
-        SimpleDateFormat dateFormat=new SimpleDateFormat("dd-MM-yyyy,X");
-        SimpleDateFormat timeFormat=new SimpleDateFormat("HH-mm-ss");
 
-
-
-
-        CurrentDate=dateFormat.format(calendar.getTime());
-        CurrentTime=timeFormat.format(calendar.getTime());
 
         HashMap<String,Object>onlineState=new HashMap<>();
-        onlineState.put("Date",CurrentDate);
-        onlineState.put("Time",CurrentTime);
+        onlineState.put("Time",ServerValue.TIMESTAMP);
         onlineState.put("State",status);
 
         firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("STATUS").updateChildren(onlineState);
@@ -308,6 +347,35 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         view.clearFocus();
     }
+
+    private boolean isNetworkAvailable(Context context) {
+        if (this!=null) {
+            ConnectivityManager connectivityManager
+                    = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }
+        return false;
+    }
+    public  boolean hasActiveInternetConnection(Context context) {
+        if (isNetworkAvailable(context)) {
+            try {
+                HttpURLConnection urlc = (HttpURLConnection) (new URL("https://www.google.com/").openConnection());
+                urlc.setRequestProperty("User-Agent", "Test");
+                urlc.setRequestProperty("Connection", "close");
+
+                urlc.setConnectTimeout(1500);
+                urlc.connect();
+                return (urlc.getResponseCode() == 200);
+            } catch (IOException e) {
+                Log.d("Connect", "Error checking internet connection", e);
+            }
+        } else {
+            Log.d("Connect", "No network available!");
+        }
+        return false;
+    }
+
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -343,7 +411,7 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
     @Override
     protected void onStop() {
         super.onStop();
-
+        CheckInternetFlag=false;
         if (firebaseAuth.getCurrentUser()!=null)
         {
             UpdateStatus(STATUS_OFFLINE);
@@ -353,6 +421,7 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
     @Override
     protected void onResume() {
         super.onResume();
+        chatViewModel.subtitleBar.setValue("");
 
 
     }

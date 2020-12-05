@@ -19,6 +19,8 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             android:elevation="4dp"
+            app:subtitle="Hello"
+            app:subtitleTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
 

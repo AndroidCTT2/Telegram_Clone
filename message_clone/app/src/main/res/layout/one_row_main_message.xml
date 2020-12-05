@@ -52,7 +52,7 @@
         android:text="18:45"
         android:id="@+id/sender_time"
         android:layout_gravity="center_vertical"
-        android:textSize="15sp"
+        android:textSize="16sp"
         ></TextView>
 
 

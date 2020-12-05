@@ -48,6 +48,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -81,6 +85,7 @@ public class chat_fragment extends Fragment {
     private MessageAdapter messageAdapter;
 
     private boolean IsScrollUpSeen=false;
+    private boolean IsCheckOnlineTime=true;
 
 
 
@@ -89,7 +94,7 @@ public class chat_fragment extends Fragment {
     private  String ContactID;
     private String ContactName;
     private  String ChatID="";
-    private boolean CheckInternetFlag=true;
+
 
     private boolean IsSeen=false;
     private String userNameInReceiverContact;
@@ -99,7 +104,7 @@ public class chat_fragment extends Fragment {
     private MessagesListAdapter<LibMessage>messagesListAdapter;
 
 
-    private Boolean HaveInternet;
+
 
     private SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss-X");
 
@@ -126,7 +131,7 @@ public class chat_fragment extends Fragment {
         firebaseDatabase=FirebaseDatabase.getInstance();
         messageLinkedList=new LinkedList<>();
         chatViewModel =new ViewModelProvider(getActivity()).get(ChatViewModel.class);
-        //chatViewModel.titleBar.setValue(ContactName);
+
 
 
 
@@ -135,6 +140,57 @@ public class chat_fragment extends Fragment {
 
         chatViewModel.ChatID.setValue(ChatID);
         chatViewModel.IsScrollingMutableLiveData.setValue(false);
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (IsCheckOnlineTime==true) {
+                    try {
+
+                        firebaseDatabase.getReference().child("USER").child(ContactID).child("STATUS").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+
+                                String status=snapshot.child("State").getValue(String.class);
+
+                                long  timeStamp=snapshot.child("Time").getValue(Long.class);
+
+                                String time;
+                                Instant instant=Instant.ofEpochMilli(timeStamp);
+                                Date date=Date.from(instant);
+
+
+                                if (status.equals(ChatActivity.STATUS_ONLINE))
+                                {
+                                    chatViewModel.subtitleBar.setValue("Online");
+                                }
+                                else {
+
+                                    time=DateToString.LastSeenString(date);
+                                    chatViewModel.subtitleBar.setValue("Last seen "+ time);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                        Thread.sleep(10000);
+
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        }).start();
+
+
+
 
 
 
@@ -187,28 +243,7 @@ public class chat_fragment extends Fragment {
 
 
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (CheckInternetFlag) {
-                    try {
-                        Thread.sleep(100);
-                        HaveInternet=hasActiveInternetConnection(getContext());
-                        if (HaveInternet==true)
-                        {
 
-                        }
-                        else if (HaveInternet==false)
-                        {
-                            Log.d("Connect", "Kết nối thất bại");
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-        }).start();
 
         firebaseDatabase.getReference().child("CONTACT").child(ContactID).child(UserID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -233,33 +268,7 @@ public class chat_fragment extends Fragment {
     private void updateToken(String token){
         FirebaseDatabase.getInstance().getReference().child("USER").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("DeviceToken").setValue(token);
     }
-    private boolean isNetworkAvailable(Context context) {
-      if (getActivity()!=null) {
-          ConnectivityManager connectivityManager
-                  = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-          NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-          return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-      }
-      return false;
-    }
-    public  boolean hasActiveInternetConnection(Context context) {
-        if (isNetworkAvailable(context)) {
-            try {
-                HttpURLConnection urlc = (HttpURLConnection) (new URL("https://www.google.com/").openConnection());
-                urlc.setRequestProperty("User-Agent", "Test");
-                urlc.setRequestProperty("Connection", "close");
 
-                urlc.setConnectTimeout(1500);
-                urlc.connect();
-                return (urlc.getResponseCode() == 200);
-            } catch (IOException e) {
-                Log.d("Connect", "Error checking internet connection", e);
-            }
-        } else {
-            Log.d("Connect", "No network available!");
-        }
-        return false;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -755,11 +764,12 @@ public class chat_fragment extends Fragment {
     public void onResume() {
         super.onResume();
         IsSeen=false;
+        IsCheckOnlineTime=true;
     }
 
     @Override
     public void onPause() {
-        CheckInternetFlag=false;
+
         IsSeen=true;
         firebaseDatabase.getReference().removeEventListener(SeenEvent);
         super.onPause();
@@ -769,6 +779,8 @@ public class chat_fragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        chatViewModel.subtitleBar.setValue("");
+        IsCheckOnlineTime=false;
         firebaseDatabase.getReference().child("USER").child(UserID).child("CurrentChatID").setValue("");
     }
 }

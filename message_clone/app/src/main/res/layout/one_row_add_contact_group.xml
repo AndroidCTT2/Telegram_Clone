@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@drawable/box_backround_for_profile"
+    android:paddingVertical="10dp">
 
     <com.mikhaellopez.circularimageview.CircularImageView
         android:layout_width="60dp"

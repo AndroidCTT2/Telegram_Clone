@@ -38,6 +38,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -46,13 +47,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class NewGroupFragment extends Fragment implements RecyclerViewClickInterface, RecyclerCheckBoxClick
 {
 
 
 
-
+    private String contactGroupMember;
 
     private FloatingActionButton btnAddContact;
 
@@ -72,6 +74,8 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
     private ValueEventListener valueEventListener;
 
     private TextView displayAddedUser;
+    private FloatingActionButton btnNext;
+    private ArrayList<ContactNameAndPos>contactnameList;
 
 
     @Override
@@ -81,7 +85,7 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
         firebaseDatabase=FirebaseDatabase.getInstance();
         contactAndSeenTimeArrayList=new ArrayList<>();
         setHasOptionsMenu(true);
-
+        contactnameList=new ArrayList<>();
 
     }
 
@@ -131,74 +135,18 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists() == true) {
-                                    String DbDate;
-                                    String DbTime;
-                                    String status;
-                                    ContactAndSeenTime contactAndSeenTime = null;
-                                    DbDate = snapshot.child("Date").getValue(String.class);
-                                    DbTime = snapshot.child("Time").getValue(String.class);
-                                    status = snapshot.child("State").getValue(String.class);
-                                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy,X-HH-mm-ss");
-                                    DbDate = DbDate + "-" + DbTime;
-
-                                    Date date = new Date();
-                                    try {
-                                        date = dateFormat.parse(DbDate);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
-                                    Date todayDate;
-                                    if (TrueTimeRx.isInitialized() == true){
-                                        todayDate = TrueTimeRx.now();
-                                    }
-                                    else{
-                                        todayDate = Calendar.getInstance().getTime();
-                                    }
-
-                                    LocalDateTime fromDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-                                    LocalDateTime toDateTime = todayDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-
-                                    LocalDateTime tempDateTime = LocalDateTime.from(fromDateTime);
-
-                                    long years = tempDateTime.until(toDateTime, ChronoUnit.YEARS);
-                                    tempDateTime = tempDateTime.plusYears(years);
-
-                                    long months = tempDateTime.until(toDateTime, ChronoUnit.MONTHS);
-                                    tempDateTime = tempDateTime.plusMonths(months);
-
-                                    long days = tempDateTime.until(toDateTime, ChronoUnit.DAYS);
-                                    tempDateTime = tempDateTime.plusDays(days);
-
-
-                                    long hours = tempDateTime.until(toDateTime, ChronoUnit.HOURS);
-                                    tempDateTime = tempDateTime.plusHours(hours);
-
-                                    long minutes = tempDateTime.until(toDateTime, ChronoUnit.MINUTES);
-                                    tempDateTime = tempDateTime.plusMinutes(minutes);
-
-                                    long seconds = tempDateTime.until(toDateTime, ChronoUnit.SECONDS);
+                                    long  timeStamp=snapshot.child("Time").getValue(Long.class);
+                                    String status=snapshot.child("State").getValue(String.class);
+                                    Instant instant=Instant.ofEpochMilli(timeStamp);
+                                    Date date=Date.from(instant);
                                     ContactAndSeenTime contactAndSeenTime1 = new ContactAndSeenTime();
                                     contactAndSeenTime1.Status = status;
-                                    Log.d("Phone", contactAndSeenTime1.Status);
-                                    Log.d("Phone", finalContact1.getFirstNickName());
+
+                                    contactAndSeenTime1.SeenTime=DateToString.LastSeenString(date);
                                     contactAndSeenTime1.contact = finalContact1;
 
 
-                                    if (days >= 1 && days <= 2) {
-                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
-                                        Log.d("Phone", "yesterday at " + simpleDateFormat.format(date));
-                                        contactAndSeenTime1.SeenTime = "yesterday at " + simpleDateFormat.format(date);
-                                    } else if (days < 1 && hours >= 1) {
 
-                                        Log.d("Phone", "at " + hours + " hours ago");
-                                        contactAndSeenTime1.SeenTime = "at " + hours + " hours ago";
-                                    } else if (days < 1 && hours < 1) {
-                                        Log.d("Phone", +minutes + " minutes ago");
-                                        contactAndSeenTime1.SeenTime = "at " + minutes + " minutes ago";
-                                    } else {
-                                        contactAndSeenTime1.SeenTime = "at " + fromDateTime.getDayOfMonth() + "-" + fromDateTime.getMonthValue() + "-" + fromDateTime.getYear();
-                                        Log.d("Phone", "yesterday at " + fromDateTime.getDayOfMonth() + "-" + fromDateTime.getMonthValue() + "-" + fromDateTime.getYear());
-                                    }
                                     if (contactAndSeenTimeArrayList.size()!=0) {
                                         for (int i = 0; i < contactAndSeenTimeArrayList.size(); i++) {
                                             if (contactAndSeenTime1.contact.getUserIdContact().equals(contactAndSeenTimeArrayList.get(i).contact.getUserIdContact())) {
@@ -255,7 +203,13 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
         });
 
 
+        btnNext=root.findViewById(R.id.btnNext);
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+            }
+        });
 
 
 
@@ -303,10 +257,10 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
         Bundle bundle=new Bundle();
         bundle.putString("UserID",firebaseAuth.getCurrentUser().getUid());
         bundle.putString("ContactID",contactAndSeenTimeArrayList.get(position).contact.getUserIdContact());
-        bundle.putString("ContactName",contactAndSeenTimeArrayList.get(position).contact.getFirstNickName()+" "+contactAndSeenTimeArrayList.get(position).contact.getLastNickName());
+        //bundle.putString("ContactName",contactAndSeenTimeArrayList.get(position).contact.getFirstNickName()+" "+contactAndSeenTimeArrayList.get(position).contact.getLastNickName());
 
-        NavController navController= Navigation.findNavController(getView());
-        navController.navigate(R.id.action_fragment_contact_to_chat_fragment,bundle);
+       // NavController navController= Navigation.findNavController(getView());
+//        navController.navigate(R.id.action_fragment_contact_to_chat_fragment,bundle);
     }
 
     @Override
@@ -322,8 +276,49 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
     }
 
     @Override
-    public void CheckBoxClick(int position) {
+    public void CheckBoxClick(int position,boolean check) {
 
-        displayAddedUser.setText(contactAndSeenTimeArrayList.get(position).contact.getFirstNickName()+" "+contactAndSeenTimeArrayList.get(position).contact.getLastNickName());
+
+
+
+        if (check==true)
+        {
+            ContactNameAndPos contactNameAndPos=new ContactNameAndPos();
+            contactNameAndPos.contactName=contactAndSeenTimeArrayList.get(position).contact.getFirstNickName()+" "+contactAndSeenTimeArrayList.get(position).contact.getLastNickName();
+            contactNameAndPos.Pos=position;
+            contactGroupMember=contactGroupMember+contactNameAndPos.contactName;
+            contactnameList.add(contactNameAndPos);
+
+        }
+        else
+        {
+            Predicate<ContactNameAndPos>contactNameAndPosPredicate=new Predicate<ContactNameAndPos>() {
+                @Override
+                public boolean test(ContactNameAndPos contactNameAndPos) {
+                    if (contactNameAndPos.Pos==position)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            };
+            contactnameList.removeIf(contactNameAndPosPredicate);
+        }
+
+        displayAddedUser.setText("");
+        for (int i=0;i<contactnameList.size();i++)
+        {
+            displayAddedUser.append(contactnameList.get(i).contactName);
+        }
+
+
+
+    }
+
+
+    private class ContactNameAndPos
+    {
+        public String contactName;
+        public int Pos;
     }
 }

@@ -59,7 +59,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
 
             holder.NameContact.setText(ContactName);
-            if (contactAndSeenTimeList.get(position).Status.equals("ONLINE")) {
+            if (contactAndSeenTimeList.get(position).Status.equals(ChatActivity.STATUS_ONLINE)) {
                 holder.Status.setText(contactAndSeenTimeList.get(position).Status+" ");
                 holder.LastSeenTime.setText("");
             }

@@ -9,6 +9,7 @@ import java.util.List;
 public class ChatViewModel extends ViewModel {
 
     public MutableLiveData<String> titleBar;
+    public MutableLiveData<String>subtitleBar;
     public MutableLiveData<String> ChatID;
     public MutableLiveData<Boolean>IsScrollingMutableLiveData;
     public MutableLiveData<Boolean>IsHideAppBar;
@@ -27,6 +28,7 @@ public class ChatViewModel extends ViewModel {
         IsHideAppBar=new MutableLiveData<>();
         IsHideNavBar=new MutableLiveData<>();
         UserProfileImageUrl=new MutableLiveData<>();
+        subtitleBar=new MutableLiveData<>();
         //titleBar.setValue("Message");
     }
 }

@@ -32,6 +32,8 @@
         android:layout_marginHorizontal="20dp"
         android:layout_marginVertical="10dp"
         android:textSize="16sp"
+        android:clickable="true"
+        android:id="@+id/sortType"
         android:text="Sorted by last seen time"
         android:textColor="?attr/colorOnSurface"
         ></TextView>

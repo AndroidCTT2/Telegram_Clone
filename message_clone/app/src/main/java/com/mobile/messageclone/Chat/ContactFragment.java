@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -36,6 +37,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -124,74 +126,19 @@ public class ContactFragment extends Fragment implements RecyclerViewClickInterf
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists() == true) {
-                                    String DbDate;
-                                    String DbTime;
-                                    String status;
-                                    ContactAndSeenTime contactAndSeenTime = null;
-                                    DbDate = snapshot.child("Date").getValue(String.class);
-                                    DbTime = snapshot.child("Time").getValue(String.class);
-                                    status = snapshot.child("State").getValue(String.class);
-                                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy,X-HH-mm-ss");
-                                    DbDate = DbDate + "-" + DbTime;
 
-                                    Date date = new Date();
-                                    try {
-                                        date = dateFormat.parse(DbDate);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
-                                    Date todayDate;
-                                    if (TrueTimeRx.isInitialized() == true){
-                                        todayDate = TrueTimeRx.now();
-                                    }
-                                    else{
-                                        todayDate = Calendar.getInstance().getTime();
-                                    }
-
-                                    LocalDateTime fromDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-                                    LocalDateTime toDateTime = todayDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-
-                                    LocalDateTime tempDateTime = LocalDateTime.from(fromDateTime);
-
-                                    long years = tempDateTime.until(toDateTime, ChronoUnit.YEARS);
-                                    tempDateTime = tempDateTime.plusYears(years);
-
-                                    long months = tempDateTime.until(toDateTime, ChronoUnit.MONTHS);
-                                    tempDateTime = tempDateTime.plusMonths(months);
-
-                                    long days = tempDateTime.until(toDateTime, ChronoUnit.DAYS);
-                                    tempDateTime = tempDateTime.plusDays(days);
-
-
-                                    long hours = tempDateTime.until(toDateTime, ChronoUnit.HOURS);
-                                    tempDateTime = tempDateTime.plusHours(hours);
-
-                                    long minutes = tempDateTime.until(toDateTime, ChronoUnit.MINUTES);
-                                    tempDateTime = tempDateTime.plusMinutes(minutes);
-
-                                    long seconds = tempDateTime.until(toDateTime, ChronoUnit.SECONDS);
+                                    long  timeStamp=snapshot.child("Time").getValue(Long.class);
+                                    String status=snapshot.child("State").getValue(String.class);
+                                    Instant instant=Instant.ofEpochMilli(timeStamp);
+                                    Date date=Date.from(instant);
                                     ContactAndSeenTime contactAndSeenTime1 = new ContactAndSeenTime();
                                     contactAndSeenTime1.Status = status;
-                                    Log.d("Phone", contactAndSeenTime1.Status);
-                                    Log.d("Phone", finalContact1.getFirstNickName());
+
+                                    contactAndSeenTime1.SeenTime=DateToString.LastSeenString(date);
                                     contactAndSeenTime1.contact = finalContact1;
 
 
-                                    if (days >= 1 && days <= 2) {
-                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
-                                        Log.d("Phone", "yesterday at " + simpleDateFormat.format(date));
-                                        contactAndSeenTime1.SeenTime = "yesterday at " + simpleDateFormat.format(date);
-                                    } else if (days < 1 && hours >= 1) {
 
-                                        Log.d("Phone", "at " + hours + " hours ago");
-                                        contactAndSeenTime1.SeenTime = "at " + hours + " hours ago";
-                                    } else if (days < 1 && hours < 1) {
-                                        Log.d("Phone", +minutes + " minutes ago");
-                                        contactAndSeenTime1.SeenTime = "at " + minutes + " minutes ago";
-                                    } else {
-                                        contactAndSeenTime1.SeenTime = "at " + fromDateTime.getDayOfMonth() + "-" + fromDateTime.getMonthValue() + "-" + fromDateTime.getYear();
-                                        Log.d("Phone", "yesterday at " + fromDateTime.getDayOfMonth() + "-" + fromDateTime.getMonthValue() + "-" + fromDateTime.getYear());
-                                    }
                                     if (contactAndSeenTimeArrayList.size()!=0) {
                                         for (int i = 0; i < contactAndSeenTimeArrayList.size(); i++) {
                                             if (contactAndSeenTime1.contact.getUserIdContact().equals(contactAndSeenTimeArrayList.get(i).contact.getUserIdContact())) {
@@ -317,5 +264,16 @@ public class ContactFragment extends Fragment implements RecyclerViewClickInterf
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
         inflater.inflate(R.menu.contact_menu,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if (item.getItemId()==R.id.btnSortTime)
+        {
+            
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

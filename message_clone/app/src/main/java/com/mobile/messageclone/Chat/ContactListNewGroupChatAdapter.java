@@ -33,7 +33,7 @@ public class ContactListNewGroupChatAdapter extends RecyclerView.Adapter<Contact
     RecyclerViewClickInterface recyclerViewClickInterface;
     RecyclerCheckBoxClick recyclerCheckBoxClick;
 
-    private SparseBooleanArray itemStateArray=new SparseBooleanArray();
+    public SparseBooleanArray itemStateArray=new SparseBooleanArray();
 
 
 
@@ -77,7 +77,7 @@ public class ContactListNewGroupChatAdapter extends RecyclerView.Adapter<Contact
             holder.materialCheckBox.setChecked(false);
         }
         holder.NameContact.setText(ContactName);
-        if (contactAndSeenTimeList.get(position).Status.equals("ONLINE")) {
+        if (contactAndSeenTimeList.get(position).Status.equals(ChatActivity.STATUS_ONLINE)) {
             holder.Status.setText(contactAndSeenTimeList.get(position).Status+" ");
             holder.LastSeenTime.setText("");
         }
@@ -122,7 +122,18 @@ public class ContactListNewGroupChatAdapter extends RecyclerView.Adapter<Contact
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    recyclerViewClickInterface.onItemClick(getAdapterPosition());
+                 //   recyclerViewClickInterface.onItemClick(getAdapterPosition());
+                    int adapterPosition = getAdapterPosition();
+                    if (!itemStateArray.get(adapterPosition, false)) {
+                        materialCheckBox.setChecked(true);
+                        itemStateArray.put(adapterPosition, true);
+                        recyclerCheckBoxClick.CheckBoxClick(getAdapterPosition(),true);
+                    }
+                    else  {
+                        materialCheckBox.setChecked(false);
+                        itemStateArray.put(adapterPosition, false);
+                        recyclerCheckBoxClick.CheckBoxClick(getAdapterPosition(),false);
+                    }
                 }
             });
 
@@ -133,14 +144,17 @@ public class ContactListNewGroupChatAdapter extends RecyclerView.Adapter<Contact
                     if (!itemStateArray.get(adapterPosition, false)) {
                         materialCheckBox.setChecked(true);
                         itemStateArray.put(adapterPosition, true);
-                        recyclerCheckBoxClick.CheckBoxClick(getAdapterPosition());
+                        recyclerCheckBoxClick.CheckBoxClick(getAdapterPosition(),true);
                     }
                     else  {
                         materialCheckBox.setChecked(false);
                         itemStateArray.put(adapterPosition, false);
+                        recyclerCheckBoxClick.CheckBoxClick(getAdapterPosition(),false);
                     }
                 }
             });
         }
+
     }
+
 }

@@ -59,4 +59,70 @@ public class DateToString {
 
 
     }
+
+    public static String LastSeenString(Date dateInput) {
+
+        String returnString;
+
+        Date date = dateInput;
+        Date todayDate;
+        if (TrueTimeRx.isInitialized() == true) {
+            todayDate = TrueTimeRx.now();
+        } else {
+            todayDate = android.icu.util.Calendar.getInstance().getTime();
+        }
+
+        LocalDateTime fromDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime toDateTime = todayDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+        LocalDateTime tempDateTime = LocalDateTime.from(fromDateTime);
+
+        long years = tempDateTime.until(toDateTime, ChronoUnit.YEARS);
+        tempDateTime = tempDateTime.plusYears(years);
+
+        long months = tempDateTime.until(toDateTime, ChronoUnit.MONTHS);
+        tempDateTime = tempDateTime.plusMonths(months);
+
+        long days = tempDateTime.until(toDateTime, ChronoUnit.DAYS);
+        tempDateTime = tempDateTime.plusDays(days);
+
+
+        long hours = tempDateTime.until(toDateTime, ChronoUnit.HOURS);
+        tempDateTime = tempDateTime.plusHours(hours);
+
+        long minutes = tempDateTime.until(toDateTime, ChronoUnit.MINUTES);
+        tempDateTime = tempDateTime.plusMinutes(minutes);
+
+        long seconds = tempDateTime.until(toDateTime, ChronoUnit.SECONDS);
+        //ContactAndSeenTime contactAndSeenTime1 = new ContactAndSeenTime();
+        //contactAndSeenTime1.Status = status;
+        // Log.d("Phone", contactAndSeenTime1.Status);
+        // Log.d("Phone", finalContact1.getFirstNickName());
+        // contactAndSeenTime1.contact = finalContact1;
+
+
+        if (days >= 1 && days <= 2) {
+            java.text.SimpleDateFormat simpleDateFormat = new java.text.SimpleDateFormat("HH:mm");
+            Log.d("Phone", "yesterday at " + simpleDateFormat.format(date));
+            returnString = "yesterday at " + simpleDateFormat.format(date);
+        } else if (days < 1 && hours >= 1) {
+
+            Log.d("Phone", "at " + hours + " hours ago");
+            returnString = "at " + hours + " hours ago";
+        } else if (days < 1 && hours < 1 && minutes>0) {
+            Log.d("Phone", +minutes + " minutes ago");
+            returnString = "at " + minutes + " minutes ago";
+
+        }
+        else if (days<1 && hours<1 && minutes<=0)
+        {
+            returnString="at a few second ago";
+        }
+        else {
+            returnString = "at " + fromDateTime.getDayOfMonth() + "-" + fromDateTime.getMonthValue() + "-" + fromDateTime.getYear();
+            Log.d("Phone", "yesterday at " + fromDateTime.getDayOfMonth() + "-" + fromDateTime.getMonthValue() + "-" + fromDateTime.getYear());
+        }
+
+        return returnString;
+    }
 }
