@@ -20,6 +20,10 @@
             android:id="@+id/fragment_new_video_call"
             android:icon="@drawable/ic_baseline_video_call_24"
             android:title="Video call" />
+        <item
+            android:id="@+id/fragment_voice_call"
+            android:icon="@drawable/ic_menu_call_24"
+            android:title="Voice Call"/>
     </group>
 
 

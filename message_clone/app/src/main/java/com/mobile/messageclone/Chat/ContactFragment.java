@@ -76,7 +76,7 @@ public class ContactFragment extends Fragment implements RecyclerViewClickInterf
         super.onCreate(savedInstanceState);
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseDatabase=FirebaseDatabase.getInstance();
-       contactAndSeenTimeArrayList=new ArrayList<>();
+        contactAndSeenTimeArrayList=new ArrayList<>();
         setHasOptionsMenu(true);
 
 
