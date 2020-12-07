@@ -15,7 +15,9 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -51,7 +53,15 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.messageclone.DrawProfilePicture;
 import com.mobile.messageclone.R;
+import com.mobile.messageclone.SignIn.MainActivity;
 import com.mobile.messageclone.TextDrawableForStaticImage;
+import com.sinch.android.rtc.PushPair;
+import com.sinch.android.rtc.Sinch;
+import com.sinch.android.rtc.SinchClient;
+import com.sinch.android.rtc.calling.Call;
+import com.sinch.android.rtc.calling.CallClient;
+import com.sinch.android.rtc.calling.CallClientListener;
+import com.sinch.android.rtc.calling.CallListener;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -84,6 +94,9 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
     private String deviceToken;
     private ValueEventListener changeImageListener;
     private ChatViewModel chatViewModel;
+
+    private Call call;
+    private SinchClient sinchClient;
 
 
     public static final String STATUS_OFFLINE="Offline";
@@ -300,10 +313,103 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
         firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("STATUS").child("Time").onDisconnect().setValue(ServerValue.TIMESTAMP);
 
 
+        // Instantiate a SinchClient using the SinchClientBuilder.
+//        sinchClient = Sinch.getSinchClientBuilder()
+//                .context(this)
+//                .applicationKey("3f0c86b1-c39a-418a-8853-ca634ee14cb8")
+//                .applicationSecret("kHcuF1KfokazLwUeSmMiYQ==")
+//                .environmentHost("clientapi.sinch.com")
+//                .userId(firebaseAuth.getCurrentUser().getUid())
+//                .build();
+        sinchClient = Sinch.getSinchClientBuilder()
+                .context(this)
+                .applicationKey("6389d8f4-8a3f-4299-9b0c-883535d7688f")
+                .applicationSecret("C3gOqAiVuUCMl0LaCaqxPA==")
+                .environmentHost("clientapi.sinch.com")
+                .userId(firebaseAuth.getUid())
+                .build();
+        // Specify the client capabilities.
+        sinchClient.setSupportCalling(true);
+        sinchClient.startListeningOnActiveConnection();
 
+        sinchClient.start();
+        CallClient callClient = sinchClient.getCallClient();
+        callClient.addCallClientListener(new SinchCallClientListener());
     }
 
+    private class SinchCallClientListener implements CallClientListener {
+        @Override
+        public void onIncomingCall(CallClient callClient, Call inComingCall) {
+            call = inComingCall;
+            AlertDialog alertDialog = new AlertDialog.Builder(ChatActivity.this).create();
+            alertDialog.setTitle("CALLING");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Reject", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(ChatActivity.this, "REJECT", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    call.hangup();
+                }
+            });
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Pick", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(ChatActivity.this, "PICK", Toast.LENGTH_SHORT).show();
+                    call.addCallListener(new SinchCallListener());
+                    call.answer();
+                }
+            });
+            alertDialog.show();
+        }
+    }
 
+    private class SinchCallListener implements CallListener {
+
+        @Override
+        public void onCallProgressing(Call call) {
+            Toast.makeText(ChatActivity.this, "Ringing...", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCallEstablished(Call call) {
+            Toast.makeText(ChatActivity.this, "Call established", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCallEnded(Call endCall) {
+            Toast.makeText(ChatActivity.this, "Call ended", Toast.LENGTH_SHORT).show();
+            call = null;
+            endCall.hangup();
+        }
+
+        @Override
+        public void onShouldSendPushNotification(Call call, List<PushPair> list) {
+            Toast.makeText(getApplicationContext(), "Nofitication...", Toast.LENGTH_SHORT).show();
+        }
+    }
+    public void callUser(String userId) {
+        if(call == null) {
+            call = sinchClient.getCallClient().callUser(userId);
+            call.addCallListener(new SinchCallListener());
+            openCallerDialog(call);
+        }
+        else {
+            call.hangup();
+        }
+    }
+    private void openCallerDialog(Call call) {
+        AlertDialog alertDialogCall = new AlertDialog.Builder(this).create();
+        alertDialogCall.setTitle("ALERT");
+        alertDialogCall.setMessage("CALLING");
+        alertDialogCall.setButton(AlertDialog.BUTTON_NEUTRAL, "Hang up", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                call.hangup();
+            }
+        });
+        alertDialogCall.show();
+    }
 
 
 

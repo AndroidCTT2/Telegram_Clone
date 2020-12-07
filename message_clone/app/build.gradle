@@ -27,6 +27,8 @@ android {
 }
 
 dependencies {
+    compile(name:'sinch-android-rtc', version:'+', ext:'aar')
+
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'

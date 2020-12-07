@@ -3,12 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Chat.NewVoiceCallFragment">
+    tools:context=".Chat.NewVoiceCallFragment"
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewNewVoiceCall"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="FRAGMENT NEW VOICE CALL" />
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>
