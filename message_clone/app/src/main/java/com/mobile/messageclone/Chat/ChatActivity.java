@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -14,15 +16,18 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -97,7 +102,6 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
 
     private Call call;
     private SinchClient sinchClient;
-
 
     public static final String STATUS_OFFLINE="Offline";
     public static final String STATUS_ONLINE="Online";
@@ -357,6 +361,7 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
                     Toast.makeText(ChatActivity.this, "PICK", Toast.LENGTH_SHORT).show();
                     call.addCallListener(new SinchCallListener());
                     call.answer();
+                    setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
                 }
             });
             alertDialog.show();
@@ -380,6 +385,7 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
             Toast.makeText(ChatActivity.this, "Call ended", Toast.LENGTH_SHORT).show();
             call = null;
             endCall.hangup();
+            setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
         }
 
         @Override
@@ -388,15 +394,25 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
         }
     }
     public void callUser(String userId) {
-        if(call == null) {
-            call = sinchClient.getCallClient().callUser(userId);
-            call.addCallListener(new SinchCallListener());
-            openCallerDialog(call);
+        if (ContextCompat.checkSelfPermission(ChatActivity.this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+            && ContextCompat.checkSelfPermission(ChatActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            if(call == null) {
+                call = sinchClient.getCallClient().callUser(userId);
+                setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
+                call.addCallListener(new SinchCallListener());
+                openCallerDialog(call);
+            }
+            else {
+                call.hangup();
+            }
         }
         else {
-            call.hangup();
+            ActivityCompat.requestPermissions(ChatActivity.this,
+                    new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA}, 1);
         }
+
     }
+
     private void openCallerDialog(Call call) {
         AlertDialog alertDialogCall = new AlertDialog.Builder(this).create();
         alertDialogCall.setTitle("ALERT");
