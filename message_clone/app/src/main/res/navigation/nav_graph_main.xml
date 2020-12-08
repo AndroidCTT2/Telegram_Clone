@@ -105,4 +105,9 @@
             android:id="@+id/action_fragment_voice_call_to_fragment_new_voice_call"
             app:destination="@id/fragment_new_voice_call" />
     </fragment>
+    <dialog
+        android:id="@+id/voiceCallScreenFragment"
+        android:name="com.mobile.messageclone.Chat.VoiceCallScreenFragment"
+        android:label="fragment_voice_call_screen"
+        tools:layout="@layout/fragment_voice_call_screen" />
 </navigation>

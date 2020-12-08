@@ -145,8 +145,8 @@ public class NewVoiceCallFragment extends Fragment implements RecyclerViewClickI
 
     @Override
     public void onItemClick(int position) {
-        Toast.makeText(getContext(), "Calling " + this.contactAndSeenTimeArrayList.get(position).contact.getFirstNickName()
-                +" "+this.contactAndSeenTimeArrayList.get(position).contact.getLastNickName(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getContext(), "Calling " + this.contactAndSeenTimeArrayList.get(position).contact.getFirstNickName()
+//                +" "+this.contactAndSeenTimeArrayList.get(position).contact.getLastNickName(), Toast.LENGTH_SHORT).show();
         ((ChatActivity)getActivity()).callUser(this.contactAndSeenTimeArrayList.get(position).contact.getUserIdContact());
     }
 

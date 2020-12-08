@@ -7,7 +7,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -58,6 +60,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.messageclone.DrawProfilePicture;
 import com.mobile.messageclone.R;
+import com.mobile.messageclone.SignIn.CountryCodeDialogFragment;
 import com.mobile.messageclone.SignIn.MainActivity;
 import com.mobile.messageclone.TextDrawableForStaticImage;
 import com.sinch.android.rtc.PushPair;
@@ -102,6 +105,8 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
 
     private Call call;
     private SinchClient sinchClient;
+    private VoiceCallScreenFragment voiceCallScreenFragment;
+    private String reciverName;
 
     public static final String STATUS_OFFLINE="Offline";
     public static final String STATUS_ONLINE="Online";
@@ -310,21 +315,13 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
                     }
                 }
             }
-
         }).start();
 
         firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("STATUS").child("State").onDisconnect().setValue(STATUS_OFFLINE);
         firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("STATUS").child("Time").onDisconnect().setValue(ServerValue.TIMESTAMP);
 
 
-        // Instantiate a SinchClient using the SinchClientBuilder.
-//        sinchClient = Sinch.getSinchClientBuilder()
-//                .context(this)
-//                .applicationKey("3f0c86b1-c39a-418a-8853-ca634ee14cb8")
-//                .applicationSecret("kHcuF1KfokazLwUeSmMiYQ==")
-//                .environmentHost("clientapi.sinch.com")
-//                .userId(firebaseAuth.getCurrentUser().getUid())
-//                .build();
+
         sinchClient = Sinch.getSinchClientBuilder()
                 .context(this)
                 .applicationKey("6389d8f4-8a3f-4299-9b0c-883535d7688f")
@@ -339,6 +336,10 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
         sinchClient.start();
         CallClient callClient = sinchClient.getCallClient();
         callClient.addCallClientListener(new SinchCallClientListener());
+
+        this.reciverName = "Name";
+        this.voiceCallScreenFragment = new VoiceCallScreenFragment(reciverName);
+
     }
 
     private class SinchCallClientListener implements CallClientListener {
@@ -362,6 +363,21 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
                     call.addCallListener(new SinchCallListener());
                     call.answer();
                     setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
+                    FirebaseDatabase.getInstance().getReference().child("USER").child(call.getRemoteUserId()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            String firstName = snapshot.child("firstName").getValue(String.class);
+                            String lastName = snapshot.child("lastName").getValue(String.class);
+                            reciverName = firstName + " " + lastName;
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                    voiceCallScreenFragment.setName(reciverName);
+                    voiceCallScreenFragment.show(getSupportFragmentManager(), "VoiceCallScreen");
                 }
             });
             alertDialog.show();
@@ -378,14 +394,28 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
         @Override
         public void onCallEstablished(Call call) {
             Toast.makeText(ChatActivity.this, "Call established", Toast.LENGTH_SHORT).show();
+            FragmentManager fm = getSupportFragmentManager();
+            VoiceCallScreenFragment voiceCallScreenFragment = (VoiceCallScreenFragment) fm.findFragmentByTag("VoiceCallScreen");
+            Fragment prev = fm.findFragmentByTag("VoiceCallScreen");
+            if (prev != null) {
+                voiceCallScreenFragment.turnOnTheClock();
+            }
         }
 
         @Override
         public void onCallEnded(Call endCall) {
             Toast.makeText(ChatActivity.this, "Call ended", Toast.LENGTH_SHORT).show();
             call = null;
-            endCall.hangup();
             setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
+            FragmentManager fm = getSupportFragmentManager();
+            VoiceCallScreenFragment voiceCallScreenFragment = (VoiceCallScreenFragment) fm.findFragmentByTag("VoiceCallScreen");
+            Fragment prev = fm.findFragmentByTag("VoiceCallScreen");
+            if (prev != null) {
+                voiceCallScreenFragment.turnOffTheClock();
+                voiceCallScreenFragment.dismiss();
+            }
+//            Date currentTime = Calendar.getInstance().getTime();
+//            Toast.makeText(ChatActivity.this, DateToString.LastSeenString(currentTime), Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -400,7 +430,22 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
                 call = sinchClient.getCallClient().callUser(userId);
                 setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
                 call.addCallListener(new SinchCallListener());
-                openCallerDialog(call);
+                //openCallerDialog(call);
+                FirebaseDatabase.getInstance().getReference().child("USER").child(userId).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        String firstName = snapshot.child("firstName").getValue(String.class);
+                        String lastName = snapshot.child("lastName").getValue(String.class);
+                        reciverName = firstName + " " + lastName;
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+                voiceCallScreenFragment.setName(reciverName);
+                voiceCallScreenFragment.show(getSupportFragmentManager(), "VoiceCallScreen");
             }
             else {
                 call.hangup();
@@ -410,24 +455,13 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
             ActivityCompat.requestPermissions(ChatActivity.this,
                     new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA}, 1);
         }
-
     }
 
-    private void openCallerDialog(Call call) {
-        AlertDialog alertDialogCall = new AlertDialog.Builder(this).create();
-        alertDialogCall.setTitle("ALERT");
-        alertDialogCall.setMessage("CALLING");
-        alertDialogCall.setButton(AlertDialog.BUTTON_NEUTRAL, "Hang up", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                call.hangup();
-            }
-        });
-        alertDialogCall.show();
+    public void endVoiceCall() {
+        if(this.call != null) {
+            call.hangup();
+        }
     }
-
-
 
 
     @Override
