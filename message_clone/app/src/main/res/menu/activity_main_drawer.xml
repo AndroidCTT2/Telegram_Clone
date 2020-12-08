@@ -17,7 +17,7 @@
             android:icon="@drawable/ic_round_contacts_24"
             android:title="Contact" />
         <item
-            android:id="@+id/fragment_new_video_call"
+            android:id="@+id/videoCallFragment"
             android:icon="@drawable/ic_baseline_video_call_24"
             android:title="Video call" />
         <item

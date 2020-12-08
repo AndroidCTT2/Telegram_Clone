@@ -25,11 +25,11 @@
             android:id="@+id/action_fragment_home_to_newChat"
             app:destination="@id/newChat" />
         <action
-            android:id="@+id/action_fragment_home_to_fragment_new_video_call2"
-            app:destination="@id/fragment_new_video_call" />
-        <action
             android:id="@+id/action_fragment_home_to_fragment_voice_call"
             app:destination="@id/fragment_voice_call" />
+        <action
+            android:id="@+id/action_fragment_home_to_videoCallFragment"
+            app:destination="@id/videoCallFragment" />
     </fragment>
     <fragment
         android:id="@+id/fragment_contact"
@@ -52,11 +52,7 @@
     <fragment
         android:id="@+id/chat_fragment"
         android:name="com.mobile.messageclone.Chat.chat_fragment"
-        tools:layout="@layout/fragment_chat_fragment" >
-        <action
-            android:id="@+id/action_chat_fragment_to_fragment_video_call_screen"
-            app:destination="@id/fragment_video_call_screen" />
-    </fragment>
+        tools:layout="@layout/fragment_chat_fragment" />
     <fragment
         android:id="@+id/newGroupFragment"
         android:name="com.mobile.messageclone.Chat.NewGroupFragment"
@@ -78,20 +74,6 @@
             app:destination="@id/newGroupFragment" />
     </fragment>
     <fragment
-        android:id="@+id/fragment_new_video_call"
-        android:name="com.mobile.messageclone.Chat.NewVideoCallFragment"
-        android:label="fragment_new_video_call"
-        tools:layout="@layout/fragment_new_video_call" >
-        <action
-            android:id="@+id/action_fragment_new_video_call_to_fragment_video_call_screen"
-            app:destination="@id/fragment_video_call_screen" />
-    </fragment>
-    <fragment
-        android:id="@+id/fragment_video_call_screen"
-        android:name="com.mobile.messageclone.Chat.VideoCallScreenFragment"
-        android:label="fragment_video_call_screen"
-        tools:layout="@layout/fragment_video_call_screen" />
-    <fragment
         android:id="@+id/fragment_new_voice_call"
         android:name="com.mobile.messageclone.Chat.NewVoiceCallFragment"
         android:label="fragment_new_voice_call"
@@ -104,5 +86,19 @@
         <action
             android:id="@+id/action_fragment_voice_call_to_fragment_new_voice_call"
             app:destination="@id/fragment_new_voice_call" />
+    </fragment>
+    <fragment
+        android:id="@+id/newVideoCallFragment"
+        android:name="com.mobile.messageclone.Chat.NewVideoCallFragment"
+        android:label="fragment_new_video_call"
+        tools:layout="@layout/fragment_new_video_call" />
+    <fragment
+        android:id="@+id/videoCallFragment"
+        android:name="com.mobile.messageclone.Chat.VideoCallFragment"
+        android:label="fragment_video_call"
+        tools:layout="@layout/fragment_video_call" >
+        <action
+            android:id="@+id/action_videoCallFragment_to_newVideoCallFragment"
+            app:destination="@id/newVideoCallFragment" />
     </fragment>
 </navigation>

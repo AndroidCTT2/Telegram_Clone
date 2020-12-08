@@ -36,7 +36,7 @@ public class NewVideoCallFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment fragment_new_video_call.
+     * @return A new instance of fragment NewVideoCallFragment.
      */
     // TODO: Rename and change types and number of parameters
     public static NewVideoCallFragment newInstance(String param1, String param2) {
