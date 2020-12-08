@@ -12,10 +12,10 @@ import com.mobile.messageclone.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link VideoCallScreenFragment#newInstance} factory method to
+ * Use the {@link VideoCallFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class VideoCallScreenFragment extends Fragment {
+public class VideoCallFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class VideoCallScreenFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public VideoCallScreenFragment() {
+    public VideoCallFragment() {
         // Required empty public constructor
     }
 
@@ -36,11 +36,11 @@ public class VideoCallScreenFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment fragment_video_call_screen.
+     * @return A new instance of fragment VideoCallFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static VideoCallScreenFragment newInstance(String param1, String param2) {
-        VideoCallScreenFragment fragment = new VideoCallScreenFragment();
+    public static VideoCallFragment newInstance(String param1, String param2) {
+        VideoCallFragment fragment = new VideoCallFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +61,6 @@ public class VideoCallScreenFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_video_call_screen, container, false);
+        return inflater.inflate(R.layout.fragment_video_call, container, false);
     }
 }
