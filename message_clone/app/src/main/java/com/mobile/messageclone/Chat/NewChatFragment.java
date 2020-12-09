@@ -30,6 +30,7 @@ import com.mobile.messageclone.Chat.ChatViewModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -228,18 +229,13 @@ public class NewChatFragment extends Fragment implements RecyclerViewClickInterf
                                     String DbTime;
                                     String status;
                                     ContactAndSeenTime contactAndSeenTime = null;
-                                    DbDate = snapshot.child("Date").getValue(String.class);
-                                    DbTime = snapshot.child("Time").getValue(String.class);
+
+                                    long  timeStamp=snapshot.child("Time").getValue(Long.class);
+                                    Instant instant=Instant.ofEpochMilli(timeStamp);
+                                    Date date=Date.from(instant);
                                     status = snapshot.child("State").getValue(String.class);
                                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy,X-HH-mm-ss");
-                                    DbDate = DbDate + "-" + DbTime;
 
-                                    Date date = new Date();
-                                    try {
-                                        date = dateFormat.parse(DbDate);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
                                     Date todayDate;
                                     if (TrueTimeRx.isInitialized() == true){
                                        todayDate = TrueTimeRx.now();
