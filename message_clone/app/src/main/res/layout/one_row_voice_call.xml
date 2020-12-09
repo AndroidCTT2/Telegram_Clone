@@ -4,36 +4,52 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingHorizontal="15dp"
+    android:paddingVertical="10dp">
 
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/profilePictureVoiceCall"
         android:layout_width="60dp"
         android:layout_height="60dp"
         app:civ_border="false"
-        app:civ_circle_color="?attr/colorOnPrimarySurface"></com.mikhaellopez.circularimageview.CircularImageView>
+        app:civ_circle_color="?attr/colorOnPrimarySurface"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/txtUsernameVoiceCall"
+            android:id="@+id/txtNameVoiceCall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxWidth="240dp"
             android:text="Võ Thế Minh"
             android:textColor="?attr/colorOnSurface"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"></TextView>
+
         <TextView
-            android:id="@+id/txtLastSeenTimeVoiceCall"
+            android:id="@+id/txtCallDateVoiceCall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Last call"
-            android:textSize="18sp"
+            android:layout_marginStart="32dp"
+            android:maxWidth="240dp"
+            android:text="Call date"
+            android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtUsernameVoiceCall"></TextView>
+            app:layout_constraintTop_toBottomOf="@+id/txtNameVoiceCall"></TextView>
+
+        <ImageView
+            android:id="@+id/imgArrowVoiceCall"
+            android:layout_width="31dp"
+            android:layout_height="34dp"
+            android:src="@drawable/ic_baseline_greenarrow_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtNameVoiceCall"
+            android:rotation="45 "/>
+
         <ImageButton
             android:id="@+id/imgbtnCallVoiceCall"
             android:layout_width="80dp"

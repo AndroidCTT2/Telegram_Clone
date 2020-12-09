@@ -1,6 +1,7 @@
 package com.mobile.messageclone.Chat;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -32,10 +33,15 @@ public class VoiceCallScreenFragment extends DialogFragment {
     private Chronometer chronometer;
     private long pauseOffset;
     private boolean running;
+    public Long callDuration = 0L;
 
     public static VoiceCallScreenFragment newInstance() {
         VoiceCallScreenFragment fragment = new VoiceCallScreenFragment("");
         return fragment;
+    }
+
+    public Chronometer getChronometer() {
+        return chronometer;
     }
 
     public VoiceCallScreenFragment(String name) {
@@ -47,6 +53,16 @@ public class VoiceCallScreenFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NORMAL,
                 android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        this.callDuration = SystemClock.elapsedRealtime() - chronometer.getBase();
+    }
+
+    public Long getCallDuration() {
+        return this.callDuration;
     }
 
     @Override
@@ -86,8 +102,6 @@ public class VoiceCallScreenFragment extends DialogFragment {
         chronometer = (Chronometer)view.findViewById(R.id.chronometer);
         chronometer.setFormat("%m:%s");
         chronometer.setBase(SystemClock.elapsedRealtime());
-
-
     }
 
     public void setName(String name) {

@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/recyclerViewVoiceCall"
-        android:paddingHorizontal="20dp"
         ></androidx.recyclerview.widget.RecyclerView>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
