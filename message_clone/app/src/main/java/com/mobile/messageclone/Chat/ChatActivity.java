@@ -630,6 +630,7 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
 
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -647,7 +648,11 @@ public class ChatActivity extends AppCompatActivity implements CloseDrawer  {
 
             NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
             NavController navController = navHostFragment.getNavController();
-            navController.popBackStack(R.id.fragment_home,false);
+            if  (navController.getBackStack()!=null)
+            {
+                navController.popBackStack(R.id.fragment_home,false);
+            }
+
             //navController.getCurrentDestination()
             navController.navigate(R.id.action_fragment_home_to_chat_fragment,bundle1);
            // chat_fragment chatFragment = new chat_fragment();

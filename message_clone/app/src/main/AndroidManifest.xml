@@ -48,7 +48,7 @@
         <service
             android:name=".notification.MyFirebaseIdService"
             android:enabled="true"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTACE_ID_EVENT" />
             </intent-filter>
@@ -57,7 +57,7 @@
         <service
             android:name=".notification.MyFirebaseMessagingService"
             android:enabled="true"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
