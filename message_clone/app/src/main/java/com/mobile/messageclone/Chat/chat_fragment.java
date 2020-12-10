@@ -152,24 +152,23 @@ public class chat_fragment extends Fragment {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
+                                if (snapshot.exists() == true) {
+                                    String status = snapshot.child("State").getValue(String.class);
 
-                                String status=snapshot.child("State").getValue(String.class);
+                                    long timeStamp = snapshot.child("Time").getValue(Long.class);
 
-                                long  timeStamp=snapshot.child("Time").getValue(Long.class);
-
-                                String time;
-                                Instant instant=Instant.ofEpochMilli(timeStamp);
-                                Date date=Date.from(instant);
+                                    String time;
+                                    Instant instant = Instant.ofEpochMilli(timeStamp);
+                                    Date date = Date.from(instant);
 
 
-                                if (status.equals(ChatActivity.STATUS_ONLINE))
-                                {
-                                    chatViewModel.subtitleBar.setValue("Online");
-                                }
-                                else {
+                                    if (status.equals(ChatActivity.STATUS_ONLINE)) {
+                                        chatViewModel.subtitleBar.setValue("Online");
+                                    } else {
 
-                                    time=DateToString.LastSeenString(date);
-                                    chatViewModel.subtitleBar.setValue("Last seen "+ time);
+                                        time = DateToString.LastSeenString(date);
+                                        chatViewModel.subtitleBar.setValue("Last seen " + time);
+                                    }
                                 }
                             }
 
@@ -179,6 +178,7 @@ public class chat_fragment extends Fragment {
                             }
                         });
                         Thread.sleep(10000);
+
 
 
                     } catch (InterruptedException e) {
