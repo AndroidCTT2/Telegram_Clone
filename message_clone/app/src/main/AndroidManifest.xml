@@ -12,16 +12,16 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
-        android:name=".Application"
+        android:name=".Ulti.Application"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Chat.ChatActivity"
+        <activity android:name=".Activity.ChatActivity"
             ></activity>
-        <activity android:name=".SignIn.MainActivity">
+        <activity android:name=".Activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,12 +41,12 @@
 
             <!-- Automatically run MyInitializer at app startup -->
             <meta-data
-                android:name="com.mobile.messageclone.SignIn.SignInFragment"
+                android:name="com.mobile.messageclone.fragment.SignIn.SignInFragment"
                 android:value="androidx.startup" />
         </provider>
 
         <service
-            android:name=".notification.MyFirebaseIdService"
+            android:name=".Model.MyFirebaseIdService"
             android:enabled="true"
             android:exported="false">
             <intent-filter>

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="?attr/colorBackgroundFloating"
-    tools:context=".Chat.NewGroupFragment">
+    tools:context=".fragment.Chat.NewGroupFragment">
 
     <TextView
         android:paddingTop="10dp"

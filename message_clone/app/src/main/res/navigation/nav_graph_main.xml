@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/fragment_home"
-        android:name="com.mobile.messageclone.Chat.HomeFragment"
+        android:name="com.mobile.messageclone.fragment.Chat.HomeFragment"
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment2_to_mainScreen2"
@@ -33,7 +33,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragment_contact"
-        android:name="com.mobile.messageclone.Chat.ContactFragment">
+        android:name="com.mobile.messageclone.fragment.Contact.ContactFragment">
         <action
             android:id="@+id/action_fragment_contact_to_fragment_find_contact"
             app:destination="@id/fragment_find_contact" />
@@ -44,18 +44,18 @@
     </fragment>
     <fragment
         android:id="@+id/fragment_find_contact"
-        android:name="com.mobile.messageclone.Chat.fragment_find_contact" />
+        android:name="com.mobile.messageclone.fragment.Contact.fragment_find_contact" />
     <fragment
         android:id="@+id/bio"
-        android:name="com.mobile.messageclone.Chat.ProfileFragment"
+        android:name="com.mobile.messageclone.fragment.Profile.ProfileFragment"
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/chat_fragment"
-        android:name="com.mobile.messageclone.Chat.chat_fragment"
+        android:name="com.mobile.messageclone.fragment.Chat.chat_fragment"
         tools:layout="@layout/fragment_chat_fragment" />
     <fragment
         android:id="@+id/newGroupFragment"
-        android:name="com.mobile.messageclone.Chat.NewGroupFragment"
+        android:name="com.mobile.messageclone.fragment.Chat.NewGroupFragment"
         tools:layout="@layout/fragment_new_group" >
         <action
             android:id="@+id/action_newGroupFragment_to_chat_fragment"
@@ -63,7 +63,7 @@
     </fragment>
     <fragment
         android:id="@+id/newChat"
-        android:name="com.mobile.messageclone.Chat.NewChatFragment"
+        android:name="com.mobile.messageclone.fragment.Chat.NewChatFragment"
         tools:layout="@layout/fragment_new_chat">
         <action
             android:id="@+id/action_fragment_newChat_to_chat_fragment"
@@ -75,12 +75,12 @@
     </fragment>
     <fragment
         android:id="@+id/fragment_new_voice_call"
-        android:name="com.mobile.messageclone.Chat.NewVoiceCallFragment"
+        android:name="com.mobile.messageclone.fragment.VoiceCall.NewVoiceCallFragment"
         android:label="fragment_new_voice_call"
         tools:layout="@layout/fragment_new_voice_call" />
     <fragment
         android:id="@+id/fragment_voice_call"
-        android:name="com.mobile.messageclone.Chat.VoiceCallFragment"
+        android:name="com.mobile.messageclone.fragment.VoiceCall.VoiceCallFragment"
         android:label="fragment_voice_call"
         tools:layout="@layout/fragment_voice_call" >
         <action
@@ -89,17 +89,17 @@
     </fragment>
     <dialog
         android:id="@+id/voiceCallScreenFragment"
-        android:name="com.mobile.messageclone.Chat.VoiceCallScreenFragment"
+        android:name="com.mobile.messageclone.fragment.VoiceCall.VoiceCallScreenFragment"
         android:label="fragment_voice_call_screen"
         tools:layout="@layout/fragment_voice_call_screen" />
     <fragment
         android:id="@+id/newVideoCallFragment"
-        android:name="com.mobile.messageclone.Chat.NewVideoCallFragment"
+        android:name="com.mobile.messageclone.fragment.VideoCall.NewVideoCallFragment"
         android:label="fragment_new_video_call"
         tools:layout="@layout/fragment_new_video_call" />
     <fragment
         android:id="@+id/videoCallFragment"
-        android:name="com.mobile.messageclone.Chat.VideoCallFragment"
+        android:name="com.mobile.messageclone.fragment.VideoCall.VideoCallFragment"
         android:label="fragment_video_call"
         tools:layout="@layout/fragment_video_call" >
         <action

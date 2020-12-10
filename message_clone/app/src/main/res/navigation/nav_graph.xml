@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.mobile.messageclone.SignIn.AddNameFragment"
+        android:name="com.mobile.messageclone.fragment.SignIn.AddNameFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_add_name" >
         <action
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/signIn"
-        android:name="com.mobile.messageclone.SignIn.SignInFragment"
+        android:name="com.mobile.messageclone.fragment.SignIn.SignInFragment"
         android:label="fragment_sign_in"
         tools:layout="@layout/fragment_sign_in" >
         <action
@@ -31,7 +31,7 @@
     </fragment>
     <fragment
         android:id="@+id/validationPhone"
-        android:name="com.mobile.messageclone.SignIn.ValidationPhone"
+        android:name="com.mobile.messageclone.fragment.SignIn.ValidationPhone"
         android:label="ValidationPhone" >
         <action
             android:id="@+id/action_validationPhone_to_chatActivity"
@@ -48,11 +48,11 @@
     </fragment>
     <fragment
         android:id="@+id/countryCodeDialogFragment"
-        android:name="com.mobile.messageclone.SignIn.CountryCodeDialogFragment"
+        android:name="com.mobile.messageclone.fragment.SignIn.CountryCodeDialogFragment"
         android:label="CountryCodeDialogFragment" />
     <activity
         android:id="@+id/chatActivity2"
-        android:name="com.mobile.messageclone.Chat.ChatActivity"
+        android:name="com.mobile.messageclone.Activity.ChatActivity"
         android:label="ChatActivity" />
 
 </navigation>
