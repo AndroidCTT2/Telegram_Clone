@@ -5,6 +5,11 @@ import androidx.lifecycle.ViewModel;
 
 public class ChatViewModel extends ViewModel {
 
+    public enum ChatType{
+            GROUP_CHAT,
+            P2P_CHAT
+    }
+
     public MutableLiveData<String> titleBar;
     public MutableLiveData<String>subtitleBar;
     public MutableLiveData<String> ChatID;
@@ -12,6 +17,8 @@ public class ChatViewModel extends ViewModel {
     public MutableLiveData<Boolean>IsHideAppBar;
     public MutableLiveData<Boolean>IsHideNavBar;
     public MutableLiveData<String>UserProfileImageUrl;
+
+    public MutableLiveData<ChatType>chatType;
 
     public MutableLiveData<Boolean>IsDeleteListContactSeenTimeList;
 
@@ -26,6 +33,7 @@ public class ChatViewModel extends ViewModel {
         IsHideNavBar=new MutableLiveData<>();
         UserProfileImageUrl=new MutableLiveData<>();
         subtitleBar=new MutableLiveData<>();
+        chatType=new MutableLiveData<>();
         //titleBar.setValue("Message");
     }
 }

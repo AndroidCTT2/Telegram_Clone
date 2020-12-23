@@ -23,6 +23,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.mobile.messageclone.Model.Group;
 import com.mobile.messageclone.Model.Message;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.Model.ContactLastMessTime;
@@ -31,6 +32,8 @@ import com.mobile.messageclone.Ulti.RecyclerViewClickInterface;
 import com.mobile.messageclone.Model.Contact;
 import com.mobile.messageclone.ViewModel.ChatViewModel;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.LinkedList;
 
 public class HomeFragment extends Fragment implements RecyclerViewClickInterface {
@@ -62,9 +65,22 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
         firebaseDatabase=FirebaseDatabase.getInstance();
         contactLinkedList=new LinkedList<>();
         contactListHomeAdapter=new ContactListHomeAdapter(getActivity(),getContext());
+        contactListHomeAdapter.contactLastMessTimeLinkedList=contactLastMessTimeLinkedList;
         //contactListHomeAdapter.SetUpContactLastMessTimeList(contactLastMessTimeLinkedList);
         contactListHomeAdapter.SetClickInterface(this);
         thisUserID = firebaseAuth.getCurrentUser().getUid();
+
+     /*   Message message=new Message();
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss-X");
+        message.setMessage("Demo tin nhan nhom");
+        message.setSendTime(simpleDateFormat.format(Calendar.getInstance().getTime()));
+        message.setReceiverID("qkaf9G49vqUyfQCElTtouY1f6bo2");
+        message.setSenderID("S5gv935gPihgOl6I7L8AZBtHKCx1");
+        message.setStatus(Message.STATUS.Delivered);
+        firebaseDatabase.getReference().child("MESSAGE").child("GC:-MPCaROSq5dmdsxorR6e").push().setValue(message);*/
+
+
+
 
 
 
@@ -115,7 +131,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
                                                                     Message message=child2.getValue(Message.class);
 
                                                                     contactLastMessTime.LastMess=message;
-
+                                                                    contactLastMessTime.type=ContactListHomeAdapter.CHAT_PERSONAL;
 
                                                                     contactLastMessTime.contact.setUserIdContact(contactID);
                                                                     if (contactLastMessTimeLinkedList.size()!=0) {
@@ -190,7 +206,209 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
             }
         });
 
+        firebaseDatabase.getReference().child("USER").child(firebaseAuth.getCurrentUser().getUid()).child("GROUP").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()==true)
+                {
+                    for (DataSnapshot child1:snapshot.getChildren())
+                    {
+                        String groupChatId=child1.getValue(String.class);
 
+                        firebaseDatabase.getReference().child("GROUP_CHAT").child(groupChatId).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                ContactLastMessTime contactLastMessTime=new ContactLastMessTime();
+                                Group group=snapshot.getValue(Group.class);
+                                contactLastMessTime.groupName=group.getGroupName();
+
+                                firebaseDatabase.getReference().child("MESSAGE").child(groupChatId).limitToLast(1).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if (snapshot.exists()==true)
+                                            {
+                                                final Contact[] contact = {new Contact()};
+                                                for (DataSnapshot child2:snapshot.getChildren()) {
+
+                                                    Message message = child2.getValue(Message.class);
+                                                    Log.d("Group",message.getSenderID());
+                                                    if (message.getSenderID().equals(thisUserID)==false) {
+                                                        firebaseDatabase.getReference().child("CONTACT").child(thisUserID).child(message.getSenderID()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                if (snapshot.exists()==true)
+                                                                {
+                                                                    contact[0] =snapshot.getValue(Contact.class);
+
+                                                                    contactLastMessTime.contact=contact[0];
+                                                                    contactLastMessTime.contact.setUserIdContact(groupChatId);
+                                                                    contactLastMessTime.LastMess=message;
+                                                                    contactLastMessTime.profileImg=null;
+                                                                    contactLastMessTime.type=ContactListHomeAdapter.CHAT_GROUP;
+
+
+                                                                    if (contactLastMessTimeLinkedList.size()!=0) {
+
+                                                                        for (int i = 0; i < contactLastMessTimeLinkedList.size(); i++) {
+                                                                            if (contactLastMessTimeLinkedList.get(i).contact.getUserIdContact().equals(groupChatId)) {
+                                                                                contactLastMessTimeLinkedList.get(i).LastMess = message;
+
+                                                                                Log.d("Message", "updated");
+                                                                                break;
+                                                                            }
+                                                                            if (i == contactLastMessTimeLinkedList.size() - 1) {
+                                                                                contactLastMessTimeLinkedList.add(contactLastMessTime);
+                                                                                Log.d("Message", "added");
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        contactLastMessTimeLinkedList.add(contactLastMessTime);
+                                                                    }
+
+
+                                                                    contactListHomeAdapter.contactLastMessTimeLinkedList=contactLastMessTimeLinkedList;
+                                                                    contactListHomeAdapter.SortTime();
+                                                                    contactListHomeAdapter.notifyDataSetChanged();
+                                                                }
+                                                                else
+                                                                {
+                                                                    Log.d("Group","Co vo day");
+                                                                    firebaseDatabase.getReference().child("USER").child(message.getSenderID()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                        @Override
+                                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                            contact[0].setLastNickName(snapshot.child("firstName").getValue(String.class));
+                                                                            contact[0].setFirstNickName(snapshot.child("lastName").getValue(String.class));
+
+                                                                            contact[0].setUserIdContact(groupChatId);
+                                                                            ContactLastMessTime contactLastMessTime=new ContactLastMessTime();
+                                                                            contactLastMessTime.contact=contact[0];
+                                                                            contactLastMessTime.LastMess=message;
+                                                                            Log.d("Group",groupChatId);
+                                                                            contactLastMessTime.profileImg="";
+                                                                            contactLastMessTime.type=ContactListHomeAdapter.CHAT_GROUP;
+
+                                                                            if (contactLastMessTimeLinkedList.size()!=0) {
+
+                                                                                for (int i = 0; i < contactLastMessTimeLinkedList.size(); i++) {
+                                                                                    if (contactLastMessTimeLinkedList.get(i).contact.getUserIdContact().equals(groupChatId)) {
+                                                                                        contactLastMessTimeLinkedList.get(i).LastMess = message;
+
+                                                                                        Log.d("Message", "updated");
+                                                                                        break;
+                                                                                    }
+                                                                                    if (i == contactLastMessTimeLinkedList.size() - 1) {
+                                                                                        contactLastMessTimeLinkedList.add(contactLastMessTime);
+                                                                                        Log.d("Message", "added");
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                contactLastMessTimeLinkedList.add(contactLastMessTime);
+                                                                            }
+
+
+                                                                            contactListHomeAdapter.contactLastMessTimeLinkedList=contactLastMessTimeLinkedList;
+                                                                            contactListHomeAdapter.SortTime();
+                                                                            contactListHomeAdapter.notifyDataSetChanged();
+
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                                        }
+                                                                    });
+                                                                }
+
+
+                                                            }
+
+
+
+
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                                            }
+                                                        });
+                                                    }
+                                                    else
+                                                    {
+                                                        firebaseDatabase.getReference().child("USER").child(thisUserID).addValueEventListener(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+
+                                                                contactLastMessTime.contact.setFirstNickName(snapshot.child("firstName").getValue(String.class));
+                                                                contactLastMessTime.contact.setLastNickName(snapshot.child("lastName").getValue(String.class));
+                                                                contactLastMessTime.contact.setUserIdContact(groupChatId);
+                                                                contactLastMessTime.LastMess=message;
+                                                                contactLastMessTime.profileImg=null;
+                                                                contactLastMessTime.type=ContactListHomeAdapter.CHAT_GROUP;
+
+
+                                                                if (contactLastMessTimeLinkedList.size()!=0) {
+
+                                                                    for (int i = 0; i < contactLastMessTimeLinkedList.size(); i++) {
+                                                                        if (contactLastMessTimeLinkedList.get(i).contact.getUserIdContact().equals(groupChatId)) {
+                                                                            contactLastMessTimeLinkedList.get(i).LastMess = message;
+
+                                                                            Log.d("Message", "updated");
+                                                                            break;
+                                                                        }
+                                                                        if (i == contactLastMessTimeLinkedList.size() - 1) {
+                                                                            contactLastMessTimeLinkedList.add(contactLastMessTime);
+                                                                            Log.d("Message", "added");
+                                                                        }
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    contactLastMessTimeLinkedList.add(contactLastMessTime);
+                                                                }
+
+
+                                                                contactListHomeAdapter.contactLastMessTimeLinkedList=contactLastMessTimeLinkedList;
+                                                                contactListHomeAdapter.SortTime();
+                                                                contactListHomeAdapter.notifyDataSetChanged();
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
 
@@ -240,12 +458,27 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
 
     @Override
     public void onItemClick(int position) {
+
+
         Bundle bundle=new Bundle();
-        bundle.putString("UserID",firebaseAuth.getCurrentUser().getUid());
-        bundle.putString("ContactID",contactLastMessTimeLinkedList.get(position).contact.getUserIdContact());
-        bundle.putString("ContactName",contactLastMessTimeLinkedList.get(position).contact.getFirstNickName()+" "+contactLastMessTimeLinkedList.get(position).contact.getLastNickName());
-        NavController navController= Navigation.findNavController(getView());
-        navController.navigate(R.id.action_fragment_home_to_chat_fragment,bundle);
+        bundle.putString("UserID", firebaseAuth.getCurrentUser().getUid());
+        bundle.putString("ContactID", contactLastMessTimeLinkedList.get(position).contact.getUserIdContact());
+        bundle.putInt("Type",contactListHomeAdapter.contactLastMessTimeLinkedList.get(position).type);
+
+        if (contactListHomeAdapter.contactLastMessTimeLinkedList.get(position).type==ContactListHomeAdapter.CHAT_GROUP)
+        {
+
+
+            bundle.putString("ContactName", contactLastMessTimeLinkedList.get(position).groupName);
+
+        }
+        else if (contactListHomeAdapter.contactLastMessTimeLinkedList.get(position).type==ContactListHomeAdapter.CHAT_PERSONAL) {
+
+            bundle.putString("ContactName", contactLastMessTimeLinkedList.get(position).contact.getFirstNickName() + " " + contactLastMessTimeLinkedList.get(position).contact.getLastNickName());
+
+        }
+        NavController navController = Navigation.findNavController(getView());
+        navController.navigate(R.id.action_fragment_home_to_chat_fragment, bundle);
     }
 
     @Override

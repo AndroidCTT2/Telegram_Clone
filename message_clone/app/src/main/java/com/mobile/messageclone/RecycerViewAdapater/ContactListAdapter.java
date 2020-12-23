@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.messageclone.Activity.ChatActivity;
 import com.mobile.messageclone.Model.ContactAndSeenTime;
@@ -67,14 +68,18 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                 holder.Status.setText("Last seen ");
                 holder.LastSeenTime.setText(contactAndSeenTimeList.get(position).SeenTime);
             }
-            if (contactAndSeenTimeList.get(position).contact.getLastNickName().isEmpty()==true)
+            if (contactAndSeenTimeList.get(position).imageUrl.isEmpty()==false)
             {
-
-                holder.profilePicture.setImageBitmap(DrawProfilePicture.textAsBitmap(String.valueOf(ContactName.charAt(0)).toUpperCase(),70, Color.WHITE));
+                Glide.with(context).load(contactAndSeenTimeList.get(position).imageUrl).into(holder.profilePicture);
             }
             else {
+                if (contactAndSeenTimeList.get(position).contact.getLastNickName().isEmpty() == true) {
 
-                holder.profilePicture.setImageBitmap(DrawProfilePicture.textAsBitmap((String.valueOf(ContactName.charAt(0)).toUpperCase()+(String.valueOf(contactAndSeenTimeList.get(position).contact.getLastNickName().charAt(0)).toUpperCase())),70, Color.WHITE));
+                    holder.profilePicture.setImageBitmap(DrawProfilePicture.textAsBitmap(String.valueOf(ContactName.charAt(0)).toUpperCase(), 70, Color.WHITE));
+                } else {
+
+                    holder.profilePicture.setImageBitmap(DrawProfilePicture.textAsBitmap((String.valueOf(ContactName.charAt(0)).toUpperCase() + (String.valueOf(contactAndSeenTimeList.get(position).contact.getLastNickName().charAt(0)).toUpperCase())), 70, Color.WHITE));
+                }
             }
             }
 

@@ -112,13 +112,18 @@ public class ContactFragment extends Fragment implements RecyclerViewClickInterf
 
 
                         Contact finalContact1 = contact;
-                        firebaseDatabase.getReference().child("USER").child(contact.getUserIdContact()).child("STATUS").addValueEventListener(new ValueEventListener() {
+                        firebaseDatabase.getReference().child("USER").child(contact.getUserIdContact()).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists() == true) {
 
-                                    long  timeStamp=snapshot.child("Time").getValue(Long.class);
-                                    String status=snapshot.child("State").getValue(String.class);
+                                    long  timeStamp=snapshot.child("STATUS").child("Time").getValue(Long.class);
+                                    String status=snapshot.child("STATUS").child("State").getValue(String.class);
+                                    String profileImg=snapshot.child("ProfileImg").getValue(String.class);
+                                    if (profileImg==null)
+                                    {
+                                        profileImg="";
+                                    }
                                     Instant instant=Instant.ofEpochMilli(timeStamp);
                                     Date date=Date.from(instant);
                                     ContactAndSeenTime contactAndSeenTime1 = new ContactAndSeenTime();
@@ -126,6 +131,7 @@ public class ContactFragment extends Fragment implements RecyclerViewClickInterf
 
                                     contactAndSeenTime1.SeenTime= DateToString.LastSeenString(date);
                                     contactAndSeenTime1.contact = finalContact1;
+                                    contactAndSeenTime1.imageUrl=profileImg;
 
 
 

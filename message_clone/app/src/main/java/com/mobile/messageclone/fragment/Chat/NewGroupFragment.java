@@ -1,13 +1,16 @@
 package com.mobile.messageclone.fragment.Chat;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,9 +27,11 @@ import com.mobile.messageclone.Ulti.RecyclerViewClickInterface;
 import com.mobile.messageclone.Model.Contact;
 import com.mobile.messageclone.Ulti.DateToString;
 import com.mobile.messageclone.ViewModel.ChatViewModel;
+import com.mobile.messageclone.ViewModel.NewGroupViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -45,12 +50,14 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
 
 
     private String contactGroupMember;
+    private SparseBooleanArray sparseBooleanArray;
 
     private FloatingActionButton btnAddContact;
 
     private NavController navController;
 
     private ChatViewModel chatViewModel;
+    private NewGroupViewModel newGroupViewModel;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
@@ -76,14 +83,14 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
         contactAndSeenTimeArrayList=new ArrayList<>();
         setHasOptionsMenu(true);
         contactnameList=new ArrayList<>();
+        sparseBooleanArray=new SparseBooleanArray();
 
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        chatViewModel =new ViewModelProvider(getActivity()).get(ChatViewModel.class);
-        chatViewModel.titleBar.setValue("New group");
+
     }
 
     @Nullable
@@ -92,7 +99,10 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
 
         View root=inflater.inflate(R.layout.fragment_new_group,container,false);
 
+        chatViewModel =new ViewModelProvider(getActivity()).get(ChatViewModel.class);
+        newGroupViewModel=new ViewModelProvider(getActivity()).get(NewGroupViewModel.class);
 
+        chatViewModel.titleBar.setValue("New group");
         RecyclerViewContact=root.findViewById(R.id.ListContact);
         RecyclerViewContact.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -106,6 +116,12 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
         chatViewModel.IsDeleteListContactSeenTimeList.setValue(false);
 
         displayAddedUser=root.findViewById(R.id.textDisplayContactAdded);
+        contactListAdapter.itemStateArray=sparseBooleanArray;
+        for (int i=0;i<contactnameList.size();i++)
+        {
+            displayAddedUser.append(contactnameList.get(i).contactName+", ");
+
+        }
 
         firebaseDatabase.getReference().child("CONTACT").orderByKey().equalTo(firebaseAuth.getCurrentUser().getUid()).addChildEventListener(new ChildEventListener() {
             @Override
@@ -119,14 +135,18 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
 
 
 
-
                         Contact finalContact1 = contact;
-                        firebaseDatabase.getReference().child("USER").child(contact.getUserIdContact()).child("STATUS").addValueEventListener(new ValueEventListener() {
+                        firebaseDatabase.getReference().child("USER").child(contact.getUserIdContact()).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists() == true) {
-                                    long  timeStamp=snapshot.child("Time").getValue(Long.class);
-                                    String status=snapshot.child("State").getValue(String.class);
+                                    long  timeStamp=snapshot.child("STATUS").child("Time").getValue(Long.class);
+                                    String status=snapshot.child("STATUS").child("State").getValue(String.class);
+                                    String profileImg=snapshot.child("ProfileImg").getValue(String.class);
+                                    if (profileImg==null)
+                                    {
+                                        profileImg="";
+                                    }
                                     Instant instant=Instant.ofEpochMilli(timeStamp);
                                     Date date=Date.from(instant);
                                     ContactAndSeenTime contactAndSeenTime1 = new ContactAndSeenTime();
@@ -135,6 +155,7 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
                                     contactAndSeenTime1.SeenTime= DateToString.LastSeenString(date);
                                     contactAndSeenTime1.contact = finalContact1;
 
+                                    contactAndSeenTime1.imageUrl=profileImg;
 
 
                                     if (contactAndSeenTimeArrayList.size()!=0) {
@@ -152,6 +173,7 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
                                     else
                                     {
                                         contactAndSeenTimeArrayList.add(contactAndSeenTime1);
+
                                     }
 
                                     contactListAdapter.notifyDataSetChanged();
@@ -197,7 +219,34 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (sparseBooleanArray.size()==0)
+                {
+                    Toast.makeText(getContext(),"Please choose at lease one member",Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
+                NavController navController=Navigation.findNavController(root);
+                Bundle bundle=new Bundle();
+                ArrayList<ContactAndSeenTime>contactAndSeenTimes=new ArrayList<>();
+                ArrayList<String>contactName=new ArrayList<>();
+                ArrayList<String>imgUrl=new ArrayList<>();
+                for (int i=0;i<contactListAdapter.contactAndSeenTimeList.size();i++)
+                {
+                    if (contactListAdapter.itemStateArray.get(i)==true)
+                    {
+                        contactName.add(contactListAdapter.contactAndSeenTimeList.get(i).contact.getFirstNickName()+" "+contactListAdapter.
+                                contactAndSeenTimeList.get(i).contact.getLastNickName());
+                        imgUrl.add(contactListAdapter.contactAndSeenTimeList.get(i).imageUrl);
+                        contactAndSeenTimes.add(contactListAdapter.contactAndSeenTimeList.get(i));
+
+
+                    }
+                }
+                newGroupViewModel.arrayListMutableLiveData.setValue(contactAndSeenTimes);
+
+                bundle.putStringArrayList("contactName",contactName);
+                bundle.putStringArrayList("imgUrl",imgUrl);
+                navController.navigate(R.id.action_newGroupFragment_to_nameNewGroupFragment,bundle);
             }
         });
 
@@ -265,19 +314,23 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
         inflater.inflate(R.menu.contact_menu,menu);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void CheckBoxClick(int position,boolean check) {
 
 
 
-
         if (check==true)
         {
+
             ContactNameAndPos contactNameAndPos=new ContactNameAndPos();
             contactNameAndPos.contactName=contactAndSeenTimeArrayList.get(position).contact.getFirstNickName()+" "+contactAndSeenTimeArrayList.get(position).contact.getLastNickName();
             contactNameAndPos.Pos=position;
             contactGroupMember=contactGroupMember+contactNameAndPos.contactName;
             contactnameList.add(contactNameAndPos);
+
+            sparseBooleanArray.append(position,check);
+
 
         }
         else
@@ -292,14 +345,17 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
                     return false;
                 }
             };
+
             contactnameList.removeIf(contactNameAndPosPredicate);
         }
 
         displayAddedUser.setText("");
         for (int i=0;i<contactnameList.size();i++)
         {
-            displayAddedUser.append(contactnameList.get(i).contactName);
+            displayAddedUser.append(contactnameList.get(i).contactName+", ");
+
         }
+        contactListAdapter.itemStateArray=sparseBooleanArray;
 
 
 

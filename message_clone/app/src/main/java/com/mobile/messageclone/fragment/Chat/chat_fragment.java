@@ -27,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.instacart.library.truetime.TrueTimeRx;
+import com.mobile.messageclone.RecycerViewAdapater.ContactListHomeAdapter;
 import com.mobile.messageclone.Ulti.APIService;
 import com.mobile.messageclone.Activity.ChatActivity;
 import com.mobile.messageclone.Model.Author;
@@ -95,6 +96,7 @@ public class chat_fragment extends Fragment {
     private  String ContactID;
     private String ContactName;
     private  String ChatID="";
+    private int ChatType;
 
 
     private boolean IsSeen=false;
@@ -125,8 +127,10 @@ public class chat_fragment extends Fragment {
             UserID=getArguments().getString("UserID");
             ContactID=getArguments().getString("ContactID");
             ContactName=getArguments().getString("ContactName");
+            ChatType=getArguments().getInt("Type");
 
         }
+        Log.d("Group",ContactID);
         apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseDatabase=FirebaseDatabase.getInstance();
@@ -143,127 +147,129 @@ public class chat_fragment extends Fragment {
         chatViewModel.IsScrollingMutableLiveData.setValue(false);
 
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (IsCheckOnlineTime==true) {
-                    try {
+        if (ChatType== ContactListHomeAdapter.CHAT_PERSONAL) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (IsCheckOnlineTime == true) {
+                        try {
 
-                        firebaseDatabase.getReference().child("USER").child(ContactID).child("STATUS").addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            firebaseDatabase.getReference().child("USER").child(ContactID).child("STATUS").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                                if (snapshot.exists() == true) {
-                                    String status = snapshot.child("State").getValue(String.class);
+                                    if (snapshot.exists() == true) {
+                                        String status = snapshot.child("State").getValue(String.class);
 
-                                    long timeStamp = snapshot.child("Time").getValue(Long.class);
+                                        long timeStamp = snapshot.child("Time").getValue(Long.class);
 
-                                    String time;
-                                    Instant instant = Instant.ofEpochMilli(timeStamp);
-                                    Date date = Date.from(instant);
+                                        String time;
+                                        Instant instant = Instant.ofEpochMilli(timeStamp);
+                                        Date date = Date.from(instant);
 
 
-                                    if (status.equals(ChatActivity.STATUS_ONLINE)) {
-                                        chatViewModel.subtitleBar.setValue("Online");
-                                    } else {
+                                        if (status.equals(ChatActivity.STATUS_ONLINE)) {
+                                            chatViewModel.subtitleBar.setValue("Online");
+                                        } else {
 
-                                        time = DateToString.LastSeenString(date);
-                                        chatViewModel.subtitleBar.setValue("Last seen " + time);
+                                            time = DateToString.LastSeenString(date);
+                                            chatViewModel.subtitleBar.setValue("Last seen " + time);
+                                        }
                                     }
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
-                            }
-                        });
-                        Thread.sleep(10000);
-
+                                }
+                            });
+                            Thread.sleep(10000);
 
 
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
 
-        }).start();
-
+            }).start();
 
 
+            firebaseDatabase.getReference().child("CONVERSATION_ID").orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists() == true) {
+                        if (CheckExistID(snapshot) == false) {
 
+                            ChatID = GenerateChatID.GenerateKey(UserID, ContactID, GenerateChatID.ID_CHAT_PERSONAL);
+                            firebaseDatabase.getReference().child("CONVERSATION_ID").push().setValue(ChatID);
+                            HashMap<String, Object> hashMap = new HashMap<>();
+                            hashMap.put("ContactID", ContactID);
+                            hashMap.put("ChatID", ChatID);
+                            firebaseDatabase.getReference().child("USER").child(UserID).child("ChatID").push().updateChildren(hashMap);
+                            hashMap.clear();
+                            hashMap.put("ContactID", UserID);
+                            hashMap.put("ChatID", ChatID);
+                            firebaseDatabase.getReference().child("USER").child(ContactID).child("ChatID").push().updateChildren(hashMap);
+                        }
 
-
-
-        firebaseDatabase.getReference().child("CONVERSATION_ID").orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()==true) {
-                    if (CheckExistID(snapshot)==false)
-                    {
-
-                        ChatID= GenerateChatID.GenerateKey(UserID,ContactID,GenerateChatID.ID_CHAT_PERSONAL);
+                        chatViewModel.ChatID.setValue(ChatID);
+                    } else {
+                        ChatID = GenerateChatID.GenerateKey(UserID, ContactID, GenerateChatID.ID_CHAT_PERSONAL);
                         firebaseDatabase.getReference().child("CONVERSATION_ID").push().setValue(ChatID);
-                        HashMap<String,Object> hashMap=new HashMap<>();
-                        hashMap.put("ContactID",ContactID);
-                        hashMap.put("ChatID",ChatID);
+
+
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("ContactID", ContactID);
+                        hashMap.put("ChatID", ChatID);
                         firebaseDatabase.getReference().child("USER").child(UserID).child("ChatID").push().updateChildren(hashMap);
                         hashMap.clear();
-                        hashMap.put("ContactID",UserID);
-                        hashMap.put("ChatID",ChatID);
+                        hashMap.put("ContactID", UserID);
+                        hashMap.put("ChatID", ChatID);
                         firebaseDatabase.getReference().child("USER").child(ContactID).child("ChatID").push().updateChildren(hashMap);
                     }
 
-                    chatViewModel.ChatID.setValue(ChatID);
-                }
-                else
-                {
-                    ChatID=GenerateChatID.GenerateKey(UserID,ContactID,GenerateChatID.ID_CHAT_PERSONAL);
-                    firebaseDatabase.getReference().child("CONVERSATION_ID").push().setValue(ChatID);
 
-
-                    HashMap<String,Object> hashMap=new HashMap<>();
-                    hashMap.put("ContactID",ContactID);
-                    hashMap.put("ChatID",ChatID);
-                    firebaseDatabase.getReference().child("USER").child(UserID).child("ChatID").push().updateChildren(hashMap);
-                    hashMap.clear();
-                    hashMap.put("ContactID",UserID);
-                    hashMap.put("ChatID",ChatID);
-                    firebaseDatabase.getReference().child("USER").child(ContactID).child("ChatID").push().updateChildren(hashMap);
                 }
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-
-
-
-
-        firebaseDatabase.getReference().child("CONTACT").child(ContactID).child(UserID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()==true){
-                    Contact contact = snapshot.getValue(Contact.class);
-                    userNameInReceiverContact = contact.getFirstNickName() + " " + contact.getLastNickName();
-                    Log.d("UIRC: ",userNameInReceiverContact);
                 }
-                else{
-                    userNameInReceiverContact = firebaseAuth.getCurrentUser().getDisplayName();
+            });
+
+            firebaseDatabase.getReference().child("CONTACT").child(ContactID).child(UserID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists()==true){
+                        Contact contact = snapshot.getValue(Contact.class);
+                        userNameInReceiverContact = contact.getFirstNickName() + " " + contact.getLastNickName();
+                        Log.d("UIRC: ",userNameInReceiverContact);
+                    }
+                    else{
+                        userNameInReceiverContact = firebaseAuth.getCurrentUser().getDisplayName();
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        }
+        else
+        {
+            ChatID=ContactID;
+            chatViewModel.ChatID.setValue(ChatID);
+
+        }
+
+
+
+
+
+
+
 
     }
     private void updateToken(String token){

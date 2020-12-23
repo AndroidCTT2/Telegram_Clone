@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.messageclone.Activity.ChatActivity;
@@ -29,7 +30,7 @@ public class ContactListNewGroupChatAdapter extends RecyclerView.Adapter<Contact
 
     Context context;
     Activity activity;
-    ArrayList<ContactAndSeenTime> contactAndSeenTimeList=new ArrayList();
+    public ArrayList<ContactAndSeenTime> contactAndSeenTimeList=new ArrayList();
     RecyclerViewClickInterface recyclerViewClickInterface;
     RecyclerCheckBoxClick recyclerCheckBoxClick;
 
@@ -85,14 +86,19 @@ public class ContactListNewGroupChatAdapter extends RecyclerView.Adapter<Contact
             holder.Status.setText("Last seen ");
             holder.LastSeenTime.setText(contactAndSeenTimeList.get(position).SeenTime);
         }
-        if (contactAndSeenTimeList.get(position).contact.getLastNickName().isEmpty()==true)
+        if (contactAndSeenTimeList.get(position).imageUrl.isEmpty()==false)
         {
-
-            holder.profilePicture.setImageBitmap(DrawProfilePicture.textAsBitmap(String.valueOf(ContactName.charAt(0)).toUpperCase(),70, Color.WHITE));
+            Glide.with(context).load(contactAndSeenTimeList.get(position).imageUrl).into(holder.profilePicture);
         }
         else {
 
-            holder.profilePicture.setImageBitmap(DrawProfilePicture.textAsBitmap((String.valueOf(ContactName.charAt(0)).toUpperCase()+(String.valueOf(contactAndSeenTimeList.get(position).contact.getLastNickName().charAt(0)).toUpperCase())),70, Color.WHITE));
+            if (contactAndSeenTimeList.get(position).contact.getLastNickName().isEmpty() == true) {
+
+                holder.profilePicture.setImageBitmap(DrawProfilePicture.textAsBitmap(String.valueOf(ContactName.charAt(0)).toUpperCase(), 70, Color.WHITE));
+            } else {
+
+                holder.profilePicture.setImageBitmap(DrawProfilePicture.textAsBitmap((String.valueOf(ContactName.charAt(0)).toUpperCase() + (String.valueOf(contactAndSeenTimeList.get(position).contact.getLastNickName().charAt(0)).toUpperCase())), 70, Color.WHITE));
+            }
         }
     }
 

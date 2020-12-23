@@ -60,6 +60,9 @@
         <action
             android:id="@+id/action_newGroupFragment_to_chat_fragment"
             app:destination="@id/chat_fragment" />
+        <action
+            android:id="@+id/action_newGroupFragment_to_nameNewGroupFragment"
+            app:destination="@id/nameNewGroupFragment" />
     </fragment>
     <fragment
         android:id="@+id/newChat"
@@ -106,4 +109,8 @@
             android:id="@+id/action_videoCallFragment_to_newVideoCallFragment"
             app:destination="@id/newVideoCallFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/nameNewGroupFragment"
+        android:name="com.mobile.messageclone.fragment.Chat.NameNewGroupFragment"
+        android:label="NameNewGroupFragment" />
 </navigation>
