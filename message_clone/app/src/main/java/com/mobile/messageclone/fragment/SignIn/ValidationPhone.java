@@ -200,7 +200,7 @@ public class ValidationPhone extends Fragment {
                 String code= phoneAuthCredential.getSmsCode();
                 if (code!=null)
                 {
-                    progressBar.setVisibility(View.VISIBLE);
+                    //progressBar.setVisibility(View.VISIBLE);
                     verifyCode(code);
                 }
         }
