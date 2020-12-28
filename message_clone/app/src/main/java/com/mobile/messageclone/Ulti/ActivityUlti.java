@@ -5,5 +5,7 @@ public interface ActivityUlti {
     public void UpdateStatus(String status);
     public void CloseKeyBoard();
     public void ReattachToolbar();
+
+    public void ReattachToolbar(String titleName);
     public void HideAppBar();
 }

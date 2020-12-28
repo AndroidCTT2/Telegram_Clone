@@ -1,6 +1,73 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_alignParentRight="false"
+    android:layout_alignParentLeft="true"
+    android:layout_marginVertical="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginLeft="8dp"
+    android:padding="0dp"
+
+    >
+
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/messageImg"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical"
+        app:civ_border="false"
+        app:civ_circle_color="?attr/colorOnPrimarySurface"
+        app:srcCompat="@drawable/ic_baseline_360_24"></com.mikhaellopez.circularimageview.CircularImageView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_toEndOf="@id/messageImg"
+        android:layout_marginVertical="0dp"
+
+        android:orientation="vertical"
+        android:id="@id/bubble"
+        android:layout_marginEnd="10dp">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/displayContactName"
+            android:text="Hi"
+            android:textSize="14sp"
+            ></TextView>
+
+        <TextView
+            android:id="@id/messageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxEms="15"
+            android:text="Hello" />
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:orientation="horizontal"
+            android:paddingLeft="30dp"
+            >
+
+            <TextView
+                android:id="@id/messageTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/bubble"
+                android:alpha="0.7"
+                android:text="24:56"
+                android:paddingRight="8dp"/>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>

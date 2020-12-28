@@ -1,22 +1,32 @@
 package com.mobile.messageclone.fragment.Chat;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -27,7 +37,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.instacart.library.truetime.TrueTimeRx;
+import com.mobile.messageclone.Model.Group;
 import com.mobile.messageclone.RecycerViewAdapater.ContactListHomeAdapter;
+import com.mobile.messageclone.RecycerViewAdapater.CustomIntComingMessageViewHolder;
 import com.mobile.messageclone.Ulti.APIService;
 import com.mobile.messageclone.Activity.ChatActivity;
 import com.mobile.messageclone.Model.Author;
@@ -39,6 +51,7 @@ import com.mobile.messageclone.RecycerViewAdapater.MessageAdapter;
 import com.mobile.messageclone.Model.User;
 import com.mobile.messageclone.Model.Contact;
 import com.mobile.messageclone.Ulti.DateToString;
+import com.mobile.messageclone.Ulti.DrawProfilePicture;
 import com.mobile.messageclone.Ulti.GenerateChatID;
 import com.mobile.messageclone.Model.Client;
 import com.mobile.messageclone.Model.Data;
@@ -46,11 +59,13 @@ import com.mobile.messageclone.Model.MyResponse;
 import com.mobile.messageclone.Model.Sender;
 import com.mobile.messageclone.Model.Token;
 import com.mobile.messageclone.ViewModel.ChatViewModel;
+import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.messages.MessageHolders;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -86,10 +101,12 @@ public class chat_fragment extends Fragment {
     private MessageInput messageInput;
     private MessageAdapter messageAdapter;
 
+    private Boolean LoadFirstTime;
+
     private boolean IsScrollUpSeen=false;
     private boolean IsCheckOnlineTime=true;
 
-
+    private ArrayList<Contact>contactGroupArrayList=new ArrayList<>();
 
 
     private String UserID;
@@ -130,6 +147,11 @@ public class chat_fragment extends Fragment {
             ChatType=getArguments().getInt("Type");
 
         }
+
+        setHasOptionsMenu(true);
+
+        LoadFirstTime=true;
+
         Log.d("Group",ContactID);
         apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
         firebaseAuth=FirebaseAuth.getInstance();
@@ -145,6 +167,11 @@ public class chat_fragment extends Fragment {
 
         chatViewModel.ChatID.setValue(ChatID);
         chatViewModel.IsScrollingMutableLiveData.setValue(false);
+
+        if (ChatType==ContactListHomeAdapter.CHAT_GROUP)
+        {
+            chatViewModel.CompleteLoadGroup.setValue(ChatViewModel.LOAD_GROUP);
+        }
 
 
         if (ChatType== ContactListHomeAdapter.CHAT_PERSONAL) {
@@ -260,9 +287,19 @@ public class chat_fragment extends Fragment {
         else
         {
             ChatID=ContactID;
-            chatViewModel.ChatID.setValue(ChatID);
+            chatViewModel.ChatID.setValue(ContactID);
+
+
+
+
+
+
 
         }
+
+
+
+
 
 
 
@@ -276,6 +313,32 @@ public class chat_fragment extends Fragment {
         FirebaseDatabase.getInstance().getReference().child("USER").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("DeviceToken").setValue(token);
     }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+      menu.clear();
+      inflater.inflate(R.menu.chat_fragment_menu,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.btnInfo:
+            {
+                NavController navController= Navigation.findNavController(getView());
+                Bundle bundle=new Bundle();
+                bundle.putString("ContactID",ContactID);
+                bundle.putInt("ChatType",ChatType);
+                bundle.putString("UserID",UserID);
+                bundle.putString("ContactName",ContactName);
+
+                navController.navigate(R.id.action_chat_fragment_to_chatProfileFragment,bundle);
+                return true;
+            }
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -292,11 +355,22 @@ public class chat_fragment extends Fragment {
 
 
 
+
+
         MessageHolders holdersConfig=new MessageHolders().setOutcomingTextLayout(R.layout.one_row_message_sender).setOutcomingTextHolder(CustomOutComingMessageViewHolder.class,null);
+        if (ChatType==ContactListHomeAdapter.CHAT_GROUP)
+        {
+            holdersConfig.setIncomingTextLayout(R.layout.one_row_group_message_received).setIncomingTextHolder(CustomIntComingMessageViewHolder.class,getContext());
+        }
 
+        ImageLoader imageLoader=new ImageLoader() {
+            @Override
+            public void loadImage(ImageView imageView, @Nullable String url, @Nullable Object payload) {
+                Glide.with(getContext()).load(url).into(imageView);
+            }
+        };
 
-
-        messagesListAdapter = new MessagesListAdapter<>(UserID,holdersConfig,null);
+        messagesListAdapter = new MessagesListAdapter<>(UserID,holdersConfig,imageLoader);
         messagesList.setAdapter(messagesListAdapter);
 
         btnJumpToEnd.setOnClickListener(new View.OnClickListener() {
@@ -397,6 +471,8 @@ public class chat_fragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         List<LibMessage> iMessageList = new ArrayList<>();
+
+
 
         chatViewModel.ChatID.observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -598,70 +674,128 @@ public class chat_fragment extends Fragment {
         return iMessage;
 
     }
+
     private ChildEventListener UpdateMessage=new ChildEventListener() {
         @Override
         public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
             if (snapshot.exists()==true) {
                 String messageKey = snapshot.getKey();
-
+                LibMessage iMessage=new LibMessage();
                 Message message = snapshot.getValue(Message.class);
 
+                try {
+                    Author author =new Author();
+                    author.userId=message.getSenderID();
+                    Date date=simpleDateFormat.parse(message.getSendTime());
+                    iMessage.iuser= author;
+                    iMessage.id=messageKey;
+                    iMessage.textMessage=message.getMessage();
+                    iMessage.dateSend=date;
 
-
-
-
-
-                if (message.getSenderID().equals(UserID) == true) {
-
-                    LibMessage iMessage=new LibMessage();
-
-
-                    try {
-                        Author author =new Author();
-                        author.userId=UserID;
-                        Date date=simpleDateFormat.parse(message.getSendTime());
-                        iMessage.iuser= author;
-                        iMessage.id=messageKey;
-                        iMessage.textMessage=message.getMessage();
-                        iMessage.dateSend=date;
-                        iMessage.Status=message.getStatus();
-
-                        messagesListAdapter.addToStart(iMessage,true);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                    if (message.getSenderID().equals(UserID)) {
+                        iMessage.Status = message.getStatus();
                     }
 
 
+                firebaseDatabase.getReference().child("CONTACT").child(UserID).child(message.getSenderID()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists() == true) {
+                            Contact contact = snapshot.getValue(Contact.class);
+                            iMessage.SenderName = contact.getFirstNickName() + " " + contact.getLastNickName();
+                            Log.d("Sender", iMessage.getText());
+                            firebaseDatabase.getReference().child("USER").child(message.getSenderID()).child("ProfileImg").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()==true)
+                                    {
+                                        author.ProfileImg=snapshot.getValue(String.class);
+                                        author.userName=null;
+                                        iMessage.imgUrl=snapshot.getValue(String.class);
 
-                } else if (message.getSenderID().equals(ContactID)==true) {
+                                    }
+                                    else
+                                    {
+                                        author.userName=String.valueOf(contact.getFirstNickName().charAt(0)).toUpperCase()+String.valueOf(contact.getLastNickName().charAt(0)).toUpperCase();
+                                        iMessage.iuser=author;
+                                    }
+                                    if (message.getSenderID().equals(UserID)) {
+                                        messagesListAdapter.addToStart(iMessage, true);
+                                    }
+                                    else {
+                                        if (chatViewModel.IsScrollingMutableLiveData.getValue() == true) {
+                                            messagesListAdapter.addToStart(iMessage, false);
+                                        } else {
+                                            messagesListAdapter.addToStart(iMessage, true);
+                                        }
+                                    }
+                                }
 
-                    LibMessage iMessage=new LibMessage();
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
-                    Date date= null;
-                    try {
-                        Log.d("Sender", message.getMessage());
-                        Author author =new Author();
-                        author.userId=ContactID;
-                        date = simpleDateFormat.parse(message.getSendTime());
-                        iMessage.iuser= author;
-                        iMessage.textMessage=message.getMessage();
-                        iMessage.dateSend=date;
-                        Log.d("Sender", iMessage.getText());
-                        if (chatViewModel.IsScrollingMutableLiveData.getValue()==true)
-                        {
-                            messagesListAdapter.addToStart(iMessage,false);
+                                }
+                            });
+
+
+                        } else {
+                            firebaseDatabase.getReference().child("USER").child(message.getSenderID()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                    String url=null;
+                                    iMessage.SenderName = snapshot.child("firstName").getValue(String.class) + " " + snapshot.child("lastName");
+                                    if (snapshot.child("ProfileImg").exists()==true)
+                                    {
+                                        author.userName=null;
+                                        url=snapshot.child("ProfileImg").getValue(String.class);
+                                        iMessage.imgUrl=url;
+
+                                    }
+                                    else
+                                    {
+                                        author.userName=String.valueOf(snapshot.child("firstName").getValue(String.class).charAt(0)).toUpperCase()+String.valueOf(snapshot.child("lastName").getValue(String.class).charAt(0)).toUpperCase();
+                                        iMessage.iuser=author;
+                                    }
+
+
+
+
+                                    if (message.getSenderID().equals(UserID)) {
+                                        messagesListAdapter.addToStart(iMessage, true);
+                                    }
+                                    else {
+                                        if (chatViewModel.IsScrollingMutableLiveData.getValue() == true) {
+                                            messagesListAdapter.addToStart(iMessage, false);
+                                        } else {
+                                            messagesListAdapter.addToStart(iMessage, true);
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
                         }
-                        else {
-                            messagesListAdapter.addToStart(iMessage, true);
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
                     }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
 
 
+
+
+
             }
+
         }
 
         @Override
@@ -689,6 +823,8 @@ public class chat_fragment extends Fragment {
                         iMessage.Status = message.getStatus();
 
 
+
+
                         if(messagesListAdapter != null) {
                             messagesListAdapter.update(iMessage);
                         }
@@ -699,30 +835,12 @@ public class chat_fragment extends Fragment {
                     }
 
 
-                } /*else if (message.getSenderID().equals(ContactID) == true) {
+                }
 
 
-                    Date date = null;
-                    try {
-                        Log.d("Sender", message.getMessage());
-                        Author author = new Author();
-                        author.userId = ContactID;
-                        date = simpleDateFormat.parse(message.getSendTime());
-                        iMessage.iuser = author;
-                        iMessage.textMessage = message.getMessage();
-                        iMessage.dateSend = date;
-                        Log.d("Sender", iMessage.getText());
-                       // messagesListAdapter.update(iMessage);
-                        //messagesListAdapter.addToStart(iMessage,true);
-
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-
-
-                }*/
             }
         }
+
 
         @Override
         public void onChildRemoved(@NonNull DataSnapshot snapshot) {
@@ -739,6 +857,203 @@ public class chat_fragment extends Fragment {
 
         }
     };
+
+    /*
+    private ChildEventListener UpdateMessage=new ChildEventListener() {
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            if (snapshot.exists()==true) {
+                String messageKey = snapshot.getKey();
+
+                Message message = snapshot.getValue(Message.class);
+
+
+
+
+
+                if (message.getSenderID().equals(UserID) == true) {
+
+                    LibMessage iMessage=new LibMessage();
+
+
+                    try {
+                        Author author =new Author();
+                        author.userId=message.getSenderID();
+                        Date date=simpleDateFormat.parse(message.getSendTime());
+                        iMessage.iuser= author;
+                        iMessage.id=messageKey;
+                        iMessage.textMessage=message.getMessage();
+                        iMessage.dateSend=date;
+                        iMessage.Status=message.getStatus();
+
+                        messagesListAdapter.addToStart(iMessage,true);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+
+                } else  {
+
+                    LibMessage iMessage=new LibMessage();
+
+                    Date date= null;
+                    try {
+
+                        Author author =new Author();
+                        author.userId=message.getSenderID();
+
+                        date = simpleDateFormat.parse(message.getSendTime());
+                        iMessage.iuser= author;
+                        iMessage.textMessage=message.getMessage();
+                        iMessage.dateSend=date;
+
+                        if (ChatType==ContactListHomeAdapter.CHAT_GROUP) {
+
+
+
+                            firebaseDatabase.getReference().child("CONTACT").child(UserID).child(message.getSenderID()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists() == true) {
+                                        Contact contact = snapshot.getValue(Contact.class);
+                                        iMessage.SenderName = contact.getFirstNickName() + " " + contact.getLastNickName();
+                                        Log.d("Sender", iMessage.getText());
+                                        firebaseDatabase.getReference().child("USER").child(message.getSenderID()).child("ProfileImg").addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                if (snapshot.exists()==true)
+                                                {
+                                                    author.ProfileImg=snapshot.getValue(String.class);
+                                                    iMessage.iuser=author;
+                                                }
+                                                else
+                                                {
+                                                    //author.userName=String.valueOf(contact.getFirstNickName().charAt(0))+String.valueOf(contact.getLastNickName().charAt(0));
+                                                    Bitmap bitmap=DrawProfilePicture.textAsBitmap(String.valueOf(contact.getFirstNickName().charAt(0)+String.valueOf(contact.getLastNickName().charAt(0))),60, Color.WHITE);
+                                                    author.userName=String.valueOf(contact.getFirstNickName().charAt(0)+String.valueOf(contact.getLastNickName().charAt(0)));
+                                                    iMessage.iuser=author;
+                                                }
+                                                if (chatViewModel.IsScrollingMutableLiveData.getValue() == true) {
+                                                    messagesListAdapter.addToStart(iMessage, false);
+                                                } else {
+                                                    messagesListAdapter.addToStart(iMessage, true);
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
+
+
+                                    } else {
+                                        firebaseDatabase.getReference().child("USER").child(message.getSenderID()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                iMessage.SenderName = snapshot.child("firstName").getValue(String.class) + " " + snapshot.child("lastName");
+                                                if (chatViewModel.IsScrollingMutableLiveData.getValue() == true) {
+                                                    messagesListAdapter.addToStart(iMessage, false);
+                                                } else {
+                                                    messagesListAdapter.addToStart(iMessage, true);
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                            return;
+                        }
+                        else {
+
+                            Log.d("Sender", iMessage.getText());
+                            if (chatViewModel.IsScrollingMutableLiveData.getValue() == true) {
+                                messagesListAdapter.addToStart(iMessage, false);
+                            } else {
+                                messagesListAdapter.addToStart(iMessage, true);
+                            }
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+
+            }
+
+        }
+
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            if (snapshot.exists()==true) {
+                String messageKey = snapshot.getKey();
+                Message message = snapshot.getValue(Message.class);
+
+
+                LibMessage iMessage = new LibMessage();
+
+
+                if (message.getSenderID().equals(UserID) == true) {
+
+                    Log.d("Change", message.getMessage());
+
+                    try {
+                        Author author = new Author();
+                        author.userId = UserID;
+                        Date date = simpleDateFormat.parse(message.getSendTime());
+                        iMessage.iuser = author;
+                        iMessage.id = messageKey;
+                        iMessage.textMessage = message.getMessage();
+                        iMessage.dateSend = date;
+                        iMessage.Status = message.getStatus();
+
+
+
+
+                        if(messagesListAdapter != null) {
+                            messagesListAdapter.update(iMessage);
+                        }
+                        //messagesListAdapter.addToStart(iMessage, true);
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+
+
+                }
+            }
+
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+
+        }
+    };
+    */
 
     private void UpDateSeenStatus()
     {

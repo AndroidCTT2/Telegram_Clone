@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment.Profile.ProfileFragment"
+    android:background="@color/colorBackGround"
+    android:orientation="vertical">
+
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:id="@+id/appBarLayout"
+
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:title="Your profile"
+            app:maxLines="1"
+
+            android:id="@+id/collapsing"
+
+
+            app:collapsedTitleTextAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            app:expandedTitleTextAppearance="@style/TextAppearance.Design.CollapsingToolbar.Expanded"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:expandedTitleGravity="bottom"
+
+            >
+
+            <ImageView
+                android:id="@+id/ProfilePicture"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                app:layout_anchor="@+id/appBarLayout"
+                app:layout_anchorGravity="center"
+                android:scaleType="fitCenter"
+                app:layout_collapseMode="pin"
+                />
+
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:layout_width="match_parent"
+                app:title="Hello"
+                android:id="@+id/toolbar"
+                app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                android:layout_height="?attr/actionBarSize"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:layout_collapseMode="pin"
+                >
+
+
+
+            </com.google.android.material.appbar.MaterialToolbar>
+
+
+
+
+
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+
+
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical"
+                android:id="@+id/ViewMode"
+
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_horizontal"
+
+                    >
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal">
+
+                        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            app:fabSize="mini"
+                            android:id="@+id/btnCall"
+                            app:backgroundTint="?attr/colorAccent"
+                            android:src="@drawable/ic_baseline_phone_24"
+
+                            ></com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Call"
+                            android:textSize="15sp"
+
+                            android:layout_gravity="center_horizontal"
+                            ></TextView>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        >
+                        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:fabSize="mini"
+                            app:backgroundTint="?attr/colorAccent"
+
+                            android:src="@drawable/ic_baseline_video_call_24"
+                            ></com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Video"
+                            android:textSize="15sp"
+                            android:layout_gravity="center_horizontal"
+                            ></TextView>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:paddingTop="20dp"
+                    android:id="@+id/displayPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/box_backround_for_profile"
+                    android:clickable="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="20dp"
+                        android:text="Group member "
+
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"></TextView>
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/ListContact"
+                        android:paddingHorizontal="20dp"
+                        ></androidx.recyclerview.widget.RecyclerView>
+
+
+
+                </LinearLayout>
+
+
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginHorizontal="20dp"
+                android:id="@+id/EditMode"
+                >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="First name"
+                    android:id="@+id/editFirstName"
+                    android:textSize="22sp"
+                    ></com.google.android.material.textfield.TextInputEditText>
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Last name"
+                    android:id="@+id/editLastName"
+                    android:textSize="22sp"
+                    ></com.google.android.material.textfield.TextInputEditText>
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:text="Delete contact"
+                    android:textAlignment="textStart"
+                    android:textColor="?attr/colorAccent"
+                    android:textStyle="bold"
+                    android:layout_marginTop="30dp"
+                    android:textSize="16sp"
+                    ></com.google.android.material.button.MaterialButton>
+
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        android:text="Edit"
+        android:id="@+id/editContactExtended"
+        app:icon="@drawable/ic_baseline_edit_24"
+        app:layout_anchorGravity="bottom|end" />
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

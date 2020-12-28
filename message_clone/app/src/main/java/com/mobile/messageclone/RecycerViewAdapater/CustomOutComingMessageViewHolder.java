@@ -16,7 +16,7 @@ public class CustomOutComingMessageViewHolder extends MessageHolders.OutcomingTe
 
     @Override
     public void onBind(LibMessage message) {
-        Log.d("TAG","HUHU");
+
         super.onBind(message);
 
         ImageView tickIcon=itemView.findViewById(R.id.SeenStatus);

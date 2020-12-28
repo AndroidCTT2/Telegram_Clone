@@ -570,7 +570,27 @@ public class ChatActivity extends AppCompatActivity implements ActivityUlti {
         getSupportActionBar().setTitle("Message");
     }
 
+    @SuppressLint("RestrictedApi")
+    @Override
+    public void ReattachToolbar(String titleName) {
+        setSupportActionBar(toolbar);
 
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+
+
+
+
+        final NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+
+        mAppBarConfiguration=new AppBarConfiguration.Builder(navController.getGraph()).setOpenableLayout(drawer).build();
+        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+        NavigationUI.setupWithNavController(navigationView, navController);
+
+        getSupportActionBar().setShowHideAnimationEnabled(true);
+        getSupportActionBar().show();
+        getSupportActionBar().setTitle(titleName);
+    }
 
 
     @Override

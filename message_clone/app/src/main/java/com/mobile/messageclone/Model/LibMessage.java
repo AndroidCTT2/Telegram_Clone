@@ -15,9 +15,16 @@ public class LibMessage implements IMessage, MessageContentType.Image {
     public IUser iuser;
     public Date dateSend;
     public String textMessage;
+    public String SenderName;
+    public String imgUrl;
 
     public Message.STATUS Status;
 
+    public LibMessage()
+    {
+        SenderName=null;
+        imgUrl=null;
+    }
 
     public Message.STATUS getStatus() {
         return Status;
