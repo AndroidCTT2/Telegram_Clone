@@ -106,6 +106,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
+                        android:layout_marginHorizontal="10dp"
                         android:gravity="center_horizontal">
 
                         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -113,16 +114,16 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="10dp"
                             app:fabSize="mini"
-                            android:id="@+id/btnCall"
+                            android:id="@+id/btnAddGroupMember"
                             app:backgroundTint="?attr/colorAccent"
-                            android:src="@drawable/ic_baseline_phone_24"
+                            android:src="@drawable/ic_baseline_person_add_24"
 
                             ></com.google.android.material.floatingactionbutton.FloatingActionButton>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Call"
+                            android:text="Add member"
                             android:textSize="15sp"
 
                             android:layout_gravity="center_horizontal"
@@ -198,36 +199,19 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
                 android:id="@+id/EditMode"
                 >
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="First name"
-                    android:id="@+id/editFirstName"
-                    android:textSize="22sp"
-                    ></com.google.android.material.textfield.TextInputEditText>
+
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Last name"
-                    android:id="@+id/editLastName"
+                    android:hint="Group name"
+                    android:id="@+id/editGroupName"
                     android:textSize="22sp"
                     ></com.google.android.material.textfield.TextInputEditText>
 
-
-                <com.google.android.material.button.MaterialButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:text="Delete contact"
-                    android:textAlignment="textStart"
-                    android:textColor="?attr/colorAccent"
-                    android:textStyle="bold"
-                    android:layout_marginTop="30dp"
-                    android:textSize="16sp"
-                    ></com.google.android.material.button.MaterialButton>
 
 
             </LinearLayout>
@@ -246,6 +230,17 @@
         android:id="@+id/editContactExtended"
         app:icon="@drawable/ic_baseline_edit_24"
         app:layout_anchorGravity="bottom|end" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchorGravity="bottom|end"
+        app:layout_anchor="@id/collapsing"
+        app:backgroundTint="?attr/colorAccent"
+        android:id="@+id/btnChoosePicture"
+        android:layout_marginRight="10dp"
+        app:srcCompat="@drawable/ic_baseline_add_a_photo_24"
+        ></com.google.android.material.floatingactionbutton.FloatingActionButton>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -30,6 +30,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     ArrayList<ContactAndSeenTime> contactAndSeenTimeList=new ArrayList();
     RecyclerViewClickInterface recyclerViewClickInterface;
 
+    public String stringOwnerID;
+
 
 
 
@@ -38,6 +40,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         this.activity=activity;
         this.contactAndSeenTimeList=contactList;
         this.context=context;
+        stringOwnerID=null;
 
     }
     public void SetClickInterface(RecyclerViewClickInterface recyclerViewClickInterface)
@@ -60,6 +63,22 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
 
             holder.NameContact.setText(ContactName);
+
+            if (stringOwnerID==null)
+            {
+                holder.displayAlterText.setVisibility(View.GONE);
+            }
+            else if (stringOwnerID.equals(contactAndSeenTimeList.get(position).contact.getUserIdContact()))
+            {
+                holder.displayAlterText.setVisibility(View.VISIBLE);
+                holder.displayAlterText.setText("Owner");
+            }
+            else
+            {
+                holder.displayAlterText.setVisibility(View.GONE);
+            }
+
+
             if (contactAndSeenTimeList.get(position).Status.equals(ChatActivity.STATUS_ONLINE)) {
                 holder.Status.setText(contactAndSeenTimeList.get(position).Status+" ");
                 holder.LastSeenTime.setText("");
@@ -94,6 +113,9 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         private TextView NameContact;
         private TextView LastSeenTime;
         private TextView Status;
+        private TextView displayAlterText;
+
+
         public viewHolder(@NonNull View itemView) {
             super(itemView);
             NameContact=itemView.findViewById(R.id.displayUserName);
@@ -101,6 +123,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             profilePicture.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             LastSeenTime=itemView.findViewById(R.id.displayLastSeen);
             Status=itemView.findViewById(R.id.displayStatus);
+            displayAlterText=itemView.findViewById(R.id.displayAlterText);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

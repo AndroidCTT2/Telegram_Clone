@@ -331,8 +331,16 @@ public class chat_fragment extends Fragment {
                 bundle.putInt("ChatType",ChatType);
                 bundle.putString("UserID",UserID);
                 bundle.putString("ContactName",ContactName);
+                if (ChatType==ContactListHomeAdapter.CHAT_PERSONAL)
+                {
+                    navController.navigate(R.id.action_chat_fragment_to_chatProfileFragment,bundle);
+                }
+                else
+                {
+                    navController.navigate(R.id.action_chat_fragment_to_chatProfileGroupFragmment,bundle);
+                }
 
-                navController.navigate(R.id.action_chat_fragment_to_chatProfileFragment,bundle);
+
                 return true;
             }
 

@@ -7,8 +7,8 @@
     android:paddingVertical="10dp">
 
     <com.mikhaellopez.circularimageview.CircularImageView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:id="@+id/ProfilePicture"
         app:civ_border="false"
         app:civ_circle_color="?attr/colorOnPrimarySurface"
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ngọc Trâm"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:textColor="?attr/colorOnSurface"
 
             android:id="@+id/displayUserName"
@@ -36,22 +36,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Last seen "
-            android:id="@+id/displayStatus"
-            android:textSize="18sp"
-            ></TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Last seen "
+                android:id="@+id/displayStatus"
+                android:textSize="14sp"
+                ></TextView>
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="at 5:45"
-            android:id="@+id/displayLastSeen"
-            android:textSize="18sp"
-            ></TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="at 5:45"
+                android:id="@+id/displayLastSeen"
+                android:textSize="14sp"
+                ></TextView>
 
         </LinearLayout>
 
@@ -61,11 +61,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Owner"
-        android:id="@+id/displayAlterText"
-        android:textSize="18sp"
-        android:textColor="?attr/colorOnPrimarySurface"
-        android:textStyle="bold"
+        android:id="@+id/displayyOwner"
         android:layout_gravity="center_vertical"
+        android:textSize="14sp"
+        android:textColor="?attr/colorOnPrimarySurface"
         android:paddingRight="10dp"
         ></TextView>
 

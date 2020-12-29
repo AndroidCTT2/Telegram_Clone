@@ -56,6 +56,9 @@
         <action
             android:id="@+id/action_chat_fragment_to_chatProfileFragment"
             app:destination="@id/chatProfileFragment" />
+        <action
+            android:id="@+id/action_chat_fragment_to_chatProfileGroupFragmment"
+            app:destination="@id/chatProfileGroupFragmment" />
     </fragment>
     <fragment
         android:id="@+id/newGroupFragment"
@@ -121,4 +124,8 @@
         android:id="@+id/chatProfileFragment"
         android:name="com.mobile.messageclone.fragment.Chat.ChatProfileFragment"
         android:label="ChatProfileFragment" />
+    <fragment
+        android:id="@+id/chatProfileGroupFragmment"
+        android:name="com.mobile.messageclone.fragment.Chat.ChatProfileGroupFragmment"
+        android:label="ChatProfileGroupFragmment" />
 </navigation>
