@@ -5,10 +5,14 @@ public class CallHistory {
     private String name;
     private String callDate;
     private int rotation;
+    private String imageUrl;
+    private Boolean reject;
 
     public CallHistory() {
         this.name = "";
         this.callDate = "";
+        this.imageUrl = "";
+        this.reject = true;
     }
 
     public String getName() {
@@ -41,5 +45,21 @@ public class CallHistory {
 
     public void setRemoteID(String remoteID) {
         this.remoteID = remoteID;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public Boolean getReject() {
+        return this.reject;
+    }
+
+    public void setReject(Boolean reject) {
+        this.reject = reject;
     }
 }

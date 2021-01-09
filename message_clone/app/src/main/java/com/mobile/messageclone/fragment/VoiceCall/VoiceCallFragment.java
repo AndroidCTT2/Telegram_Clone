@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -51,6 +52,8 @@ public class VoiceCallFragment extends Fragment implements RecyclerViewClickInte
     private ArrayList<CallHistory> callHistoryList;
     private VoiceCallAdapter voiceCallAdapter;
 
+    private ArrayList<String> markCallHistories;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +83,7 @@ public class VoiceCallFragment extends Fragment implements RecyclerViewClickInte
         this.voiceCallAdapter = new VoiceCallAdapter(getContext(), this.callHistoryList);
         this.recyclerViewVoiceCall.setAdapter(this.voiceCallAdapter);
         this.voiceCallAdapter.setRecyclerViewClickInterface(this);
+        this.markCallHistories = new ArrayList<String>();
 
         btnNewCall.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,47 +95,63 @@ public class VoiceCallFragment extends Fragment implements RecyclerViewClickInte
         firebaseDatabase.getReference().child("CALL_HISTORY").child(firebaseAuth.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    String remoteUserId = dataSnapshot.getKey();
-                    final String[] name = {""};
-                    firebaseDatabase.getReference().child("USER").child(remoteUserId).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            name[0] = snapshot.child("firstName").getValue(String.class) + " "
-                                    + snapshot.child("lastName").getValue(String.class);
-                        }
+                if (snapshot.exists() == true) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        String remoteUserId = dataSnapshot.getKey();
+                        final String[] imageUrl = new String[1];
+                        final String[] name = {""};
+                        firebaseDatabase.getReference().child("USER").child(remoteUserId).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists() == true) {
+                                    name[0] = snapshot.child("firstName").getValue(String.class) + " "
+                                            + snapshot.child("lastName").getValue(String.class);
+                                    imageUrl[0] = snapshot.child("ProfileImg").getValue(String.class);
+                                }
+                            }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
 
-                        }
-                    });
-                    firebaseDatabase.getReference().child("CALL_HISTORY").child(firebaseAuth.getUid()).child(remoteUserId)
-                            .addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
-                                        CallHistory callHistory = new CallHistory();
-                                        callHistory.setCallDate(DateToString.dateToString(dataSnapshot1.child("callDate").getValue(String.class)));
-                                        callHistory.setName(name[0]);
-                                        callHistory.setRemoteID(remoteUserId);
-                                        callHistoryList.add(callHistory);
-                                        if (firebaseAuth.getUid().equals(dataSnapshot1.child("callerID").getValue(String.class))) {
-                                            callHistory.setRotation(45);
+                            }
+                        });
+                        firebaseDatabase.getReference().child("CALL_HISTORY").child(firebaseAuth.getUid()).child(remoteUserId)
+                                .addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.exists()== true) {
+                                            for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
+                                                if (markCallHistories.indexOf(dataSnapshot1.getKey()) == -1) {
+                                                    CallHistory callHistory = new CallHistory();
+                                                    callHistory.setCallDate(DateToString.dateToString(dataSnapshot1.child("callDate").getValue(String.class)));
+                                                    callHistory.setName(name[0]);
+                                                    callHistory.setRemoteID(remoteUserId);
+                                                    callHistory.setImageUrl(imageUrl[0]);
+                                                    //callHistory.setReject(dataSnapshot1.child("reject").getValue(Boolean.class));
+                                                    callHistoryList.add(callHistory);
+                                                    if (firebaseAuth.getUid().equals(dataSnapshot1.child("callerID").getValue(String.class))) {
+                                                        callHistory.setRotation(45);
+                                                    }
+                                                    else {
+                                                        callHistory.setRotation(225);
+                                                    }
+                                                }
+                                                markCallHistories.add(dataSnapshot1.getKey());
+
+                                            }
                                         }
-                                        else {
-                                            callHistory.setRotation(225);
-                                        }
+                                        voiceCallAdapter.notifyDataSetChanged();
                                     }
-                                    voiceCallAdapter.notifyDataSetChanged();
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
 
-                                }
-                            });
+                                    }
+                                });
+
+                    }
                 }
+
             }
 
             @Override

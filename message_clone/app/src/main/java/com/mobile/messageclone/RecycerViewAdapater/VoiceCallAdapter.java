@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.messageclone.Model.CallHistory;
 import com.mobile.messageclone.Ulti.DrawProfilePicture;
@@ -34,11 +35,11 @@ public class VoiceCallAdapter extends RecyclerView.Adapter<VoiceCallAdapter.View
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             profilePicture = (CircularImageView)itemView.findViewById(R.id.profilePictureVoiceCall);
+            profilePicture.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             name = (TextView)itemView.findViewById(R.id.txtNameVoiceCall);
             callDate = (TextView)itemView.findViewById(R.id.txtCallDateVoiceCall);
             arrow = (ImageView)itemView.findViewById(R.id.imgArrowVoiceCall);
             btnCall = (ImageButton)itemView.findViewById(R.id.imgbtnCallVoiceCall);
-            profilePicture.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             btnCall.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -69,12 +70,25 @@ public class VoiceCallAdapter extends RecyclerView.Adapter<VoiceCallAdapter.View
         holder.arrow.setRotation(callHistoryList.get(position).getRotation());
         if (callHistoryList.get(position).getName().isEmpty()==true)
         {
-            holder.profilePicture.setImageBitmap(DrawProfilePicture.textAsBitmap(String.valueOf(callHistoryList.get(position).getName().charAt(0)).toUpperCase(),70, Color.WHITE));
+            holder.profilePicture
+                    .setImageBitmap(DrawProfilePicture
+                    .textAsBitmap(String.valueOf(callHistoryList.get(position).getName().charAt(0))
+                            .toUpperCase(),70, Color.WHITE));
         }
         else {
-            holder.profilePicture.setImageBitmap(DrawProfilePicture.textAsBitmap((String
-                    .valueOf(callHistoryList.get(position).getName().charAt(0)).toUpperCase()+(String.valueOf(callHistoryList
-                    .get(position).getName().charAt(0)).toUpperCase())),70, Color.WHITE));
+            Glide.with(context)
+                    .load(callHistoryList.get(position).getImageUrl())
+                    .into(holder.profilePicture);
+//            holder.profilePicture
+//                    .setImageBitmap(DrawProfilePicture.textAsBitmap((String
+//                    .valueOf(callHistoryList.get(position).getName().charAt(0)).toUpperCase()+(String.valueOf(callHistoryList
+//                    .get(position).getName().charAt(0)).toUpperCase())),70, Color.WHITE));
+        }
+        if (callHistoryList.get(position).getReject() == true) {
+            holder.arrow.setColorFilter(context.getResources().getColor(R.color.red));
+        }
+        else  {
+            holder.arrow.setColorFilter(context.getResources().getColor(R.color.green));
         }
     }
 
