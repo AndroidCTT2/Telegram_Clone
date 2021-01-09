@@ -11,6 +11,7 @@ import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.instacart.library.truetime.TrueTimeRx;
+import com.mobile.messageclone.Model.User;
 import com.mobile.messageclone.R;
 
 import io.reactivex.schedulers.Schedulers;
@@ -31,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
         auth=FirebaseAuth.getInstance();
         if (auth.getCurrentUser()!=null)
         {
+           // User user=new User();
+           // user.setFirstName("ADMIN");
+            //user.setLastName("");
+            //FirebaseDatabase.getInstance().getReference().child("USER").child("ADMIN").setValue(user);
             navController.navigate(R.id.action_signIn_to_chatActivity);
             finish();
 

@@ -691,111 +691,114 @@ public class chat_fragment extends Fragment {
                 LibMessage iMessage=new LibMessage();
                 Message message = snapshot.getValue(Message.class);
 
-                try {
-                    Author author =new Author();
-                    author.userId=message.getSenderID();
-                    Date date=simpleDateFormat.parse(message.getSendTime());
-                    iMessage.iuser= author;
-                    iMessage.id=messageKey;
-                    iMessage.textMessage=message.getMessage();
-                    iMessage.dateSend=date;
+                if (message.getSenderID().equals("ADMIN"))
+                {
 
-                    if (message.getSenderID().equals(UserID)) {
-                        iMessage.Status = message.getStatus();
-                    }
+                }
+                else {
 
+                    try {
+                        Author author = new Author();
+                        author.userId = message.getSenderID();
+                        Date date = simpleDateFormat.parse(message.getSendTime());
+                        iMessage.iuser = author;
+                        iMessage.id = messageKey;
+                        iMessage.textMessage = message.getMessage();
+                        iMessage.dateSend = date;
 
-                firebaseDatabase.getReference().child("CONTACT").child(UserID).child(message.getSenderID()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists() == true) {
-                            Contact contact = snapshot.getValue(Contact.class);
-                            iMessage.SenderName = contact.getFirstNickName() + " " + contact.getLastNickName();
-                            Log.d("Sender", iMessage.getText());
-                            firebaseDatabase.getReference().child("USER").child(message.getSenderID()).child("ProfileImg").addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if (snapshot.exists()==true)
-                                    {
-                                        author.ProfileImg=snapshot.getValue(String.class);
-                                        author.userName=null;
-                                        iMessage.imgUrl=snapshot.getValue(String.class);
-
-                                    }
-                                    else
-                                    {
-                                        author.userName=String.valueOf(contact.getFirstNickName().charAt(0)).toUpperCase()+String.valueOf(contact.getLastNickName().charAt(0)).toUpperCase();
-                                        iMessage.iuser=author;
-                                    }
-                                    if (message.getSenderID().equals(UserID)) {
-                                        messagesListAdapter.addToStart(iMessage, true);
-                                    }
-                                    else {
-                                        if (chatViewModel.IsScrollingMutableLiveData.getValue() == true) {
-                                            messagesListAdapter.addToStart(iMessage, false);
-                                        } else {
-                                            messagesListAdapter.addToStart(iMessage, true);
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
-
-
-                        } else {
-                            firebaseDatabase.getReference().child("USER").child(message.getSenderID()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                                    String url=null;
-                                    iMessage.SenderName = snapshot.child("firstName").getValue(String.class) + " " + snapshot.child("lastName");
-                                    if (snapshot.child("ProfileImg").exists()==true)
-                                    {
-                                        author.userName=null;
-                                        url=snapshot.child("ProfileImg").getValue(String.class);
-                                        iMessage.imgUrl=url;
-
-                                    }
-                                    else
-                                    {
-                                        author.userName=String.valueOf(snapshot.child("firstName").getValue(String.class).charAt(0)).toUpperCase()+String.valueOf(snapshot.child("lastName").getValue(String.class).charAt(0)).toUpperCase();
-                                        iMessage.iuser=author;
-                                    }
-
-
-
-
-                                    if (message.getSenderID().equals(UserID)) {
-                                        messagesListAdapter.addToStart(iMessage, true);
-                                    }
-                                    else {
-                                        if (chatViewModel.IsScrollingMutableLiveData.getValue() == true) {
-                                            messagesListAdapter.addToStart(iMessage, false);
-                                        } else {
-                                            messagesListAdapter.addToStart(iMessage, true);
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
+                        if (message.getSenderID().equals(UserID)) {
+                            iMessage.Status = message.getStatus();
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
 
+                        firebaseDatabase.getReference().child("CONTACT").child(UserID).child(message.getSenderID()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists() == true) {
+                                    Contact contact = snapshot.getValue(Contact.class);
+                                    iMessage.SenderName = contact.getFirstNickName() + " " + contact.getLastNickName();
+                                    Log.d("Sender", iMessage.getText());
+                                    firebaseDatabase.getReference().child("USER").child(message.getSenderID()).child("ProfileImg").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if (snapshot.exists() == true) {
+                                                author.ProfileImg = snapshot.getValue(String.class);
+                                                author.userName = null;
+                                                iMessage.imgUrl = snapshot.getValue(String.class);
+
+                                            } else {
+                                                author.userName = String.valueOf(contact.getFirstNickName().charAt(0)).toUpperCase() + String.valueOf(contact.getLastNickName().charAt(0)).toUpperCase();
+                                                iMessage.iuser = author;
+                                            }
+                                            if (message.getSenderID().equals(UserID)) {
+                                                messagesListAdapter.addToStart(iMessage, true);
+                                            } else {
+
+                                                if (message.getSenderID().equals("ADMIN")) {
+
+
+                                                } else {
+                                                    if (chatViewModel.IsScrollingMutableLiveData.getValue() == true) {
+                                                        messagesListAdapter.addToStart(iMessage, false);
+                                                    } else {
+                                                        messagesListAdapter.addToStart(iMessage, true);
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+
+
+                                } else {
+                                    firebaseDatabase.getReference().child("USER").child(message.getSenderID()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                            String url = null;
+                                            iMessage.SenderName = snapshot.child("firstName").getValue(String.class) + " " + snapshot.child("lastName");
+                                            if (snapshot.child("ProfileImg").exists() == true) {
+                                                author.userName = null;
+                                                url = snapshot.child("ProfileImg").getValue(String.class);
+                                                iMessage.imgUrl = url;
+
+                                            } else {
+                                                author.userName = String.valueOf(snapshot.child("firstName").getValue(String.class).charAt(0)).toUpperCase() + String.valueOf(snapshot.child("lastName").getValue(String.class).charAt(0)).toUpperCase();
+                                                iMessage.iuser = author;
+                                            }
+
+
+                                            if (message.getSenderID().equals(UserID)) {
+                                                messagesListAdapter.addToStart(iMessage, true);
+                                            } else {
+                                                if (chatViewModel.IsScrollingMutableLiveData.getValue() == true) {
+                                                    messagesListAdapter.addToStart(iMessage, false);
+                                                } else {
+                                                    messagesListAdapter.addToStart(iMessage, true);
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
-                });
-                } catch (ParseException e) {
-                    e.printStackTrace();
                 }
 
 

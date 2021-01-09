@@ -209,6 +209,7 @@ public class ChatProfileGroupFragmment extends Fragment {
                         hashMap.put("groupName",editGroupName.getText().toString().trim());
                         firebaseDatabase.getReference().child("GROUP_CHAT").child(ContactID).updateChildren(hashMap);
                         collapsingToolbarLayout.setTitle(editGroupName.getText().toString().trim());
+                        btnEditContact.setVisibility(View.VISIBLE);
 
                     }
                     else

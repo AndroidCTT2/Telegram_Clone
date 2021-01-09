@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,12 +25,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.mobile.messageclone.Model.Contact;
 import com.mobile.messageclone.Model.ContactAndSeenTime;
 import com.mobile.messageclone.Model.Group;
+import com.mobile.messageclone.Model.Message;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.RecycerViewAdapater.ContactListAdapter;
+import com.mobile.messageclone.RecycerViewAdapater.ContactListHomeAdapter;
 import com.mobile.messageclone.Ulti.GenerateChatID;
 import com.mobile.messageclone.ViewModel.NewGroupViewModel;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 public class NameNewGroupFragment extends Fragment {
@@ -38,6 +44,8 @@ public class NameNewGroupFragment extends Fragment {
     private ContactListAdapter contactListAdapter;
     private FloatingActionButton btnComplete;
     private TextInputEditText inputGroupName;
+
+    private NavController navController;
 
     private FirebaseDatabase firebaseDatabase;
 
@@ -58,8 +66,21 @@ public class NameNewGroupFragment extends Fragment {
         listGroupContact.setAdapter(contactListAdapter);
         listGroupContact.setLayoutManager(new LinearLayoutManager(getContext()));
 
+
+
+
         inputGroupName=root.findViewById(R.id.inputGroupName);
         btnComplete=root.findViewById(R.id.btnComplete);
+
+        return root;
+    }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        navController= Navigation.findNavController(view);
         btnComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,14 +112,40 @@ public class NameNewGroupFragment extends Fragment {
                 group.setGroupMemberIdList(memberID);
                 group.setGroupName(inputGroupName.getText().toString().trim());
                 group.setGroupID(key);
+
                 group.setIdAdmin(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 firebaseDatabase.getReference().child("CONVERSATION_ID").push().setValue(group.getGroupID());
                 firebaseDatabase.getReference().child("GROUP_CHAT").child(key).setValue(group);
 
 
+                Message message=new Message();
+                message.setMessage("Your new group chat is ready");
+                message.setSenderID("ADMIN");
+                message.setReceiverID(key);
+
+                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss-X");
+
+                message.setSendTime(simpleDateFormat.format(Calendar.getInstance().getTime()));
+                firebaseDatabase.getReference().child("MESSAGE").child(key).push().setValue(message);
+
+
+
+                Bundle bundle=new Bundle();
+                bundle.putString("UserID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                bundle.putString("ContactID",key);
+                bundle.putInt("Type",ContactListHomeAdapter.CHAT_GROUP);
+                bundle.putString("ContactName", inputGroupName.getText().toString().trim());
+
+
+
+                navController.navigate(R.id.action_nameNewGroupFragment_to_fragment_home);
+
+
+
+
 
             }
         });
-        return root;
     }
 }
+

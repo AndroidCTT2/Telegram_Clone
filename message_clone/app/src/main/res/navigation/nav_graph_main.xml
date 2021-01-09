@@ -59,14 +59,14 @@
         <action
             android:id="@+id/action_chat_fragment_to_chatProfileGroupFragmment"
             app:destination="@id/chatProfileGroupFragmment" />
+        <action
+            android:id="@+id/action_chat_fragment_to_fragment_home"
+            app:destination="@id/fragment_home" />
     </fragment>
     <fragment
         android:id="@+id/newGroupFragment"
         android:name="com.mobile.messageclone.fragment.Chat.NewGroupFragment"
         tools:layout="@layout/fragment_new_group" >
-        <action
-            android:id="@+id/action_newGroupFragment_to_chat_fragment"
-            app:destination="@id/chat_fragment" />
         <action
             android:id="@+id/action_newGroupFragment_to_nameNewGroupFragment"
             app:destination="@id/nameNewGroupFragment" />
@@ -119,7 +119,11 @@
     <fragment
         android:id="@+id/nameNewGroupFragment"
         android:name="com.mobile.messageclone.fragment.Chat.NameNewGroupFragment"
-        android:label="NameNewGroupFragment" />
+        android:label="NameNewGroupFragment" >
+        <action
+            android:id="@+id/action_nameNewGroupFragment_to_fragment_home"
+            app:destination="@id/fragment_home" />
+    </fragment>
     <fragment
         android:id="@+id/chatProfileFragment"
         android:name="com.mobile.messageclone.fragment.Chat.ChatProfileFragment"

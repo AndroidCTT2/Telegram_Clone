@@ -564,6 +564,8 @@ public class ChatActivity extends AppCompatActivity implements ActivityUlti {
 
 
 
+
+
        final NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
        mAppBarConfiguration=new AppBarConfiguration.Builder(navController.getGraph()).setOpenableLayout(drawer).build();
