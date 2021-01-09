@@ -64,11 +64,21 @@ public class NameNewGroupFragment extends Fragment {
         listGroupContact.setAdapter(contactListAdapter);
         listGroupContact.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        navController= Navigation.findNavController(root);
+
 
 
         inputGroupName=root.findViewById(R.id.inputGroupName);
         btnComplete=root.findViewById(R.id.btnComplete);
+
+        return root;
+    }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        navController= Navigation.findNavController(view);
         btnComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,6 +139,6 @@ public class NameNewGroupFragment extends Fragment {
 
             }
         });
-        return root;
     }
 }
+
