@@ -730,11 +730,19 @@ public class chat_fragment extends Fragment {
                                     if (message.getSenderID().equals(UserID)) {
                                         messagesListAdapter.addToStart(iMessage, true);
                                     }
-                                    else {
-                                        if (chatViewModel.IsScrollingMutableLiveData.getValue() == true) {
-                                            messagesListAdapter.addToStart(iMessage, false);
-                                        } else {
-                                            messagesListAdapter.addToStart(iMessage, true);
+                                    else  {
+
+                                        if (message.getSenderID().equals("ADMIN")) {
+
+
+
+                                        }
+                                        else {
+                                            if (chatViewModel.IsScrollingMutableLiveData.getValue() == true) {
+                                                messagesListAdapter.addToStart(iMessage, false);
+                                            } else {
+                                                messagesListAdapter.addToStart(iMessage, true);
+                                            }
                                         }
                                     }
                                 }

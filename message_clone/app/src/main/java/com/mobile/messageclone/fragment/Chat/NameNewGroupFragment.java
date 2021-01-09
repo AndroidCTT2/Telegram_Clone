@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,8 +25,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.mobile.messageclone.Model.Contact;
 import com.mobile.messageclone.Model.ContactAndSeenTime;
 import com.mobile.messageclone.Model.Group;
+import com.mobile.messageclone.Model.Message;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.RecycerViewAdapater.ContactListAdapter;
+import com.mobile.messageclone.RecycerViewAdapater.ContactListHomeAdapter;
 import com.mobile.messageclone.Ulti.GenerateChatID;
 import com.mobile.messageclone.ViewModel.NewGroupViewModel;
 
@@ -38,6 +42,8 @@ public class NameNewGroupFragment extends Fragment {
     private ContactListAdapter contactListAdapter;
     private FloatingActionButton btnComplete;
     private TextInputEditText inputGroupName;
+
+    private NavController navController;
 
     private FirebaseDatabase firebaseDatabase;
 
@@ -57,6 +63,9 @@ public class NameNewGroupFragment extends Fragment {
         contactListAdapter=new ContactListAdapter(getContext(),newGroupViewModel.arrayListMutableLiveData.getValue(),getActivity());
         listGroupContact.setAdapter(contactListAdapter);
         listGroupContact.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        navController= Navigation.findNavController(root);
+
 
         inputGroupName=root.findViewById(R.id.inputGroupName);
         btnComplete=root.findViewById(R.id.btnComplete);
@@ -94,6 +103,27 @@ public class NameNewGroupFragment extends Fragment {
                 group.setIdAdmin(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 firebaseDatabase.getReference().child("CONVERSATION_ID").push().setValue(group.getGroupID());
                 firebaseDatabase.getReference().child("GROUP_CHAT").child(key).setValue(group);
+
+
+                Message message=new Message();
+                message.setMessage("Your new group chat is ready");
+                message.setSenderID("ADMIN");
+                message.setReceiverID(key);
+                firebaseDatabase.getReference().child("MESSAGE").child(key).push().setValue(message);
+
+
+
+                Bundle bundle=new Bundle();
+                bundle.putString("UserID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                bundle.putString("ContactID",key);
+                bundle.putInt("Type",ContactListHomeAdapter.CHAT_GROUP);
+                bundle.putString("ContactName", inputGroupName.getText().toString().trim());
+
+
+
+                navController.navigate(R.id.action_nameNewGroupFragment_to_chat_fragment,bundle);
+
+
 
 
 
