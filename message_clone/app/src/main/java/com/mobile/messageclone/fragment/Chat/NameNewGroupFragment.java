@@ -32,7 +32,9 @@ import com.mobile.messageclone.RecycerViewAdapater.ContactListHomeAdapter;
 import com.mobile.messageclone.Ulti.GenerateChatID;
 import com.mobile.messageclone.ViewModel.NewGroupViewModel;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 public class NameNewGroupFragment extends Fragment {
@@ -120,6 +122,10 @@ public class NameNewGroupFragment extends Fragment {
                 message.setMessage("Your new group chat is ready");
                 message.setSenderID("ADMIN");
                 message.setReceiverID(key);
+
+                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss-X");
+
+                message.setSendTime(simpleDateFormat.format(Calendar.getInstance().getTime()));
                 firebaseDatabase.getReference().child("MESSAGE").child(key).push().setValue(message);
 
 
@@ -132,7 +138,7 @@ public class NameNewGroupFragment extends Fragment {
 
 
 
-                navController.navigate(R.id.action_nameNewGroupFragment_to_chat_fragment,bundle);
+                navController.navigate(R.id.action_nameNewGroupFragment_to_fragment_home);
 
 
 

@@ -230,6 +230,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
                                                 final Contact[] contact = {new Contact()};
                                                 for (DataSnapshot child2:snapshot.getChildren()) {
 
+
                                                     Message message = child2.getValue(Message.class);
                                                     Log.d("Group",message.getSenderID());
                                                     if (message.getSenderID().equals(thisUserID)==false) {
@@ -239,7 +240,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
                                                                 if (snapshot.exists()==true)
                                                                 {
                                                                     contact[0] =snapshot.getValue(Contact.class);
-
+                                                                    contactLastMessTime.groupName=group.getGroupName();
                                                                     contactLastMessTime.contact=contact[0];
                                                                     contactLastMessTime.contact.setUserIdContact(groupChatId);
                                                                     contactLastMessTime.LastMess=message;
@@ -280,13 +281,13 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
                                                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                                             contact[0].setLastNickName(snapshot.child("firstName").getValue(String.class));
                                                                             contact[0].setFirstNickName(snapshot.child("lastName").getValue(String.class));
-
+                                                                            contactLastMessTime.profileImg=null;
                                                                             contact[0].setUserIdContact(groupChatId);
                                                                             ContactLastMessTime contactLastMessTime=new ContactLastMessTime();
                                                                             contactLastMessTime.contact=contact[0];
                                                                             contactLastMessTime.LastMess=message;
+                                                                            contactLastMessTime.groupName=group.getGroupName();
                                                                             Log.d("Group",groupChatId);
-                                                                            contactLastMessTime.profileImg="";
                                                                             contactLastMessTime.type=ContactListHomeAdapter.CHAT_GROUP;
 
                                                                             if (contactLastMessTimeLinkedList.size()!=0) {
@@ -341,6 +342,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
                                                         firebaseDatabase.getReference().child("USER").child(thisUserID).addValueEventListener(new ValueEventListener() {
                                                             @Override
                                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
 
 
                                                                 contactLastMessTime.contact.setFirstNickName(snapshot.child("firstName").getValue(String.class));

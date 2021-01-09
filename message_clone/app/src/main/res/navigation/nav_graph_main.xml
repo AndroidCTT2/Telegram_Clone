@@ -121,8 +121,8 @@
         android:name="com.mobile.messageclone.fragment.Chat.NameNewGroupFragment"
         android:label="NameNewGroupFragment" >
         <action
-            android:id="@+id/action_nameNewGroupFragment_to_chat_fragment"
-            app:destination="@id/chat_fragment" />
+            android:id="@+id/action_nameNewGroupFragment_to_fragment_home"
+            app:destination="@id/fragment_home" />
     </fragment>
     <fragment
         android:id="@+id/chatProfileFragment"
