@@ -110,6 +110,7 @@ public class NameNewGroupFragment extends Fragment {
                 group.setGroupMemberIdList(memberID);
                 group.setGroupName(inputGroupName.getText().toString().trim());
                 group.setGroupID(key);
+
                 group.setIdAdmin(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 firebaseDatabase.getReference().child("CONVERSATION_ID").push().setValue(group.getGroupID());
                 firebaseDatabase.getReference().child("GROUP_CHAT").child(key).setValue(group);
