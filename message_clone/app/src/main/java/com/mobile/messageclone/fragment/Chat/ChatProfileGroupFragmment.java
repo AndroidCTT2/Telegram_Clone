@@ -38,6 +38,7 @@ import com.mobile.messageclone.RecycerViewAdapater.ContactListAdapter;
 import com.mobile.messageclone.Ulti.ActivityUlti;
 import com.mobile.messageclone.Ulti.DateToString;
 import com.mobile.messageclone.Ulti.DrawProfilePicture;
+import com.mobile.messageclone.Ulti.RecyclerViewClickInterface;
 import com.mobile.messageclone.ViewModel.ChatViewModel;
 
 import java.time.Instant;
@@ -136,6 +137,18 @@ public class ChatProfileGroupFragmment extends Fragment {
         contactList.setAdapter(contactListAdapter);
 
         contactList.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        contactListAdapter.SetClickInterface(new RecyclerViewClickInterface() {
+            @Override
+            public void onItemClick(int position) {
+                return;
+            }
+
+            @Override
+            public void onLongItemClick(int position) {
+                return;
+            }
+        });
 
 
         if (isAdded()) {
