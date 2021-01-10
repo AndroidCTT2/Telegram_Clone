@@ -347,6 +347,7 @@ public class ChatActivity extends AppCompatActivity implements ActivityUlti {
                 public void onClick(DialogInterface dialog, int which) {
                     Toast.makeText(ChatActivity.this, "REJECT", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
+                    call.addCallListener(new SinchCallListener());
                     call.hangup();
                 }
             });
@@ -368,23 +369,27 @@ public class ChatActivity extends AppCompatActivity implements ActivityUlti {
                             callerName = firstName + " " + lastName;
                         }
                     });
+
                     voiceCallScreenFragment.setName(callerName);
                     voiceCallScreenFragment.show(getSupportFragmentManager(), "VoiceCallScreen");
                 }
             });
             alertDialog.show();
         }
+
     }
 
     private class SinchCallListener implements CallListener {
-
+        CallInfor callInfor = new CallInfor();
         @Override
         public void onCallProgressing(Call call) {
+            callInfor.setReject(true);
             Toast.makeText(ChatActivity.this, "Ringing...", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onCallEstablished(Call call) {
+            callInfor.setReject(false);
             Toast.makeText(ChatActivity.this, "Call established", Toast.LENGTH_SHORT).show();
             FragmentManager fm = getSupportFragmentManager();
             VoiceCallScreenFragment voiceCallScreenFragment = (VoiceCallScreenFragment) fm.findFragmentByTag("VoiceCallScreen");
@@ -409,7 +414,7 @@ public class ChatActivity extends AppCompatActivity implements ActivityUlti {
                 l = voiceCallScreenFragment.getCallDuration();
             }
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss-X");
-            CallInfor callInfor = new CallInfor();
+//            callInfor.setReject(true);
             callInfor.setCallDuration(l);
             callInfor.setCallDate(simpleDateFormat.format(Calendar.getInstance().getTime()));
             if (isCaller == 0) { //Người nhận cuộc gọi

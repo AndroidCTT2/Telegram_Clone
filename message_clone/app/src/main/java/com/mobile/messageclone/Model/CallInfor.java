@@ -6,12 +6,14 @@ public class CallInfor {
     private String receiverID;
     private Long callDuration;
     private String callDate;
+    private Boolean reject;
 
     public CallInfor(String callerName, String receiverName, Long callDuration, String callDate) {
         this.callerID = callerName;
         this.receiverID = receiverName;
         this.callDuration = callDuration;
         this.callDate = callDate;
+        this.reject = false;
     }
 
     public CallInfor() {
@@ -50,6 +52,11 @@ public class CallInfor {
         this.callDate = callDate;
     }
 
+    public Boolean getReject() {
+        return reject;
+    }
 
-
+    public void setReject(Boolean reject) {
+        reject = reject;
+    }
 }
