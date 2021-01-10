@@ -29,7 +29,7 @@
             app:collapsedTitleTextAppearance="@style/TextAppearance.MaterialComponents.Headline5"
             app:expandedTitleTextAppearance="@style/TextAppearance.Design.CollapsingToolbar.Expanded"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:expandedTitleGravity="bottom"
+            app:expandedTitleGravity="bottom|center_horizontal"
 
             >
 

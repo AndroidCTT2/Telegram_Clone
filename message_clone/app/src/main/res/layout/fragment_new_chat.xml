@@ -7,25 +7,7 @@
 
     android:background="?attr/colorOnBackground"
     android:orientation="vertical">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="20dp">
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnNewGroupChat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:text="New Group Chat"
-            app:icon="@drawable/ic_baseline_people_24"
-            android:textColor="?attr/colorOnSurface"
-            app:iconTint="?attr/colorOnSurface"
-            app:iconPadding="30dp"
-            android:textAllCaps="false"
-            android:textAlignment="textStart"
 
-            ></com.google.android.material.button.MaterialButton>
-    </LinearLayout>
 
 
     <TextView

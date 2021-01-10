@@ -379,7 +379,7 @@ public class ProfileFragment extends Fragment {
         super.onDetach();
         ((ActivityUlti)getActivity()).ReattachToolbar();
         firebaseDatabase.getReference().removeEventListener(InfoListener);
-        Toast.makeText(getContext(),"Co click",Toast.LENGTH_SHORT).show();
+       //Toast.makeText(getContext(),"Co click",Toast.LENGTH_SHORT).show();
     }
 
     @Override

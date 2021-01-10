@@ -619,7 +619,7 @@ public class chat_fragment extends Fragment {
                             msg,
                             sender,
                             ContactID);
-                    Toast.makeText(getContext(),chatViewModel.UserProfileImageUrl.getValue(),Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(),chatViewModel.UserProfileImageUrl.getValue(),Toast.LENGTH_SHORT).show();
                     data.setIconUrl(chatViewModel.UserProfileImageUrl.getValue());
                     Sender sender = new Sender(data, token.getToken());
                     Log.d("Callback", "onResponse: " + data.getBody());

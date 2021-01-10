@@ -29,7 +29,7 @@
             app:collapsedTitleTextAppearance="@style/TextAppearance.MaterialComponents.Headline5"
             app:expandedTitleTextAppearance="@style/TextAppearance.Design.CollapsingToolbar.Expanded"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:expandedTitleGravity="bottom"
+            app:expandedTitleGravity="bottom|center_horizontal"
 
             >
 
@@ -42,6 +42,7 @@
                 app:layout_anchorGravity="center"
                 android:scaleType="fitCenter"
                 app:layout_collapseMode="pin"
+                android:layout_marginBottom="80dp"
                 />
 
 

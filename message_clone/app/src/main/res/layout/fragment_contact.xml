@@ -8,24 +8,6 @@
     android:background="?attr/colorBackgroundFloating"
     >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="20dp"
-        android:background="?attr/colorOnBackground">
-    <com.google.android.material.button.MaterialButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:text="Invite Friends"
-        app:icon="@drawable/ic_baseline_person_add_24"
-        android:textColor="?attr/colorOnSurface"
-        app:iconTint="?attr/colorOnSurface"
-        app:iconPadding="30dp"
-        android:textAllCaps="false"
-
-        ></com.google.android.material.button.MaterialButton>
-    </LinearLayout>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
