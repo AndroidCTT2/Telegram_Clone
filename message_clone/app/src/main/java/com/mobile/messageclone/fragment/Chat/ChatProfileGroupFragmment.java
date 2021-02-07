@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -75,6 +77,7 @@ public class ChatProfileGroupFragmment extends Fragment {
 
     private TextInputEditText editGroupName;
     private FloatingActionButton btnChoosePicture;
+    private FloatingActionButton btnAddMember;
 
 
     private ArrayList<ContactAndSeenTime>contactAndSeenTimeArrayList;
@@ -115,12 +118,17 @@ public class ChatProfileGroupFragmment extends Fragment {
 
         profilePicture=root.findViewById(R.id.ProfilePicture);
 
+        btnAddMember=root.findViewById(R.id.btnAddGroupMember);
+
         EditModeOn=false;
 
         btnEditContact=root.findViewById(R.id.editContactExtended);
 
         editMode.setVisibility(View.GONE);
         btnChoosePicture.setVisibility(View.GONE);
+
+
+
 
 
 
@@ -231,6 +239,37 @@ public class ChatProfileGroupFragmment extends Fragment {
                     }
 
                 }
+            }
+        });
+
+
+        btnAddMember.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavController navController= Navigation.findNavController(view);
+
+
+                firebaseDatabase.getReference().child("GROUP_CHAT").child(ContactID).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Group group=snapshot.getValue(Group.class);
+                        Bundle bundle=new Bundle();
+                        bundle.putString("GroupKey",ContactID);
+                        bundle.putStringArrayList("MemberList",group.getGroupMemberIdList());
+
+                        navController.navigate(R.id.action_chatProfileGroupFragmment_to_editGroupMember,bundle);
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+
+
             }
         });
 

@@ -34,8 +34,11 @@ public class ContactListNewGroupChatAdapter extends RecyclerView.Adapter<Contact
     RecyclerViewClickInterface recyclerViewClickInterface;
     RecyclerCheckBoxClick recyclerCheckBoxClick;
 
+
+    public int IsAddNewMember=1;
     public SparseBooleanArray itemStateArray=new SparseBooleanArray();
 
+    public ArrayList<String>contactKeyMatch;
 
 
 
@@ -100,6 +103,15 @@ public class ContactListNewGroupChatAdapter extends RecyclerView.Adapter<Contact
                 holder.profilePicture.setImageBitmap(DrawProfilePicture.textAsBitmap((String.valueOf(ContactName.charAt(0)).toUpperCase() + (String.valueOf(contactAndSeenTimeList.get(position).contact.getLastNickName().charAt(0)).toUpperCase())), 70, Color.WHITE));
             }
         }
+
+        if (contactKeyMatch.contains(contactAndSeenTimeList.get(position).contact.getUserIdContact())==true)
+        {
+            holder.materialCheckBox.setChecked(true);
+            itemStateArray.put(position, true);
+            recyclerCheckBoxClick.CheckBoxClick(position, true);
+        }
+
+
     }
 
     @Override
@@ -125,6 +137,8 @@ public class ContactListNewGroupChatAdapter extends RecyclerView.Adapter<Contact
             Status=itemView.findViewById(R.id.displayStatus);
             materialCheckBox=itemView.findViewById(R.id.checkbox);
 
+
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -146,18 +160,20 @@ public class ContactListNewGroupChatAdapter extends RecyclerView.Adapter<Contact
             materialCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int adapterPosition = getAdapterPosition();
-                    if (!itemStateArray.get(adapterPosition, false)) {
-                        materialCheckBox.setChecked(true);
-                        itemStateArray.put(adapterPosition, true);
-                        recyclerCheckBoxClick.CheckBoxClick(getAdapterPosition(),true);
+
+                        int adapterPosition=getAdapterPosition();
+
+                        if (!itemStateArray.get(adapterPosition, false)) {
+                            materialCheckBox.setChecked(true);
+                            itemStateArray.put(adapterPosition, true);
+                            recyclerCheckBoxClick.CheckBoxClick(getAdapterPosition(), true);
+                        } else {
+                            materialCheckBox.setChecked(false);
+                            itemStateArray.put(adapterPosition, false);
+                            recyclerCheckBoxClick.CheckBoxClick(getAdapterPosition(), false);
+                        }
                     }
-                    else  {
-                        materialCheckBox.setChecked(false);
-                        itemStateArray.put(adapterPosition, false);
-                        recyclerCheckBoxClick.CheckBoxClick(getAdapterPosition(),false);
-                    }
-                }
+
             });
         }
 

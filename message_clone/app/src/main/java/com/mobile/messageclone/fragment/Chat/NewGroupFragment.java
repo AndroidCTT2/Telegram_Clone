@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mobile.messageclone.Model.ContactAndSeenTime;
+import com.mobile.messageclone.Model.GroupMember;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.RecycerViewAdapater.ContactListNewGroupChatAdapter;
 import com.mobile.messageclone.Ulti.RecyclerCheckBoxClick;
@@ -230,10 +231,13 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
                 ArrayList<ContactAndSeenTime>contactAndSeenTimes=new ArrayList<>();
                 ArrayList<String>contactName=new ArrayList<>();
                 ArrayList<String>imgUrl=new ArrayList<>();
+                ArrayList<GroupMember>groupMembers=new ArrayList<>();
                 for (int i=0;i<contactListAdapter.contactAndSeenTimeList.size();i++)
                 {
                     if (contactListAdapter.itemStateArray.get(i)==true)
                     {
+
+
                         contactName.add(contactListAdapter.contactAndSeenTimeList.get(i).contact.getFirstNickName()+" "+contactListAdapter.
                                 contactAndSeenTimeList.get(i).contact.getLastNickName());
                         imgUrl.add(contactListAdapter.contactAndSeenTimeList.get(i).imageUrl);

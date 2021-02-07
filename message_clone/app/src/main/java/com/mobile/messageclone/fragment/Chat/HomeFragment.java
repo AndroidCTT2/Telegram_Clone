@@ -70,14 +70,7 @@ public class HomeFragment extends Fragment implements RecyclerViewClickInterface
         contactListHomeAdapter.SetClickInterface(this);
         thisUserID = firebaseAuth.getCurrentUser().getUid();
 
-     /*   Message message=new Message();
-        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss-X");
-        message.setMessage("Demo tin nhan nhom");
-        message.setSendTime(simpleDateFormat.format(Calendar.getInstance().getTime()));
-        message.setReceiverID("qkaf9G49vqUyfQCElTtouY1f6bo2");
-        message.setSenderID("S5gv935gPihgOl6I7L8AZBtHKCx1");
-        message.setStatus(Message.STATUS.Delivered);
-        firebaseDatabase.getReference().child("MESSAGE").child("GC:-MPCaROSq5dmdsxorR6e").push().setValue(message);*/
+   
 
 
 

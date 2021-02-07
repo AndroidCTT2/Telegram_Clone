@@ -7,6 +7,10 @@ import java.util.ArrayList;
 public class Group {
     private String groupName;
     private ArrayList<String>groupMemberIdList;
+
+    private ArrayList<GroupMember>groupMemberList;
+
+
     private String idAdmin;
     private String groupID;
     private String GroupImg;
@@ -16,6 +20,16 @@ public class Group {
         idAdmin="";
         groupID="";
         GroupImg="";
+    }
+
+
+    public ArrayList<GroupMember> getGroupMemberList()
+    {
+        return groupMemberList;
+    }
+
+    public void setGroupMemberList(ArrayList<GroupMember> groupMemberList) {
+        this.groupMemberList = groupMemberList;
     }
 
     public String getGroupImg() {
