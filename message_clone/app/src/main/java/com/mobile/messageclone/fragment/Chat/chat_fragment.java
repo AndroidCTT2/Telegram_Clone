@@ -290,7 +290,7 @@ public class chat_fragment extends Fragment {
             chatViewModel.ChatID.setValue(ContactID);
 
 
-
+            chatViewModel.ChatID.setValue(ContactID);
 
 
 

@@ -7,7 +7,7 @@ android {
             keyAlias 'key0'
             keyPassword '123456'
 
-            storeFile file('E:\\MessageClone\\Telegram_Clone\\message_clone\\key\\key.jks')
+
 
         }
     }
