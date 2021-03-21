@@ -104,7 +104,7 @@ public class ContactListNewGroupChatAdapter extends RecyclerView.Adapter<Contact
             }
         }
 
-        if (contactKeyMatch.contains(contactAndSeenTimeList.get(position).contact.getUserIdContact())==true)
+        if (contactKeyMatch!=null && contactKeyMatch.contains(contactAndSeenTimeList.get(position).contact.getUserIdContact())==true)
         {
             holder.materialCheckBox.setChecked(true);
             itemStateArray.put(position, true);

@@ -108,6 +108,7 @@ public class NewGroupFragment extends Fragment implements RecyclerViewClickInter
         RecyclerViewContact.setLayoutManager(new LinearLayoutManager(getContext()));
 
         contactListAdapter=new ContactListNewGroupChatAdapter(getContext(),contactAndSeenTimeArrayList,getActivity());
+        contactListAdapter.contactKeyMatch=null;
         contactListAdapter.SetClickInterface(this);
         contactListAdapter.SetCheckBoxInterface(this::CheckBoxClick);
 
