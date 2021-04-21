@@ -1,0 +1,41 @@
+.giaodien{
+    margin-left: 30px;
+    
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.inline-text {
+    margin-bottom: 20px;
+    display: inline-block;
+
+}
+
+#light-mode{
+    margin-left: 120px;
+    margin-right: 210px;
+}
+
+#slide-bar {
+    margin-left: 120px;
+    margin-right: 240px;  
+}
+
+#profile {
+    margin-left: 140px;
+    margin-right: 220px;  
+}
+
+.display-inline-block {
+    display: inline-block;
+}
+
+#origin-profile {
+    margin-left: 120px;
+    margin-right: 200px;  
+}
+
+#update-name {
+    margin-left: 120px;
+    margin-right: 190px;  
+}
