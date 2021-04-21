@@ -77,6 +77,3 @@
   - Quản lý danh sách: `Recycle view`
   - Lưu trữ tài nguyên: `Firebase storage`
   - Live data: `Live data`
-
-
-  
