@@ -47,12 +47,10 @@
 
 ### **Giao diện chính của ứng dụng**
 
-<link rel="stylesheet" type="text/css" href="./style.css" />
-
 <div>
 
 </div>
-<img class="giaodien" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619008608/Android_telegram_readme_resources/photos/giaodien1_zazykr.png" width="250" height="500">
+<img class="giaodien" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619008608/Android_telegram_readme_resources/photos/giaodien1_zazykr.png" width="250" height="500" rightmargin="50px" leftmargin="50px">
 
 <img class="giaodien" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619008608/Android_telegram_readme_resources/photos/giaodien2_vx7vtx.png" width="250" height="500" margin-left="50px">
 
