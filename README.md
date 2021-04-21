@@ -46,75 +46,22 @@
 ## **Demo**
 
 ### **Giao diện chính của ứng dụng**
+<img align="center" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619022291/Android_telegram_readme_resources/photos/giaodienchinh1_idrmqm.png">
 
-<link rel="stylesheet" type="text/css" href="./style.css" />
-
-<div>
-
-</div>
-<img class="giaodien" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619008608/Android_telegram_readme_resources/photos/giaodien1_zazykr.png" width="250" height="500">
-
-<img class="giaodien" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619008608/Android_telegram_readme_resources/photos/giaodien2_vx7vtx.png" width="250" height="500" margin-left="50px">
-
-<div>
-  <div id="light-mode" class="inline-text" >Light mode</div> <div id="dark-mode" class="inline-text">Dark mode</div>
-</div>
-
-<img class="giaodien" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619008609/Android_telegram_readme_resources/photos/slidebar_hxmi5s.png" width ="250" height="500">
-
-<img class="giaodien" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619008609/Android_telegram_readme_resources/photos/lienhe_hutvg1.png" width ="250" height="500">
-
-<div>
-  <div id="slide-bar" class="inline-text" >Slide bar</div> <div id="dark-mode" class="inline-text">Contact</div>
-</div>
-
-<img class="giaodien" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619008609/Android_telegram_readme_resources/photos/taikhoancanhan_lhznui.png" width ="250" height="500">
-
-<img class="giaodien" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619008609/Android_telegram_readme_resources/photos/manhinhnhantin_siy56u.png" width ="250" height="500">
-
-<div>
-  <div id="profile" class="inline-text" >Profile</div> <div id="dark-mode" class="inline-text">Chat screen</div>
-</div>
+<img align="center" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619022291/Android_telegram_readme_resources/photos/giaodienchinh2_qwf2c1.png">
 
 ### **Đăng nhập bằng số điện thoại**
-
-<img class="giaodien" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619008608/Android_telegram_readme_resources/photos/dangnhap1_jc1tac.png" width ="250" height="500">
-<img class="giaodien" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619008608/Android_telegram_readme_resources/photos/dangnhap2_iyevyt.png" width ="250" height="500">
-<div>
-  <div class="inline-text"></div>
-</div>
+<img align="center" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619022291/Android_telegram_readme_resources/photos/dangnhap_ygiqwm.png">
 
 ### **Thay đổi, cập nhật thông tin cá nhân**
-<img class="giaodien" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619008609/Android_telegram_readme_resources/photos/thongtintaikhoan_h8g52c.png" width ="250" height="500">
+<img align="center" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619022291/Android_telegram_readme_resources/photos/thaydoithongtin1_dxbdet.png">
+<img align="center" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619022293/Android_telegram_readme_resources/photos/thaydoithongtin2_dyuljh.png">
 
-<img class="giaodien" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619008610/Android_telegram_readme_resources/photos/chonanhdaidien_bbf8tc.png" width ="250" height="500">
-
-<div>
-  <div id="origin-profile" class="inline-text" >Origin profile</div> <div id="dark-mode" class="inline-text">Update avatar</div>
-</div>
-
-<img class="giaodien" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619008611/Android_telegram_readme_resources/photos/thaydoiten_ndyw4l.png" width ="250" height="500">
-
-<img class="giaodien" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619008611/Android_telegram_readme_resources/photos/daluuthongtin_pbh0za.png" width ="250" height="500">
-<div>
-  <div id="update-name" class="inline-text" >Update name</div> <div id="dark-mode" class="inline-text">After changed</div>
-</div>
 
 ### **Thực hiện cuộc gọi thoại**
-<img class="giaodien" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619008610/Android_telegram_readme_resources/photos/goithoai1_qtoxcz.png" width ="250" height="500">
+<img align="center" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619022291/Android_telegram_readme_resources/photos/goithoai1_w9erjc.png">
+<img align="center" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619022291/Android_telegram_readme_resources/photos/goithoai2_zmonbi.png">
 
-<img class="giaodien" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619008613/Android_telegram_readme_resources/photos/goithoai2_anvuaa.png" width ="250" height="500">
-
-<div>
-  <div class="inline-text"></div>
-</div>
-
-<img class="giaodien" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619008611/Android_telegram_readme_resources/photos/goithoai3_ttf9nn.png" width ="250" height="500"> 
-
-<img class="giaodien" src="https://res.cloudinary.com/teamwebctt2/image/upload/v1619008610/Android_telegram_readme_resources/photos/goithoai4_d6douy.png" width ="250" height="500">
-<div>
-  <div class="inline-text"></div>
-</div>
 
 ## Công nghệ được sử dụng trong đồ án
 
@@ -130,4 +77,6 @@
   - Quản lý danh sách: `Recycle view`
   - Lưu trữ tài nguyên: `Firebase storage`
   - Live data: `Live data`
+
+
   
