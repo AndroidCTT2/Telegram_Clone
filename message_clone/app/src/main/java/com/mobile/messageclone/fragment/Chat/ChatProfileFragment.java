@@ -32,11 +32,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mobile.messageclone.Model.Contact;
+import com.mobile.messageclone.Model.User;
 import com.mobile.messageclone.R;
 import com.mobile.messageclone.RecycerViewAdapater.ContactListHomeAdapter;
 import com.mobile.messageclone.Ulti.ActivityUlti;
 import com.mobile.messageclone.Ulti.DrawProfilePicture;
 import com.mobile.messageclone.ViewModel.ChatViewModel;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -156,6 +159,23 @@ public class ChatProfileFragment extends Fragment {
         displayBio=view.findViewById(R.id.displayBio);
         displayPhone=view.findViewById(R.id.displayPhoneNumber);
 
+
+        firebaseDatabase.getReference().child("USER").child(ContactID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (snapshot.exists() == true)
+                {
+                    User user = snapshot.getValue(User.class);
+                    displayPhone.setText(user.getPhoneNum());
+                    displayBio.setText(user.getBio());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
 
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
